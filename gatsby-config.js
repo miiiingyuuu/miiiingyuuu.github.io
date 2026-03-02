@@ -12,12 +12,12 @@ module.exports = {
     title: `MinGyu's Blog`,
     author: {
       name: `MinGyu Park`,
-      summary: `My Tech Blog`,
+      summary: `| Algorithms & Tech Blog`,
     },
     description: `A starter blog demonstrating what Gatsby can do.`,
     siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
     social: {
-      twitter: `kylemathews`,
+      instagram: `miinquu`,
     },
   },
   plugins: [

@@ -8,6 +8,7 @@ import Seo from "../components/seo"
 const BlogIndex = ({ data, location }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
   const posts = data.allMarkdownRemark.nodes
+  const categories = data.allMarkdownRemark.group
 
   if (posts.length === 0) {
     return (
@@ -24,6 +25,15 @@ const BlogIndex = ({ data, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
+      {/* 카테고리 목록 */}
+      <div>
+        {categories.map(({ fieldValue, totalCount }) => (
+          <Link key={fieldValue} to={`/category/${fieldValue.toLowerCase()}/`}>
+            {fieldValue} ({totalCount})
+          </Link>
+        ))}
+      </div>
+
       <Bio />
       <ol style={{ listStyle: `none` }}>
         {posts.map(post => {
@@ -89,6 +99,10 @@ export const pageQuery = graphql`
           description
         }
       }
+      group(field: { frontmatter: { category: SELECT } }) {
+      fieldValue
+      totalCount
+    }
     }
   }
 `

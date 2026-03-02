@@ -14,11 +14,11 @@ module.exports = {
       name: `MinGyu Park`,
       summary: `My Tech Blog`,
     },
-    // description: `A starter blog demonstrating what Gatsby can do.`,
-    // siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
-    // social: {
-    //   twitter: `kylemathews`,
-    // },
+    description: `A starter blog demonstrating what Gatsby can do.`,
+    siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
+    social: {
+      twitter: `kylemathews`,
+    },
   },
   plugins: [
     `gatsby-plugin-image`,

@@ -26,9 +26,9 @@ const BlogIndex = ({ data, location }) => {
   return (
     <Layout location={location} title={siteTitle}>
       {/* 카테고리 목록 */}
-      <div>
+      <div style={{ margin: 10 }}>
         {categories.map(({ fieldValue, totalCount }) => (
-          <Link key={fieldValue} to={`/category/${fieldValue.toLowerCase()}/`}>
+          <Link style={{ margin: 3 }} key={fieldValue} to={`/category/${fieldValue.toLowerCase()}/`}>
             {fieldValue} ({totalCount})
           </Link>
         ))}

@@ -44,7 +44,8 @@ const Bio = () => {
       />
       {author?.name && (
         <p>
-          Written by <strong>{author.name}</strong> {author?.summary || null}
+          Written by <strong>{author.name}</strong> {author?.summary || null}<br/>
+          <strong>꾸준히 적어보는 공부 블로그</strong>
           {` `}
         </p>
       )}

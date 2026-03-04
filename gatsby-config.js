@@ -9,9 +9,9 @@
  */
 module.exports = {
   siteMetadata: {
-    title: `MinGyu's Blog`,
+    title: `Mingyu's Blog`,
     author: {
-      name: `MinGyu Park`,
+      name: `Mingyu Park`,
       summary: `| Algorithms & Tech Blog`,
     },
     description: `A starter blog demonstrating what Gatsby can do.`,

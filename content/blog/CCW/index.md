@@ -1,7 +1,7 @@
 ---
 title: "CCW(Counter Clock Wise)"
 date: "2025-07-26"
-category: "Algorithm"
+category: ["Algorithm"]
 description: "세 점의 방향을 판별하는 CCW 기하 알고리즘의 개념과 외적을 이용한 구현 방법을 정리"
 ---
 

@@ -34,7 +34,7 @@ const CategoryTemplate = ({ data, pageContext, location }) => {
 export const query = graphql`
   query($category: String!) {
     allMarkdownRemark(
-      filter: { frontmatter: { category: { eq: $category } } }
+      filter: { frontmatter: { category: { in: [$category] } } }
       sort: { frontmatter: { date: DESC } }
     ) {
       nodes {

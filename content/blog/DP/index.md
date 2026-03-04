@@ -1,7 +1,7 @@
 ---
 title: "다이나믹 프로그래밍 (Dynamic Programming)"
 date: "2024-01-04"
-categories: ["Algorithm"]
+category: ["Algorithm"]
 description: "DP의 개념, 적용 조건, Bottom-Up과 Top-Down 방식 정리"
 ---
 

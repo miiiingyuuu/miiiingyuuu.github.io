@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 05 Mar 2026 07:59:15 GMT</lastBuildDate><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Sun, 08 Mar 2026 07:42:54 GMT</lastBuildDate><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;왜 세그먼트 트리를 사용하는가?&lt;/h2&gt;
 &lt;p&gt;아래와 같은 배열이 있다고 가정해봅시다.&lt;/p&gt;
@@ -524,7 +524,173 @@ nums&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;b&lt;/code&gt;: 분할 비율&lt;/li&gt;
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;f(n)&lt;/code&gt;: 분할 및 병합에 드는 비용&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Ref: Claude AI&lt;/p&gt;</content:encoded></item><item><title><![CDATA[플로이드 워셜(Floyd-Warshall) 알고리즘]]></title><description><![CDATA[플로이드 워셜(Floyd-Warshall) 알고리즘은 모든 노드에서 다른 모든 노드까지의 최단 경로를 한 번에 구하는 알고리즘입니다. 다익스트라가 단일 출발점의 최단 경로를 구하는 것과 달리, 플로이드 워셜은 모든 쌍(Pair…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/floyd-warshall/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/floyd-warshall/</guid><pubDate>Fri, 25 Oct 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;플로이드 워셜(Floyd-Warshall) 알고리즘은 &lt;strong&gt;모든 노드에서 다른 모든 노드까지의 최단 경로를 한 번에 구하는 알고리즘&lt;/strong&gt;입니다. 다익스트라가 단일 출발점의 최단 경로를 구하는 것과 달리, 플로이드 워셜은 모든 쌍(Pair)에 대한 최단 거리를 구할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;Ref: Claude AI&lt;/p&gt;</content:encoded></item><item><title><![CDATA[유니온 파인드(Union-Find) 알고리즘]]></title><description><![CDATA[유니온 파인드(Union-Find)는 두 노드가 같은 집합에 속하는지 판별하는 그래프 알고리즘입니다. 합집합 찾기 알고리즘이라고도 부르며, 서로 연결되지 않은 노드들의 집합을 다루기 때문에 서로소 집합(Disjoint Set…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/union-find/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/union-find/</guid><pubDate>Fri, 08 Nov 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;유니온 파인드(Union-Find)는 &lt;strong&gt;두 노드가 같은 집합에 속하는지 판별하는 그래프 알고리즘&lt;/strong&gt;입니다. 합집합 찾기 알고리즘이라고도 부르며, 서로 연결되지 않은 노드들의 집합을 다루기 때문에 &lt;strong&gt;서로소 집합(Disjoint Set)&lt;/strong&gt; 이라고도 합니다.&lt;/p&gt;
+&lt;p&gt;두 가지 핵심 연산으로 이루어집니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Union&lt;/strong&gt;: 두 노드를 같은 집합으로 합치는 연산&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Find&lt;/strong&gt;: 노드의 루트 노드를 찾는 연산&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;핵심 아이디어&lt;/h2&gt;
+&lt;p&gt;유니온 파인드는 각 노드의 **부모 노드 번호를 저장하는 배열(parent)**을 사용합니다. 초기에는 모든 노드가 독립적이므로 자기 자신이 부모 노드입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;초기 상태 (노드 7개)
+인덱스: 1  2  3  4  5  6  7
+부모:   1  2  3  4  5  6  7&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;두 노드가 같은 집합에 속하는지 확인하려면 각 노드의 &lt;strong&gt;루트 노드가 동일한지&lt;/strong&gt; 비교하면 됩니다. 루트 노드는 &lt;code class=&quot;language-text&quot;&gt;parent[i] == i&lt;/code&gt;인 노드입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;동작 예시&lt;/h2&gt;
+&lt;h3&gt;Union 연산&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Union(1, 2)&lt;/code&gt; → 2번 노드의 부모를 1번으로 설정&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;인덱스: 1  2  3  4  5  6  7
+부모:   1  1  3  4  5  6  7&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;Union(4, 5)&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;Union(5, 6)&lt;/code&gt; → 5, 6번의 루트를 4번으로 설정&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;인덱스: 1  2  3  4  5  6  7
+부모:   1  1  3  4  4  4  7&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Find 연산&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;2번 노드의 루트를 찾는 과정&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;parent[2]&lt;/code&gt; = 1&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;parent[1]&lt;/code&gt; = 1 → 인덱스와 값이 같음 → 루트는 &lt;strong&gt;1번&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;6번 노드의 루트를 찾는 과정&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;parent[6]&lt;/code&gt; = 4&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;parent[4]&lt;/code&gt; = 4 → 인덱스와 값이 같음 → 루트는 &lt;strong&gt;4번&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;2번의 루트(1)와 6번의 루트(4)가 다르므로 → &lt;strong&gt;두 노드는 연결되어 있지 않음&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;이후 &lt;code class=&quot;language-text&quot;&gt;Union(1, 4)&lt;/code&gt;를 수행하면 두 집합이 합쳐져 2번과 6번이 같은 집합이 됩니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;트리 치우침 문제와 경로 압축&lt;/h2&gt;
+&lt;h3&gt;문제 상황&lt;/h3&gt;
+&lt;p&gt;아래처럼 한쪽으로만 노드가 이어지는 경우, Find 연산의 재귀 호출 깊이가 깊어져 탐색 시간이 오래 걸립니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Union(3, 4) → Union(4, 5) → Union(5, 6) → Union(6, 7)
+
+3 - 4 - 5 - 6 - 7  (선형 구조 → Find가 O(N))&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;해결책: 경로 압축 (Path Compression)&lt;/h3&gt;
+&lt;p&gt;Find 연산에서 루트를 찾는 과정에 &lt;strong&gt;경로 압축&lt;/strong&gt;을 적용합니다. 재귀적으로 루트를 찾으면서 거쳐가는 모든 노드의 부모를 바로 루트로 갱신합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; x &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; x
+    parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 경로 압축: 부모를 루트로 직접 연결&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;경로 압축 후 트리 구조가 훨씬 평탄해져, 이후 Find 연산이 거의 O(1)에 가까워집니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;경로 압축 적용 후
+인덱스: 1  2  3  4  5  6  7
+부모:   1  2  3  3  3  3  3  (4,5,6,7 모두 루트 3을 직접 가리킴)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;Python 구현&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
+&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# 루트 노드면 반환&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; x &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; x
+    &lt;span class=&quot;token comment&quot;&gt;# 경로 압축: 부모를 루트로 직접 갱신&lt;/span&gt;
+    parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;union&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    x &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    y &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 이미 같은 집합이면 무시&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; x &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 더 작은 번호가 부모가 되도록&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; x &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;y&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; x
+    &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; y
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;is_union&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# 두 노드의 루트가 같으면 같은 집합&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용 예시&lt;/span&gt;
+n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;
+parent &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# parent[i] = i로 초기화&lt;/span&gt;
+
+union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;is_union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# False (아직 다른 집합)&lt;/span&gt;
+
+union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;is_union&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# True (같은 집합)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;Union by Rank (랭크 기반 합치기)&lt;/h2&gt;
+&lt;p&gt;경로 압축 외에도 &lt;strong&gt;Union by Rank&lt;/strong&gt;를 함께 사용하면 트리의 높이를 최소화할 수 있습니다. 트리의 높이(rank)가 낮은 쪽을 높은 쪽에 붙이는 방식입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;union_by_rank&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    rx&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; ry &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; find&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;y&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; rx &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; ry&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# rank가 낮은 트리를 높은 트리 아래에 붙임&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; rank&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;rx&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; rank&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ry&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;rx&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ry
+    &lt;span class=&quot;token keyword&quot;&gt;elif&lt;/span&gt; rank&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;rx&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; rank&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ry&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ry&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; rx
+    &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        parent&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;ry&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; rx
+        rank&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;rx&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 높이가 같을 때만 rank 증가&lt;/span&gt;
+
+n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;
+parent &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+rank &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;시간 복잡도&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;최적화 방법&lt;/th&gt;
+&lt;th&gt;Find 복잡도&lt;/th&gt;
+&lt;th&gt;Union 복잡도&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;기본 구현&lt;/td&gt;
+&lt;td&gt;O(N)&lt;/td&gt;
+&lt;td&gt;O(N)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;경로 압축&lt;/td&gt;
+&lt;td&gt;O(log N)&lt;/td&gt;
+&lt;td&gt;O(log N)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;경로 압축 + Union by Rank&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(α(N)) ≈ O(1)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(α(N)) ≈ O(1)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;α(N)은 아커만 함수의 역함수로, 사실상 상수에 가까운 값입니다. 두 최적화를 함께 적용하면 거의 O(1)로 동작합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2&gt;활용&lt;/h2&gt;
+&lt;p&gt;유니온 파인드는 단순히 두 노드의 연결 여부를 확인하는 것 외에도 다양한 곳에 활용됩니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;사이클 감지&lt;/strong&gt;: 간선을 추가할 때 두 노드의 루트가 같으면 사이클이 형성됨&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;크루스칼 알고리즘(MST)&lt;/strong&gt;: 최소 신장 트리를 구할 때 사이클 없이 간선을 선택하는 데 사용&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;네트워크 연결 확인&lt;/strong&gt;: 특정 노드들이 같은 네트워크에 속하는지 판별&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;관련 문제&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1717&quot;&gt;BOJ 1717 - 집합의 표현&lt;/a&gt; ← 유니온 파인드 대표 문제&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1976&quot;&gt;BOJ 1976 - 여행 가자&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/4195&quot;&gt;BOJ 4195 - 친구 네트워크&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://school.programmers.co.kr/learn/courses/30/lessons/42861&quot;&gt;프로그래머스 - 섬 연결하기&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ref: &lt;a href=&quot;https://velog.io/@jxlhe46/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%9C%A0%EB%8B%88%EC%98%A8-%ED%8C%8C%EC%9D%B8%EB%93%9C-Union-Find&quot;&gt;[알고리즘] 유니온 파인드 (Union-Find)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[플로이드 워셜(Floyd-Warshall) 알고리즘]]></title><description><![CDATA[플로이드 워셜(Floyd-Warshall) 알고리즘은 모든 노드에서 다른 모든 노드까지의 최단 경로를 한 번에 구하는 알고리즘입니다. 다익스트라가 단일 출발점의 최단 경로를 구하는 것과 달리, 플로이드 워셜은 모든 쌍(Pair…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/floyd-warshall/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/floyd-warshall/</guid><pubDate>Fri, 25 Oct 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;플로이드 워셜(Floyd-Warshall) 알고리즘은 &lt;strong&gt;모든 노드에서 다른 모든 노드까지의 최단 경로를 한 번에 구하는 알고리즘&lt;/strong&gt;입니다. 다익스트라가 단일 출발점의 최단 경로를 구하는 것과 달리, 플로이드 워셜은 모든 쌍(Pair)에 대한 최단 거리를 구할 수 있습니다.&lt;/p&gt;
 &lt;p&gt;또한 플로이드 워셜은 &lt;strong&gt;DP(동적 계획법)&lt;/strong&gt; 알고리즘에 속합니다. N번의 단계를 반복하며 점화식에 맞게 2차원 테이블을 갱신하기 때문입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;다익스트라 vs 플로이드 워셜&lt;/h2&gt;

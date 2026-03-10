@@ -459,5 +459,4 @@ CMD ["npm", "start"]
 - [Next.js 공식 문서](https://nextjs.org/docs)
 - [Next.js App Router 가이드](https://nextjs.org/docs/app)
 - [Vercel 배포 가이드](https://vercel.com/docs)
-
-Ref: Claude AI
+- Claude AI

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 10 Mar 2026 07:29:46 GMT</lastBuildDate><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 11 Mar 2026 06:15:47 GMT</lastBuildDate><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;왜 세그먼트 트리를 사용하는가?&lt;/h2&gt;
 &lt;p&gt;아래와 같은 배열이 있다고 가정해봅시다.&lt;/p&gt;
@@ -286,7 +286,384 @@ nums&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class
 &lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;cpp&quot;&gt;&lt;pre class=&quot;language-cpp&quot;&gt;&lt;code class=&quot;language-cpp&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;CCW&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; x1&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; y1&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; x2&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; y2&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; x3&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;long&lt;/span&gt; y3&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x2 &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; x1&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;y3 &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; y1&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x3 &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; x1&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;y2 &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; y1&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Ref: &lt;a href=&quot;https://snowfleur.tistory.com/98&quot;&gt;[알고리즘] CCW(Counter Clock Wise)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[최소 스패닝 트리(MST)와 크루스칼 알고리즘]]></title><description><![CDATA[스패닝 트리 (Spanning Tree…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/mst/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/mst/</guid><pubDate>Sun, 16 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;스패닝 트리 (Spanning Tree)란?&lt;/h2&gt;
+&lt;p&gt;Ref: &lt;a href=&quot;https://snowfleur.tistory.com/98&quot;&gt;[알고리즘] CCW(Counter Clock Wise)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[프림 알고리즘 (Prim's Algorithm)]]></title><description><![CDATA[이전 포스트에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 프림 알고리즘(Prim's Algorithm) 을 정리합니다. 최소 신장 트리(MST…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</guid><pubDate>Thu, 10 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;/mst-kruskal&quot;&gt;이전 포스트&lt;/a&gt;에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 &lt;strong&gt;프림 알고리즘(Prim&apos;s Algorithm)&lt;/strong&gt; 을 정리합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;최소 신장 트리(MST) 복습&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;신장 트리(Spanning Tree)&lt;/strong&gt; 란 그래프의 모든 노드를 포함하면서 사이클이 없는 트리입니다. 이 중에서 간선 가중치의 합이 가장 작은 것을 &lt;strong&gt;최소 신장 트리(Minimum Spanning Tree, MST)&lt;/strong&gt; 라고 합니다.&lt;/p&gt;
+&lt;p&gt;MST의 조건:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;그래프의 &lt;strong&gt;모든 노드&lt;/strong&gt;를 포함한다&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;사이클&lt;/strong&gt;이 존재하지 않는다&lt;/li&gt;
+&lt;li&gt;간선의 수는 정확히 &lt;strong&gt;노드 수 - 1&lt;/strong&gt;개이다&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;프림 알고리즘이란?&lt;/h2&gt;
+&lt;p&gt;프림 알고리즘은 &lt;strong&gt;임의의 노드에서 시작&lt;/strong&gt;해서, 현재까지 방문한 노드 집합에서 연결된 간선 중 &lt;strong&gt;가중치가 가장 작은 간선&lt;/strong&gt;을 반복적으로 선택해 MST를 확장해 나가는 알고리즘입니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;핵심 아이디어: &quot;지금 닿을 수 있는 곳 중 가장 가까운 곳으로 한 발씩 나아간다&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;그리디(Greedy) 알고리즘&lt;/strong&gt;의 일종으로, 매 단계에서 최선의 선택(최소 가중치 간선)을 반복합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;프림 vs 크루스칼&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/7ccee010cb49c3c9a20f2af3cf941c0b/8e1fc/prim_vs_kruskal.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 42.405063291139236%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAIABQDASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAAAAECBf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAcqRKAf/xAAYEAADAQEAAAAAAAAAAAAAAAAAARECEv/aAAgBAQABBQKw6cej/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8BJ//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/AWf/xAAWEAEBAQAAAAAAAAAAAAAAAAAAQZH/2gAIAQEABj8CiYmP/8QAGhABAAIDAQAAAAAAAAAAAAAAAQARMVGRcf/aAAgBAQABPyG4KOCBemkRccJ//9oADAMBAAIAAwAAABD8H//EABcRAAMBAAAAAAAAAAAAAAAAAAABIRH/2gAIAQMBAT8Qhw1n/8QAFhEBAQEAAAAAAAAAAAAAAAAAAQAh/9oACAECAQE/ENGwF//EABsQAQACAgMAAAAAAAAAAAAAAAEAETHBIUHh/9oACAEBAAE/EKkCw58o7oSrKahZcPQan//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Prim vs Kruskal&quot;
+        title=&quot;&quot;
+        src=&quot;/static/7ccee010cb49c3c9a20f2af3cf941c0b/828fb/prim_vs_kruskal.jpg&quot;
+        srcset=&quot;/static/7ccee010cb49c3c9a20f2af3cf941c0b/ff44c/prim_vs_kruskal.jpg 158w,
+/static/7ccee010cb49c3c9a20f2af3cf941c0b/a6688/prim_vs_kruskal.jpg 315w,
+/static/7ccee010cb49c3c9a20f2af3cf941c0b/828fb/prim_vs_kruskal.jpg 630w,
+/static/7ccee010cb49c3c9a20f2af3cf941c0b/8e1fc/prim_vs_kruskal.jpg 900w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;두 알고리즘 모두 MST를 구하지만 접근 방식이 다릅니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;프림&lt;/th&gt;
+&lt;th&gt;크루스칼&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;전략&lt;/td&gt;
+&lt;td&gt;노드 중심 — 방문 집합을 확장&lt;/td&gt;
+&lt;td&gt;간선 중심 — 전체 간선을 정렬 후 선택&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;자료구조&lt;/td&gt;
+&lt;td&gt;우선순위 큐 (최소 힙)&lt;/td&gt;
+&lt;td&gt;유니온 파인드&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;시간복잡도&lt;/td&gt;
+&lt;td&gt;O(E log V)&lt;/td&gt;
+&lt;td&gt;O(E log E)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;유리한 경우&lt;/td&gt;
+&lt;td&gt;밀집 그래프 (간선이 많을 때)&lt;/td&gt;
+&lt;td&gt;희소 그래프 (간선이 적을 때)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;사이클 처리&lt;/td&gt;
+&lt;td&gt;방문 배열로 묵시적 처리&lt;/td&gt;
+&lt;td&gt;유니온 파인드로 명시적 처리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;동작 원리 — 단계별 시각화&lt;/h2&gt;
+&lt;p&gt;아래 그래프를 예시로 사용합니다. (노드 8개, 간선 10개)&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;입력:
+8 10
+1 2 13
+1 3 15
+1 8 17
+2 7 4
+3 4 11
+3 5 13
+4 5 12
+5 8 9
+6 7 3
+7 8 6&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/bca9448bb4c1b2b8eb889cbf628ea4f3/9f7d8/prim_steps.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 77.21518987341771%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAPABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAECBf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAeOVI0D/xAAVEAEBAAAAAAAAAAAAAAAAAAAQQf/aAAgBAQABBQJh/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPwE//8QAFREBAQAAAAAAAAAAAAAAAAAAABH/2gAIAQIBAT8BV//EABQQAQAAAAAAAAAAAAAAAAAAACD/2gAIAQEABj8CX//EABoQAAICAwAAAAAAAAAAAAAAAAABEBFBYXH/2gAIAQEAAT8hwMfIUNbP/9oADAMBAAIAAwAAABBwP//EABURAQEAAAAAAAAAAAAAAAAAAAAR/9oACAEDAQE/EKr/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/EB//xAAcEAACAwADAQAAAAAAAAAAAAABEQAhMUFRkcH/2gAIAQEAAT8QIqVALDHMC7CLWV7EoPTn2IQYVnU//9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Prim&amp;#39;s Algorithm Step by Step&quot;
+        title=&quot;&quot;
+        src=&quot;/static/bca9448bb4c1b2b8eb889cbf628ea4f3/828fb/prim_steps.jpg&quot;
+        srcset=&quot;/static/bca9448bb4c1b2b8eb889cbf628ea4f3/ff44c/prim_steps.jpg 158w,
+/static/bca9448bb4c1b2b8eb889cbf628ea4f3/a6688/prim_steps.jpg 315w,
+/static/bca9448bb4c1b2b8eb889cbf628ea4f3/828fb/prim_steps.jpg 630w,
+/static/bca9448bb4c1b2b8eb889cbf628ea4f3/0ede0/prim_steps.jpg 945w,
+/static/bca9448bb4c1b2b8eb889cbf628ea4f3/3ac88/prim_steps.jpg 1260w,
+/static/bca9448bb4c1b2b8eb889cbf628ea4f3/9f7d8/prim_steps.jpg 1624w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;각 단계를 정리하면 다음과 같습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;단계&lt;/th&gt;
+&lt;th&gt;선택 간선&lt;/th&gt;
+&lt;th&gt;가중치&lt;/th&gt;
+&lt;th&gt;방문 노드 추가&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;시작&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1 — 2&lt;/td&gt;
+&lt;td&gt;13&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;2 — 7&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;6 — 7&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;7 — 8&lt;/td&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;5 — 8&lt;/td&gt;
+&lt;td&gt;9&lt;/td&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;4 — 5&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;3 — 4&lt;/td&gt;
+&lt;td&gt;11&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;최종 MST 총 가중치: 13 + 4 + 3 + 6 + 9 + 12 + 11 = 58&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;시작 노드가 달라져도 결과 MST는 항상 동일합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2&gt;우선순위 큐(최소 힙) 활용&lt;/h2&gt;
+&lt;p&gt;프림 알고리즘의 핵심은 &quot;현재 닿을 수 있는 간선 중 가장 가중치가 작은 것&quot;을 빠르게 뽑는 것입니다. 이를 위해 &lt;strong&gt;최소 힙(Min-Heap)&lt;/strong&gt; 을 사용합니다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/d40b49df56996ce199c79b4a91de08e0/8d3e2/heap_concept.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 51.26582278481012%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAECAwX/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/2gAMAwEAAhADEAAAAcp0vQyJP//EABkQAAIDAQAAAAAAAAAAAAAAAAABAhARQf/aAAgBAQABBQLRSG64f//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABURAQEAAAAAAAAAAAAAAAAAABAR/9oACAECAQE/Aaf/xAAYEAACAwAAAAAAAAAAAAAAAAAAQSCR4f/aAAgBAQAGPwJUYKH/xAAbEAEAAgIDAAAAAAAAAAAAAAABABEQQSExkf/aAAgBAQABPyEYcEErUWPXiawZ/9oADAMBAAIAAwAAABA4D//EABYRAAMAAAAAAAAAAAAAAAAAAAEQIf/aAAgBAwEBPxARf//EABYRAQEBAAAAAAAAAAAAAAAAAAARAf/aAAgBAgEBPxCl1//EABoQAQACAwEAAAAAAAAAAAAAAAEAESExQYH/2gAIAQEAAT8QFgMHEDat3YYtj4ElvTBeptP/2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Priority Queue Concept&quot;
+        title=&quot;&quot;
+        src=&quot;/static/d40b49df56996ce199c79b4a91de08e0/828fb/heap_concept.jpg&quot;
+        srcset=&quot;/static/d40b49df56996ce199c79b4a91de08e0/ff44c/heap_concept.jpg 158w,
+/static/d40b49df56996ce199c79b4a91de08e0/a6688/heap_concept.jpg 315w,
+/static/d40b49df56996ce199c79b4a91de08e0/828fb/heap_concept.jpg 630w,
+/static/d40b49df56996ce199c79b4a91de08e0/8d3e2/heap_concept.jpg 860w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;힙에는 &lt;code class=&quot;language-text&quot;&gt;(가중치, 노드)&lt;/code&gt; 형태로 저장합니다. 가중치를 첫 번째 원소로 넣어야 &lt;code class=&quot;language-text&quot;&gt;heapq&lt;/code&gt;가 가중치 기준으로 정렬합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; heapq
+
+heap &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappush&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 가중치 13, 노드 2&lt;/span&gt;
+heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappush&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 가중치 4,  노드 7&lt;/span&gt;
+heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappush&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 가중치 15, 노드 3&lt;/span&gt;
+
+weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; node &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappop&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# → weight=4, node=7  (최솟값 먼저 꺼냄)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;Python 구현&lt;/h2&gt;
+&lt;h3&gt;기본 구현&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; heapq
+
+&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;prim&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;start&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    visited&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;start&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;
+    route &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;start&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    heap &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;start&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;     &lt;span class=&quot;token comment&quot;&gt;# 시작 노드의 인접 간선을 힙에 삽입&lt;/span&gt;
+    heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heapify&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;        &lt;span class=&quot;token comment&quot;&gt;# 리스트를 힙으로 변환&lt;/span&gt;
+    total_weight &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; heap&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; node &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappop&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;node&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;      &lt;span class=&quot;token comment&quot;&gt;# 이미 방문한 노드는 건너뜀&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+        visited&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;node&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;True&lt;/span&gt;
+        route&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;node&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        total_weight &lt;span class=&quot;token operator&quot;&gt;+=&lt;/span&gt; weight
+
+        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; edge &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;node&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;edge&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappush&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; edge&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; route&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; total_weight
+
+
+v&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; e &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+graph   &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;v &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+visited &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token boolean&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;v &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;e&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    u&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; w&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; weight &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# 무방향 그래프 — 양방향 모두 저장&lt;/span&gt;
+    graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; w&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;w&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+route&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; total &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; prim&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-interpolation&quot;&gt;&lt;span class=&quot;token string&quot;&gt;f&quot;방문 순서: &lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;route&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string-interpolation&quot;&gt;&lt;span class=&quot;token string&quot;&gt;f&quot;MST 총 가중치: &lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;total&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 출력:&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 방문 순서: [1, 2, 7, 6, 8, 5, 4, 3]&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# MST 총 가중치: 58&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;코드 흐름 정리&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. 시작 노드를 visited 처리하고, 인접 간선을 모두 힙에 넣는다
+2. 힙에서 (최소 가중치, 노드)를 꺼낸다
+3. 이미 방문한 노드면 skip
+4. 방문하지 않은 노드면:
+   a. visited 처리
+   b. 가중치를 누적
+   c. 해당 노드의 인접 간선 중 미방문 노드만 힙에 추가
+5. 힙이 빌 때까지 2~4를 반복&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;시간복잡도 분석&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;연산&lt;/th&gt;
+&lt;th&gt;횟수&lt;/th&gt;
+&lt;th&gt;비용&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;힙 삽입 (heappush)&lt;/td&gt;
+&lt;td&gt;최대 E번&lt;/td&gt;
+&lt;td&gt;O(log E)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;힙 추출 (heappop)&lt;/td&gt;
+&lt;td&gt;최대 E번&lt;/td&gt;
+&lt;td&gt;O(log E)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;전체&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(E log E) ≈ O(E log V)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;E ≤ V² 이므로 log E ≤ 2 log V, 따라서 O(E log E) = O(E log V)로 표기합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;주의할 점&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1. 간선 저장 형식 — 가중치를 반드시 첫 번째로&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바른 형태 — heapq가 가중치 기준으로 정렬&lt;/span&gt;
+graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; v&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못된 형태 — 노드 번호 기준으로 정렬됨&lt;/span&gt;
+graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;v&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; weight&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2. 방문 체크로 사이클 방지&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# heappop 후 반드시 visited 확인&lt;/span&gt;
+weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; node &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; heapq&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;heappop&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;heap&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;node&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 이미 MST에 포함된 노드 — 건너뜀&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;3. 무방향 그래프 처리&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 양쪽 방향 모두 저장&lt;/span&gt;
+graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; v&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;v&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;weight&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; u&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;백준 관련 문제&lt;/h2&gt;
+&lt;p&gt;프림 알고리즘을 연습할 수 있는 문제들입니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;문제&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1197&quot;&gt;1197 최소 스패닝 트리&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold IV&lt;/td&gt;
+&lt;td&gt;MST 기본 문제 — 프림 또는 크루스칼&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1922&quot;&gt;1922 네트워크 연결&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold IV&lt;/td&gt;
+&lt;td&gt;1197과 동일한 유형&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/4386&quot;&gt;4386 별자리 만들기&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold III&lt;/td&gt;
+&lt;td&gt;좌표 기반 MST&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Ref: &lt;a href=&quot;https://koosco.tistory.com/entry/Python-%ED%94%84%EB%A6%BC-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98Prims-Algorithm&quot;&gt;프림 알고리즘(Prim&apos;s Algorithm)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[최소 스패닝 트리(MST)와 크루스칼 알고리즘]]></title><description><![CDATA[스패닝 트리 (Spanning Tree…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/mst-kruskal/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/mst-kruskal/</guid><pubDate>Sun, 16 Mar 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;스패닝 트리 (Spanning Tree)란?&lt;/h2&gt;
 &lt;p&gt;스패닝 트리(신장 트리)란 그래프의 &lt;strong&gt;모든 정점을 포함하면서 사이클이 없는 부분 그래프&lt;/strong&gt;를 말합니다.&lt;/p&gt;
 &lt;p&gt;&lt;span
       class=&quot;gatsby-resp-image-wrapper&quot;

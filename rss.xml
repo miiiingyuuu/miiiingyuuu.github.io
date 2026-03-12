@@ -1,4 +1,386 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 11 Mar 2026 06:31:34 GMT</lastBuildDate><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 12 Mar 2026 09:35:24 GMT</lastBuildDate><item><title><![CDATA[클라우드 서비스 개발]]></title><description><![CDATA[…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/cloud/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/cloud/</guid><pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;클라우드 기반 서비스 개발에서 다루게 되는 기술들을 정리했습니다. 크게 세 가지 영역으로 나눌 수 있습니다. 클라우드 인프라를 이해하고 서비스를 설계/개발하는 것, 비즈니스 요구사항을 바탕으로 솔루션을 구현하는 것, 그리고 전체 시스템의 아키텍처 전략을 수립하는 것입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. 클라우드 기초 개념&lt;/h2&gt;
+&lt;h3&gt;서비스 모델 — IaaS / PaaS / SaaS&lt;/h3&gt;
+&lt;p&gt;클라우드는 제공하는 추상화 수준에 따라 세 가지 모델로 구분됩니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;모델&lt;/th&gt;
+&lt;th&gt;제공 범위&lt;/th&gt;
+&lt;th&gt;사용자 관리 범위&lt;/th&gt;
+&lt;th&gt;예시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;IaaS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;서버, 네트워크, 스토리지&lt;/td&gt;
+&lt;td&gt;OS, 미들웨어, 앱 직접 관리&lt;/td&gt;
+&lt;td&gt;AWS EC2, GCP Compute Engine&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;PaaS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;OS + 런타임 + 미들웨어&lt;/td&gt;
+&lt;td&gt;애플리케이션 코드만 관리&lt;/td&gt;
+&lt;td&gt;AWS Elastic Beanstalk, Heroku&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SaaS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;완성된 소프트웨어&lt;/td&gt;
+&lt;td&gt;데이터, 사용 설정만 관리&lt;/td&gt;
+&lt;td&gt;Gmail, Slack, Salesforce&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;배포 모델&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Public Cloud  : AWS, GCP, Azure 등 퍼블릭 사업자 인프라 활용
+               → 비용 효율, 빠른 확장
+
+Private Cloud : 기업 전용 클라우드 (온프레미스 또는 전용 호스팅)
+               → 높은 보안, 높은 초기 비용
+
+Hybrid Cloud  : Public + Private 혼합
+               → 민감 데이터는 Private, 탄력적 부하는 Public
+
+Multi Cloud   : 여러 퍼블릭 클라우드 동시 활용
+               → 벤더 종속 방지, 서비스별 최적 클라우드 선택&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. 클라우드 인프라 핵심 기술&lt;/h2&gt;
+&lt;h3&gt;가상화 (Virtualization)&lt;/h3&gt;
+&lt;p&gt;물리 서버 위에 독립된 가상 머신(VM)을 여러 개 실행하는 기술입니다. 클라우드 컴퓨팅의 근간입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;물리 서버
+└── Hypervisor (VMware, KVM, Hyper-V)
+    ├── VM 1 — Ubuntu + App A
+    ├── VM 2 — CentOS + App B
+    └── VM 3 — Windows + App C&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;컨테이너 (Container)&lt;/h3&gt;
+&lt;p&gt;VM보다 가벼운 격리 단위입니다. OS 커널을 공유하면서 프로세스 수준에서 격리합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;VM vs Container
+
+VM                          Container
+├── Guest OS 포함           ├── Guest OS 없음 (호스트 OS 공유)
+├── GB 단위 이미지           ├── MB 단위 이미지
+├── 부팅에 수십 초           ├── 부팅에 수 초 이내
+└── 강한 격리, 무거움         └── 가볍고 빠른 배포에 적합&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Dockerfile 예시:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; openjdk:17-jdk-slim&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; target/my-app.jar app.jar&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; 8080&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENTRYPOINT&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;java&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;-jar&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;app.jar&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Docker 기본 명령어:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 이미지 빌드&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; my-app:1.0 &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 실행&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;:80 &lt;span class=&quot;token parameter variable&quot;&gt;--name&lt;/span&gt; my-container my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 실행 중인 컨테이너 확인&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;ps&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 로그 확인&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; logs my-container&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;컨테이너 오케스트레이션 — Kubernetes&lt;/h3&gt;
+&lt;p&gt;다수의 컨테이너를 자동으로 배포/관리/확장하는 시스템입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Control Plane
+├── API Server        : 모든 요청의 진입점
+├── Scheduler         : Pod를 어느 노드에 배치할지 결정
+├── etcd              : 클러스터 상태 저장 (분산 KV 스토어)
+└── Controller Manager: 원하는 상태 지속 유지
+
+Worker Node
+├── kubelet           : 노드 에이전트, Pod 실행 관리
+├── kube-proxy        : 네트워크 규칙 관리
+└── Container Runtime : Docker, containerd&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Deployment &amp;#x26; Service 예시:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; apps/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Deployment
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;matchLabels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app
+  &lt;span class=&quot;token key atrule&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app
+    &lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app
+        &lt;span class=&quot;token key atrule&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1.0&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;token key atrule&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token key atrule&quot;&gt;memory&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;256Mi&quot;&lt;/span&gt;
+            &lt;span class=&quot;token key atrule&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;250m&quot;&lt;/span&gt;
+          &lt;span class=&quot;token key atrule&quot;&gt;limits&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token key atrule&quot;&gt;memory&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;512Mi&quot;&lt;/span&gt;
+            &lt;span class=&quot;token key atrule&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;500m&quot;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;---&lt;/span&gt;
+&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Service
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;service
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; LoadBalancer
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app
+  &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;targetPort&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. 가용성 (High Availability) 설계&lt;/h2&gt;
+&lt;p&gt;클라우드 서비스에서 &lt;strong&gt;가용성&lt;/strong&gt;은 서비스가 중단 없이 운영되는 비율을 의미합니다.&lt;/p&gt;
+&lt;h3&gt;가용성 목표 (SLA)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;99%     → 연간 약 87시간 다운타임 허용
+99.9%   → 연간 약 8.7시간   (&quot;Three Nines&quot;)
+99.99%  → 연간 약 52분      (&quot;Four Nines&quot;)
+99.999% → 연간 약 5분       (&quot;Five Nines&quot;) ← 금융/의료급&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;가용성 확보 전략&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;이중화 — 단일 장애점(SPOF) 제거&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;        [사용자]
+           │
+      [Load Balancer]  ← 이중화
+      ┌────┴────┐
+  [App 1]   [App 2]    ← 다중 인스턴스
+      └────┬────┘
+     [DB Primary]
+           └── [DB Replica]  ← 복제본&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Auto Scaling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;트래픽에 따라 인스턴스 수를 자동으로 조절합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Scale Out : 인스턴스 수 증가 (트래픽 급증 시)
+Scale In  : 인스턴스 수 감소 (트래픽 감소 시)
+Scale Up  : 인스턴스 사양 향상 (CPU, RAM 증가)
+Scale Down: 인스턴스 사양 축소&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Circuit Breaker 패턴&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;외부 서비스 장애가 내부로 전파되는 것을 차단합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;CLOSED (정상 운영)
+  → 오류율이 임계치 초과하면
+OPEN (요청 차단)    ← 모든 요청 즉시 실패 처리
+  → 일정 시간 후 테스트 요청 허용
+HALF-OPEN
+  → 성공 시 CLOSED 복귀
+  → 실패 시 OPEN 유지&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. 클라우드 네이티브 아키텍처 패턴&lt;/h2&gt;
+&lt;h3&gt;마이크로서비스 아키텍처 (MSA)&lt;/h3&gt;
+&lt;p&gt;하나의 큰 애플리케이션을 독립적으로 배포 가능한 작은 서비스들로 분리하는 방식입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;모놀리식 (Monolithic)              마이크로서비스 (MSA)
+
+┌──────────────────┐              ┌────────┐  ┌────────┐
+│  사용자 관리      │              │  User  │  │ Order  │
+│  주문 처리        │    →         │  Svc   │  │  Svc   │
+│  결제             │              └────────┘  └────────┘
+│  알림             │              ┌────────┐  ┌────────┐
+└──────────────────┘              │  Pay   │  │ Notify │
+                                  │  Svc   │  │  Svc   │
+                                  └────────┘  └────────┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;모놀리식&lt;/th&gt;
+&lt;th&gt;MSA&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;배포&lt;/td&gt;
+&lt;td&gt;전체를 한 번에&lt;/td&gt;
+&lt;td&gt;서비스별 독립 배포&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;확장&lt;/td&gt;
+&lt;td&gt;전체 스케일 아웃&lt;/td&gt;
+&lt;td&gt;필요한 서비스만 스케일&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;장애 격리&lt;/td&gt;
+&lt;td&gt;한 곳 장애 → 전체 영향&lt;/td&gt;
+&lt;td&gt;해당 서비스만 영향&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;복잡도&lt;/td&gt;
+&lt;td&gt;낮음&lt;/td&gt;
+&lt;td&gt;높음 (분산 시스템 관리)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;API Gateway 패턴&lt;/h3&gt;
+&lt;p&gt;클라이언트와 내부 서비스 사이의 단일 진입점입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;클라이언트
+    │
+[API Gateway]
+├── 인증 / 인가
+├── 요청 라우팅
+├── Rate Limiting
+├── 로드밸런싱
+└── 로깅 / 모니터링
+    │
+    ├── User Service
+    ├── Order Service
+    └── Payment Service&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;이벤트 드리븐 아키텍처&lt;/h3&gt;
+&lt;p&gt;서비스 간 직접 호출 대신 이벤트(메시지)를 통해 통신합니다. 결합도를 낮추고 확장성을 높입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[주문 서비스] → &quot;주문 완료&quot; 이벤트 발행
+                      │
+                [Kafka / RabbitMQ]
+                      │
+       ┌──────────────┼──────────────┐
+  [결제 서비스]  [재고 서비스]   [알림 서비스]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. CI/CD 파이프라인&lt;/h2&gt;
+&lt;p&gt;빠르고 안정적인 배포를 위한 자동화 파이프라인입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;코드 Push
+    │
+[소스 저장소 — GitHub / GitLab]
+    │
+[CI: 빌드 &amp;amp; 검증]
+├── 빌드 (Maven, Gradle)
+├── 단위 테스트
+├── 정적 분석 (SonarQube)
+└── Docker 이미지 빌드 &amp;amp; 레지스트리 Push
+    │
+[CD: 자동 배포]
+├── 개발 환경 자동 배포
+├── 스테이징 환경 배포 (승인 후)
+└── 프로덕션 환경 배포 (승인 후)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;GitHub Actions 예시:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; CI/CD Pipeline
+
+&lt;span class=&quot;token key atrule&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;main&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;token key atrule&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;build-and-deploy&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; ubuntu&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;latest
+    &lt;span class=&quot;token key atrule&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; actions/checkout@v3
+
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Set up JDK 17
+      &lt;span class=&quot;token key atrule&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; actions/setup&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;java@v3
+      &lt;span class=&quot;token key atrule&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;java-version&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;17&apos;&lt;/span&gt;
+
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Build &amp;amp; Test
+      &lt;span class=&quot;token key atrule&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; ./gradlew build test
+
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Build Docker Image
+      &lt;span class=&quot;token key atrule&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; docker build &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;t my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;$&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; github.sha &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt; .
+
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Push to Registry
+      &lt;span class=&quot;token key atrule&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token scalar string&quot;&gt;
+        docker tag my-app:${{ github.sha }} registry.example.com/my-app:latest
+        docker push registry.example.com/my-app:latest&lt;/span&gt;
+
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Deploy to Kubernetes
+      &lt;span class=&quot;token key atrule&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token scalar string&quot;&gt;
+        kubectl set image deployment/my-app \
+          my-app=registry.example.com/my-app:latest&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 관찰 가능성 (Observability)&lt;/h2&gt;
+&lt;p&gt;운영 중인 서비스의 상태를 파악하고 문제를 조기에 감지하기 위한 세 가지 핵심 요소입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;┌───────────┬───────────┬───────────┐
+│  Metrics  │   Logs    │  Traces   │
+│  (지표)   │  (로그)   │  (추적)   │
+├───────────┼───────────┼───────────┤
+│ CPU, 메모리│ 애플리케이션│ 요청이 여러│
+│ 응답시간  │ 이벤트 기록 │ 서비스를  │
+│ 처리량 등 │            │ 거치는 경로│
+├───────────┼───────────┼───────────┤
+│Prometheus │ ELK Stack │  Jaeger   │
+│ Grafana   │  Datadog  │  Zipkin   │
+└───────────┴───────────┴───────────┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;SLI / SLO / SLA&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;SLI (Service Level Indicator) : 실제 측정 지표
+├── 가용성   : 성공 요청 수 / 전체 요청 수
+├── 지연시간 : 요청~응답 소요 시간 (p50, p95, p99)
+└── 처리량   : 초당 처리 요청 수 (TPS, RPS)
+
+SLO (Service Level Objective) : 내부 목표 수준
+└── 예: &quot;99.9% 요청이 200ms 이내 응답&quot;
+
+SLA (Service Level Agreement) : 고객과의 계약
+└── SLO 미달 시 패널티/환불 조항 포함&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 보안 (Cloud Security)&lt;/h2&gt;
+&lt;p&gt;인프라, 네트워크, 애플리케이션 레벨 모두에서 보안을 고려해야 합니다.&lt;/p&gt;
+&lt;h3&gt;IAM — 최소 권한 원칙&lt;/h3&gt;
+&lt;p&gt;필요한 최소한의 권한만 부여하는 것이 핵심입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;User   : 개별 사람 계정
+Group  : User들의 집합 → 그룹 단위 정책 적용
+Role   : 서비스/인스턴스에 부여하는 권한 묶음
+Policy : 특정 리소스에 대한 허용/거부 규칙 문서&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;네트워크 보안 — VPC 구조&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[Internet]
+     │
+[Internet Gateway]
+     │
+┌─── VPC ─────────────────────────┐
+│  Public Subnet                  │
+│  ├── Load Balancer              │
+│  └── Bastion Host               │
+│                                 │
+│  Private Subnet                 │
+│  ├── Application Server         │
+│  └── Database                   │
+│                                 │
+│  Security Group (방화벽)          │
+│  ├── Inbound : 80, 443만 허용   │
+│  └── Outbound: 제한적 허용       │
+└─────────────────────────────────┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;DevSecOps&lt;/h3&gt;
+&lt;p&gt;CI/CD 파이프라인에 보안 검사를 내장하는 방식입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;코드 작성 → SAST (정적 코드 분석)
+빌드      → SCA  (오픈소스 취약점 스캔)
+배포 전   → DAST (동적 취약점 테스트)
+운영 중   → RASP (실시간 공격 탐지)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 아키텍처 설계 원칙&lt;/h2&gt;
+&lt;h3&gt;12-Factor App&lt;/h3&gt;
+&lt;p&gt;클라우드 네이티브 애플리케이션 설계를 위한 12가지 원칙입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;I.   Codebase        : 하나의 코드베이스, 여러 배포 환경
+II.  Dependencies    : 의존성 명시적 선언 (pom.xml, package.json)
+III. Config          : 설정은 환경 변수로 분리 (.env, ConfigMap)
+IV.  Backing Services: DB, 캐시 등을 교체 가능한 리소스로 취급
+V.   Build/Release   : 빌드-릴리즈-실행 단계 엄격히 분리
+VI.  Processes       : 무상태(Stateless) 프로세스로 실행
+VII. Port Binding    : 포트 바인딩으로 서비스 노출
+VIII.Concurrency     : 프로세스 모델로 수평 확장
+IX.  Disposability   : 빠른 시작, 안전한 종료 (Graceful Shutdown)
+X.   Dev/Prod Parity : 개발-스테이징-프로덕션 환경 최대한 동일하게
+XI.  Logs            : 로그를 이벤트 스트림으로 처리
+XII. Admin Processes : 관리 작업을 일회성 프로세스로 실행&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;요구사항 분류&lt;/h3&gt;
+&lt;p&gt;아키텍처를 설계할 때 기능적 요구사항 외에 비기능적 요구사항을 함께 정의해야 합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;기능적 요구사항 (Functional Requirements)
+└── &quot;무엇을&quot; 해야 하는가 — 기능 명세
+
+비기능적 요구사항 (Non-Functional Requirements)
+├── 성능    : 응답시간 목표, TPS
+├── 가용성  : SLA 목표 수준
+├── 확장성  : 트래픽 증가 대응 방법
+├── 보안    : 인증/인가, 데이터 암호화
+├── 유지보수 : 코드 가독성, 테스트 커버리지
+└── 비용    : 인프라 비용 최적화 전략&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;참고 자료&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://12factor.net/ko/&quot;&gt;12-Factor App 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://kubernetes.io/ko/docs/&quot;&gt;Kubernetes 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://aws.amazon.com/ko/architecture/well-architected/&quot;&gt;AWS Well-Architected Framework&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://sre.google/sre-book/table-of-contents/&quot;&gt;Google SRE Book (무료 공개)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Claude AI&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[세그먼트 트리 (Segment Tree)]]></title><description><![CDATA[세그먼트 트리(Segment Tree)는 특정 구간(Segment…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/segment-tree/</guid><pubDate>Thu, 29 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;왜 세그먼트 트리를 사용하는가?&lt;/h2&gt;
 &lt;p&gt;아래와 같은 배열이 있다고 가정해봅시다.&lt;/p&gt;

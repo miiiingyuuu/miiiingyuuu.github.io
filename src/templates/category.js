@@ -8,7 +8,7 @@ const CategoryTemplate = ({ data, pageContext, location }) => {
   const { category } = pageContext
 
   return (
-    <Layout location={location} title={category}>
+    <Layout location={location} title="← All Posts">
       <Seo title={`Category: ${category}`} />
       <h1>{category}</h1>
       <p>{posts.length}개의 글</p>

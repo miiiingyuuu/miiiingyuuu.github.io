@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Tue, 17 Mar 2026 08:18:40 GMT</lastBuildDate><item><title><![CDATA[클라우드 서비스 개발]]></title><description><![CDATA[…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/cloud/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/cloud/</guid><pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;클라우드 기반 서비스 개발에서 다루게 되는 기술들을 정리했습니다. 크게 세 가지 영역으로 나눌 수 있습니다. 클라우드 인프라를 이해하고 서비스를 설계/개발하는 것, 비즈니스 요구사항을 바탕으로 솔루션을 구현하는 것, 그리고 전체 시스템의 아키텍처 전략을 수립하는 것입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Wed, 18 Mar 2026 07:13:14 GMT</lastBuildDate><item><title><![CDATA[클라우드 서비스 개발]]></title><description><![CDATA[…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/cloud/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/cloud/</guid><pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;클라우드 기반 서비스 개발에서 다루게 되는 기술들을 정리했습니다. 크게 세 가지 영역으로 나눌 수 있습니다. 클라우드 인프라를 이해하고 서비스를 설계/개발하는 것, 비즈니스 요구사항을 바탕으로 솔루션을 구현하는 것, 그리고 전체 시스템의 아키텍처 전략을 수립하는 것입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;1. 클라우드 기초 개념&lt;/h2&gt;
 &lt;h3&gt;서비스 모델 — IaaS / PaaS / SaaS&lt;/h3&gt;
@@ -570,7 +570,607 @@ nums&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class
 &lt;li&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/2042&quot;&gt;BOJ 2042 - 구간 합 구하기&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/11505&quot;&gt;BOJ 11505 - 구간 곱 구하기&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Ref: &lt;a href=&quot;https://velog.io/@ashooozzz/Python-%EC%84%B8%EA%B7%B8%EB%A8%BC%ED%8A%B8-%ED%8A%B8%EB%A6%AC-Segment-Tree&quot;&gt;[Python] 세그먼트 트리 (Segment Tree)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[CCW(Counter Clock Wise)]]></title><description><![CDATA[CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/CCW/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/CCW/</guid><pubDate>Sat, 26 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C가 있을 때, 세 점을 이은 방향이 &lt;strong&gt;시계 방향&lt;/strong&gt;인지 &lt;strong&gt;반시계 방향&lt;/strong&gt;인지, 혹은 &lt;strong&gt;일직선&lt;/strong&gt;인지를 판별하는 기하 알고리즘입니다.&lt;/p&gt;
+&lt;p&gt;Ref: &lt;a href=&quot;https://velog.io/@ashooozzz/Python-%EC%84%B8%EA%B7%B8%EB%A8%BC%ED%8A%B8-%ED%8A%B8%EB%A6%AC-Segment-Tree&quot;&gt;[Python] 세그먼트 트리 (Segment Tree)&lt;/a&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Docker]]></title><description><![CDATA["내 컴퓨터에서는 잘 되는데요." 개발할 때 한 번쯤은 겪어봤을 상황입니다. 개발 환경, 테스트 환경, 운영 환경이 서로 달라서 생기는 문제인데, Docker…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/docker/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/docker/</guid><pubDate>Sun, 11 Jan 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&quot;내 컴퓨터에서는 잘 되는데요.&quot;&lt;/p&gt;
+&lt;p&gt;개발할 때 한 번쯤은 겪어봤을 상황입니다. 개발 환경, 테스트 환경, 운영 환경이 서로 달라서 생기는 문제인데, Docker는 이 문제를 &lt;strong&gt;컨테이너&lt;/strong&gt;라는 개념으로 해결합니다. 애플리케이션과 그 실행에 필요한 모든 것을 하나의 패키지로 묶어서, 어디서든 동일하게 실행되도록 보장합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. Docker란?&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Docker&lt;/strong&gt;는 애플리케이션을 &lt;strong&gt;컨테이너(Container)&lt;/strong&gt; 단위로 패키징하고 실행하는 오픈소스 플랫폼입니다. 2013년 출시 이후 현재 DevOps와 클라우드 환경의 표준 기술로 자리잡았습니다.&lt;/p&gt;
+&lt;h3&gt;왜 Docker를 사용하는가?&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Before Docker                    After Docker
+
+개발자 A: Python 3.9, ubuntu    ┌────────────────────┐
+개발자 B: Python 3.11, macOS    │   Docker Container  │
+서버:     Python 3.8, CentOS    │  Python 3.11 + App  │
+                                 │  (always the same)  │
+→ &quot;내 컴퓨터에서는 됩니다…&quot;     └────────────────────┘
+
+                                 → Works everywhere&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Docker가 해결하는 문제들:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;환경 불일치&lt;/strong&gt; — 개발/스테이징/운영 환경을 동일하게 유지&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;의존성 충돌&lt;/strong&gt; — 각 서비스가 독립된 환경을 가짐&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;배포 복잡성&lt;/strong&gt; — 이미지 하나로 어디서든 동일하게 실행&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;리소스 효율&lt;/strong&gt; — VM보다 가볍고 빠르게 실행&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. VM vs Container&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/123d723260348b5d57e07e0994786c48/6a068/vm_vs_container.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 51.89873417721519%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAABy1rCRSz/xAAZEAABBQAAAAAAAAAAAAAAAAABABESICH/2gAIAQEAAQUCljlE0//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAXEQEAAwAAAAAAAAAAAAAAAAAAAREh/9oACAECAQE/AYxb/8QAFRABAQAAAAAAAAAAAAAAAAAAIOH/2gAIAQEABj8Ci//EABoQAAEFAQAAAAAAAAAAAAAAAAEAESBBkdH/2gAIAQEAAT8hBimEDPxOGsh//9oADAMBAAIAAwAAABAr7//EABcRAAMBAAAAAAAAAAAAAAAAAAABIRH/2gAIAQMBAT8QpUxH/8QAFxEBAAMAAAAAAAAAAAAAAAAAAAERQf/aAAgBAgEBPxDSFn//xAAbEAEBAQACAwAAAAAAAAAAAAABEQAhcYGhsf/aAAgBAQABPxApOYejrXDGqrE+ZKQeGVhy4XO//9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;VM vs Container&quot;
+        title=&quot;&quot;
+        src=&quot;/static/123d723260348b5d57e07e0994786c48/828fb/vm_vs_container.jpg&quot;
+        srcset=&quot;/static/123d723260348b5d57e07e0994786c48/ff44c/vm_vs_container.jpg 158w,
+/static/123d723260348b5d57e07e0994786c48/a6688/vm_vs_container.jpg 315w,
+/static/123d723260348b5d57e07e0994786c48/828fb/vm_vs_container.jpg 630w,
+/static/123d723260348b5d57e07e0994786c48/0ede0/vm_vs_container.jpg 945w,
+/static/123d723260348b5d57e07e0994786c48/6a068/vm_vs_container.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;가상머신 (VM)&lt;/h3&gt;
+&lt;p&gt;가상머신은 하이퍼바이저 위에 독립적인 Guest OS를 올려 격리합니다. 완전한 OS를 포함하기 때문에 이미지가 크고 부팅이 느리지만 격리 수준이 매우 높습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Infrastructure
+└── Host OS
+    └── Hypervisor
+        ├── VM 1: Guest OS + App A  (수 GB)
+        ├── VM 2: Guest OS + App B  (수 GB)
+        └── VM 3: Guest OS + App C  (수 GB)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;컨테이너 (Container)&lt;/h3&gt;
+&lt;p&gt;컨테이너는 Host OS의 커널을 공유하며 프로세스 수준에서 격리합니다. Guest OS가 없어 이미지가 작고 시작이 매우 빠릅니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Infrastructure
+└── Host OS (커널 공유)
+    └── Docker Engine
+        ├── Container 1: Bins/Libs + App A  (수 MB)
+        ├── Container 2: Bins/Libs + App B  (수 MB)
+        └── Container 3: Bins/Libs + App C  (수 MB)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;비교 항목&lt;/th&gt;
+&lt;th&gt;VM&lt;/th&gt;
+&lt;th&gt;Container&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;OS&lt;/td&gt;
+&lt;td&gt;Guest OS 포함&lt;/td&gt;
+&lt;td&gt;Host OS 커널 공유&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;이미지 크기&lt;/td&gt;
+&lt;td&gt;GB 단위&lt;/td&gt;
+&lt;td&gt;MB 단위&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;시작 시간&lt;/td&gt;
+&lt;td&gt;수십 초&lt;/td&gt;
+&lt;td&gt;1초 이내&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;리소스 사용&lt;/td&gt;
+&lt;td&gt;높음&lt;/td&gt;
+&lt;td&gt;낮음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;격리 수준&lt;/td&gt;
+&lt;td&gt;강함 (하드웨어 수준)&lt;/td&gt;
+&lt;td&gt;보통 (프로세스 수준)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;이식성&lt;/td&gt;
+&lt;td&gt;낮음&lt;/td&gt;
+&lt;td&gt;매우 높음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. Docker 핵심 구성요소&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/f5ae2aa0d3572a0c34c11c02ec175207/6a068/docker_components.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 45.56962025316456%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAMCBf/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHl5ksomP/EABgQAAMBAQAAAAAAAAAAAAAAAAABEgIg/9oACAEBAAEFArZQ9cf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAWEQADAAAAAAAAAAAAAAAAAAABECH/2gAIAQIBAT8BEX//xAAZEAACAwEAAAAAAAAAAAAAAAAAkQEgQTH/2gAIAQEABj8C5CMRip//xAAdEAABAgcAAAAAAAAAAAAAAAAAAREgITFBUWGR/9oACAEBAAE/IZSWdR+OA4tID//aAAwDAQACAAMAAAAQfA//xAAWEQEBAQAAAAAAAAAAAAAAAAAAARH/2gAIAQMBAT8QZH//xAAVEQEBAAAAAAAAAAAAAAAAAAAQUf/aAAgBAgEBPxCB/8QAGhABAAMBAQEAAAAAAAAAAAAAAQARITEQ8f/aAAgBAQABPxAqOKj5zGrCq2DEpZWAhzxn/9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Docker Components&quot;
+        title=&quot;&quot;
+        src=&quot;/static/f5ae2aa0d3572a0c34c11c02ec175207/828fb/docker_components.jpg&quot;
+        srcset=&quot;/static/f5ae2aa0d3572a0c34c11c02ec175207/ff44c/docker_components.jpg 158w,
+/static/f5ae2aa0d3572a0c34c11c02ec175207/a6688/docker_components.jpg 315w,
+/static/f5ae2aa0d3572a0c34c11c02ec175207/828fb/docker_components.jpg 630w,
+/static/f5ae2aa0d3572a0c34c11c02ec175207/0ede0/docker_components.jpg 945w,
+/static/f5ae2aa0d3572a0c34c11c02ec175207/6a068/docker_components.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;Dockerfile&lt;/h3&gt;
+&lt;p&gt;이미지를 만들기 위한 &lt;strong&gt;설계도(레시피)&lt;/strong&gt; 입니다. 텍스트 파일에 명령어를 순서대로 작성합니다.&lt;/p&gt;
+&lt;h3&gt;Image&lt;/h3&gt;
+&lt;p&gt;Dockerfile로 빌드한 &lt;strong&gt;읽기 전용 템플릿&lt;/strong&gt;입니다. 레이어 구조로 이루어져 있으며 불변(Immutable)합니다.&lt;/p&gt;
+&lt;h3&gt;Container&lt;/h3&gt;
+&lt;p&gt;이미지를 실행한 &lt;strong&gt;인스턴스&lt;/strong&gt;입니다. 이미지 위에 쓰기 가능한 레이어가 추가됩니다. 중지하거나 삭제할 수 있으며, 기본적으로 종료 시 내부 데이터는 사라집니다.&lt;/p&gt;
+&lt;h3&gt;Registry&lt;/h3&gt;
+&lt;p&gt;이미지를 저장하고 공유하는 &lt;strong&gt;저장소&lt;/strong&gt;입니다. Docker Hub가 공개 레지스트리이며, AWS ECR, GCP GCR 등 프라이빗 레지스트리도 있습니다.&lt;/p&gt;
+&lt;h3&gt;Volume&lt;/h3&gt;
+&lt;p&gt;컨테이너가 종료되어도 데이터를 유지하는 &lt;strong&gt;영속적 저장소&lt;/strong&gt;입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Dockerfile  →  (build)  →  Image  →  (run)  →  Container
+                              ↕                      ↕
+                           Registry               Volume&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. Docker 이미지 레이어 구조&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/28eb91bdbce3e778fc781a30b8327b9d/8d3e2/image_layers.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 53.79746835443038%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAALABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAWAQEBAQAAAAAAAAAAAAAAAAABAAL/2gAMAwEAAhADEAAAAclHq0QAX//EABYQAAMAAAAAAAAAAAAAAAAAAAABIP/aAAgBAQABBQIc/wD/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAUEAEAAAAAAAAAAAAAAAAAAAAg/9oACAEBAAY/Al//xAAaEAACAgMAAAAAAAAAAAAAAAAAARBBESEx/9oACAEBAAE/IdKkNlxQ+x//2gAMAwEAAgADAAAAEIAf/8QAFREBAQAAAAAAAAAAAAAAAAAAEBH/2gAIAQMBAT8Qh//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/EGf/xAAbEAEAAgIDAAAAAAAAAAAAAAABIVEAEBExcf/aAAgBAQABPxDmQN8xkqtMRDqt3//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Image Layers&quot;
+        title=&quot;&quot;
+        src=&quot;/static/28eb91bdbce3e778fc781a30b8327b9d/828fb/image_layers.jpg&quot;
+        srcset=&quot;/static/28eb91bdbce3e778fc781a30b8327b9d/ff44c/image_layers.jpg 158w,
+/static/28eb91bdbce3e778fc781a30b8327b9d/a6688/image_layers.jpg 315w,
+/static/28eb91bdbce3e778fc781a30b8327b9d/828fb/image_layers.jpg 630w,
+/static/28eb91bdbce3e778fc781a30b8327b9d/8d3e2/image_layers.jpg 860w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Docker 이미지는 &lt;strong&gt;여러 레이어가 쌓인 구조&lt;/strong&gt;입니다. Dockerfile의 각 명령어가 하나의 레이어가 됩니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;┌─────────────────────────────────┐  ← Writable Layer (Container 실행 시)
+├─────────────────────────────────┤  ← COPY app/ /app
+├─────────────────────────────────┤  ← RUN pip install -r requirements.txt
+├─────────────────────────────────┤  ← RUN apt-get install -y curl
+└─────────────────────────────────┘  ← FROM python:3.11-slim  (Base Image)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;레이어 캐싱 (Layer Caching)&lt;/h3&gt;
+&lt;p&gt;변경된 레이어 이후의 레이어만 재빌드되기 때문에, &lt;strong&gt;자주 변경되는 내용은 아래쪽에 배치&lt;/strong&gt;할수록 빌드가 빠릅니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 비효율적 — 코드 변경마다 pip install 재실행&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . /app&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; pip install -r requirements.txt&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 효율적 — requirements.txt 변경 시에만 pip install 재실행&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; requirements.txt /app/&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; pip install -r /app/requirements.txt&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . /app&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. Dockerfile 작성&lt;/h2&gt;
+&lt;h3&gt;주요 명령어&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;명령어&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;FROM&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;베이스 이미지 지정 (첫 번째 명령어)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;WORKDIR&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;작업 디렉토리 설정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;COPY&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;호스트 파일을 이미지로 복사&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ADD&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;COPY + URL/압축파일 지원&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;RUN&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;빌드 시 실행할 명령어&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ENV&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;환경 변수 설정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;EXPOSE&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컨테이너가 사용할 포트 명시&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;CMD&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컨테이너 시작 시 기본 실행 명령어&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ENTRYPOINT&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컨테이너 시작 시 실행될 명령어 (변경 불가)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ARG&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;빌드 시점 변수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Python 웹 앱 Dockerfile 예시&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 1. 베이스 이미지 선택 (slim = 최소화된 버전)&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.11-slim&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 2. 작업 디렉토리 설정&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 3. 의존성 파일 먼저 복사 (캐싱 최적화)&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; requirements.txt .&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 4. 의존성 설치&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; pip install --no-cache-dir -r requirements.txt&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 5. 나머지 소스 코드 복사&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . .&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 6. 환경 변수 설정&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; PYTHONUNBUFFERED=1 &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+    PORT=8000&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 7. 포트 명시 (문서화 목적)&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; 8000&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 8. 실행 명령어&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;python&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;-m&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;uvicorn&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;main:app&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;--host&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;0.0.0.0&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;--port&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;8000&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Node.js 앱 Dockerfile 예시&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; node:20-alpine&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# package.json 먼저 복사 → npm install 캐싱&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; package*.json ./&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; npm ci --only=production&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . .&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; 3000&lt;/span&gt;
+
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;node&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;server.js&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;.dockerignore 작성&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;.gitignore&lt;/code&gt;처럼 이미지에 포함하지 않을 파일을 지정합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;node_modules/
+.env
+.git
+*.log
+__pycache__/
+*.pyc
+.DS_Store&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 주요 Docker 명령어&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/6a068/cheatsheet.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 58.22784810126582%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAMABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAECAwX/xAAWAQEBAQAAAAAAAAAAAAAAAAAAAQL/2gAMAwEAAhADEAAAAc1VPUZAP//EABgQAAIDAAAAAAAAAAAAAAAAAAAiAREg/9oACAEBAAEFAmGKnH//xAAVEQEBAAAAAAAAAAAAAAAAAAAQcf/aAAgBAwEBPwGn/8QAFxEBAAMAAAAAAAAAAAAAAAAAAAERIf/aAAgBAgEBPwGMW//EABgQAAIDAAAAAAAAAAAAAAAAAAAxIDKh/9oACAEBAAY/Aq4IUP/EABsQAAICAwEAAAAAAAAAAAAAAAABEZExQVFh/9oACAEBAAE/IfKUIbSkPgoyQM//2gAMAwEAAgADAAAAEKAv/8QAFxEAAwEAAAAAAAAAAAAAAAAAAAERIf/aAAgBAwEBPxDWIj//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/EAf/xAAaEAEBAQEAAwAAAAAAAAAAAAABEQAhQVGB/9oACAEBAAE/EEDS7QNZ9OCvS+NDp0SeMC7/2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Command Cheatsheet&quot;
+        title=&quot;&quot;
+        src=&quot;/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/828fb/cheatsheet.jpg&quot;
+        srcset=&quot;/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/ff44c/cheatsheet.jpg 158w,
+/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/a6688/cheatsheet.jpg 315w,
+/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/828fb/cheatsheet.jpg 630w,
+/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/0ede0/cheatsheet.jpg 945w,
+/static/ca6c8aa3acc6d1216c1f33ac6133a6bc/6a068/cheatsheet.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;이미지 관련&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 이미지 빌드 (현재 디렉토리의 Dockerfile 사용)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; my-app:1.0 &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 빌드 캐시 없이 새로 빌드&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; build --no-cache &lt;span class=&quot;token parameter variable&quot;&gt;-t&lt;/span&gt; my-app:1.0 &lt;span class=&quot;token builtin class-name&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 로컬 이미지 목록 확인&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; images
+
+&lt;span class=&quot;token comment&quot;&gt;# 이미지 다운로드&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; pull nginx:latest
+
+&lt;span class=&quot;token comment&quot;&gt;# 이미지 삭제&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; rmi my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용하지 않는 이미지 일괄 삭제&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; image prune &lt;span class=&quot;token parameter variable&quot;&gt;-a&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;컨테이너 실행&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 기본 실행 (포그라운드)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 백그라운드 실행 (-d: detached)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 포트 매핑 (-p 호스트포트:컨테이너포트)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;:8000 my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 이름 지정 + 환경변수 + 볼륨 마운트&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;--name&lt;/span&gt; my-container &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;:8000 &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;DATABASE_URL&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;postgres://&lt;span class=&quot;token punctuation&quot;&gt;..&lt;/span&gt;. &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;token variable&quot;&gt;&lt;span class=&quot;token variable&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;token builtin class-name&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;token variable&quot;&gt;)&lt;/span&gt;&lt;/span&gt;/data:/app/data &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 종료 시 자동 삭제 (--rm)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;--rm&lt;/span&gt; my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 인터랙티브 셸 실행 (-it)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-it&lt;/span&gt; my-app:1.0 /bin/bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;컨테이너 관리&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 실행 중인 컨테이너 목록&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;ps&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 모든 컨테이너 목록 (중지 포함)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;ps&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-a&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 중지 (Graceful)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; stop my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 강제 종료&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;kill&lt;/span&gt; my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 삭제&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;rm&lt;/span&gt; my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 중지된 컨테이너 일괄 삭제&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; container prune
+
+&lt;span class=&quot;token comment&quot;&gt;# 실행 중인 컨테이너에 명령어 실행&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-it&lt;/span&gt; my-container &lt;span class=&quot;token function&quot;&gt;bash&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 로그 확인&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; logs my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 로그 실시간 팔로우&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; logs &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 컨테이너 상세 정보&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; inspect my-container
+
+&lt;span class=&quot;token comment&quot;&gt;# 리소스 사용량 모니터링&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; stats&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;볼륨 &amp;#x26; 네트워크&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# Named Volume 생성 및 사용&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; volume create my-data
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt; my-data:/app/data my-app:1.0
+
+&lt;span class=&quot;token comment&quot;&gt;# 볼륨 목록 및 삭제&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; volume &lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; volume &lt;span class=&quot;token function&quot;&gt;rm&lt;/span&gt; my-data
+
+&lt;span class=&quot;token comment&quot;&gt;# 커스텀 네트워크 생성&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; network create my-net
+
+&lt;span class=&quot;token comment&quot;&gt;# 네트워크에 연결하여 실행&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;--network&lt;/span&gt; my-net my-app:1.0&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. Docker Compose&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/14ae21989d16553cd63fe5d3b65e2f5e/4d836/docker_compose.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 48.10126582278481%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAABy4qLGED/xAAaEAACAgMAAAAAAAAAAAAAAAAAAQIREiAh/9oACAEBAAEFAs2R6OtP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPwE//8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAgEBPwE//8QAGhAAAgIDAAAAAAAAAAAAAAAAACECMSBhkf/aAAgBAQAGPwKo8FexYf/EABsQAAICAwEAAAAAAAAAAAAAAAERAGEgITHR/9oACAEBAAE/IUeGAqKzITf2rw//2gAMAwEAAgADAAAAEMT/AP/EABURAQEAAAAAAAAAAAAAAAAAABBx/9oACAEDAQE/EKf/xAAWEQEBAQAAAAAAAAAAAAAAAAABEDH/2gAIAQIBAT8QAMn/xAAcEAEAAwACAwAAAAAAAAAAAAABABEhQWFxgbH/2gAIAQEAAT8QXYA7lfyYxNtCjpeZ4q2pd+orbrCM/9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Docker Compose&quot;
+        title=&quot;&quot;
+        src=&quot;/static/14ae21989d16553cd63fe5d3b65e2f5e/828fb/docker_compose.jpg&quot;
+        srcset=&quot;/static/14ae21989d16553cd63fe5d3b65e2f5e/ff44c/docker_compose.jpg 158w,
+/static/14ae21989d16553cd63fe5d3b65e2f5e/a6688/docker_compose.jpg 315w,
+/static/14ae21989d16553cd63fe5d3b65e2f5e/828fb/docker_compose.jpg 630w,
+/static/14ae21989d16553cd63fe5d3b65e2f5e/4d836/docker_compose.jpg 920w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;여러 컨테이너를 함께 실행해야 할 때 사용합니다. &lt;code class=&quot;language-text&quot;&gt;docker-compose.yml&lt;/code&gt; 파일 하나로 전체 서비스를 정의하고 관리합니다.&lt;/p&gt;
+&lt;h3&gt;docker-compose.yml 구조&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;3.8&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token key atrule&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token comment&quot;&gt;# 웹 애플리케이션&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; .                      &lt;span class=&quot;token comment&quot;&gt;# 현재 디렉토리의 Dockerfile로 빌드&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;8080:8000&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; DATABASE_URL=postgresql&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;//user&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;pass@db&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;5432/mydb
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; REDIS_URL=redis&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;//redis&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;6379&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;depends_on&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;                   &lt;span class=&quot;token comment&quot;&gt;# db, redis가 먼저 시작됨&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; db
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; redis
+    &lt;span class=&quot;token key atrule&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; ./app&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;/app                &lt;span class=&quot;token comment&quot;&gt;# 개발 시 코드 실시간 반영&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;restart&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; unless&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;stopped
+
+  &lt;span class=&quot;token comment&quot;&gt;# PostgreSQL 데이터베이스&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; postgres&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;POSTGRES_DB&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; mydb
+      &lt;span class=&quot;token key atrule&quot;&gt;POSTGRES_USER&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; user
+      &lt;span class=&quot;token key atrule&quot;&gt;POSTGRES_PASSWORD&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; pass
+    &lt;span class=&quot;token key atrule&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; db_data&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;/var/lib/postgresql/data   &lt;span class=&quot;token comment&quot;&gt;# 데이터 영속성&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;5432:5432&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;token comment&quot;&gt;# Redis 캐시&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; redis&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;7&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;alpine
+    &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;6379:6379&quot;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# Named Volume 정의&lt;/span&gt;
+&lt;span class=&quot;token key atrule&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  db_data&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Docker Compose 명령어&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 모든 서비스 시작 (백그라운드)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose up &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 이미지 다시 빌드 후 시작&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose up &lt;span class=&quot;token parameter variable&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--build&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 모든 서비스 중지 (컨테이너/네트워크 삭제)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose down
+
+&lt;span class=&quot;token comment&quot;&gt;# 볼륨까지 삭제 (데이터 초기화)&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose down &lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 서비스 로그 확인&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose logs &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; web
+
+&lt;span class=&quot;token comment&quot;&gt;# 특정 서비스만 재시작&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose restart web
+
+&lt;span class=&quot;token comment&quot;&gt;# 실행 중인 서비스 목록&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose &lt;span class=&quot;token function&quot;&gt;ps&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 특정 서비스 컨테이너에서 명령 실행&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; compose &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; web &lt;span class=&quot;token function&quot;&gt;bash&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 실무 팁&lt;/h2&gt;
+&lt;h3&gt;멀티 스테이지 빌드 (Multi-stage Build)&lt;/h3&gt;
+&lt;p&gt;빌드 환경과 실행 환경을 분리해 최종 이미지 크기를 줄입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# Stage 1: 빌드&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; node:20 &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; builder&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; package*.json ./&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; npm ci&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; . .&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; npm run build          # dist/ 생성&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# Stage 2: 실행 (빌드 결과물만 복사)&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; node:20-alpine &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; runner&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;WORKDIR&lt;/span&gt; /app&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; &lt;span class=&quot;token options&quot;&gt;&lt;span class=&quot;token property&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;builder&lt;/span&gt;&lt;/span&gt; /app/dist ./dist&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;COPY&lt;/span&gt; &lt;span class=&quot;token options&quot;&gt;&lt;span class=&quot;token property&quot;&gt;--from&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;builder&lt;/span&gt;&lt;/span&gt; /app/node_modules ./node_modules&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPOSE&lt;/span&gt; 3000&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; [&lt;span class=&quot;token string&quot;&gt;&quot;node&quot;&lt;/span&gt;, &lt;span class=&quot;token string&quot;&gt;&quot;dist/server.js&quot;&lt;/span&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;빌드 도구, 테스트 코드, 소스맵 등이 최종 이미지에서 제외되어 이미지 크기가 크게 줄어듭니다.&lt;/p&gt;
+&lt;h3&gt;환경변수 관리 (.env 파일)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# .env 파일&lt;/span&gt;
+&lt;span class=&quot;token assign-left variable&quot;&gt;DATABASE_URL&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;postgresql://user:pass@localhost:5432/mydb
+&lt;span class=&quot;token assign-left variable&quot;&gt;SECRET_KEY&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;my-secret-key
+&lt;span class=&quot;token assign-left variable&quot;&gt;DEBUG&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;false&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# docker-compose.yml에서 .env 자동 로드&lt;/span&gt;
+&lt;span class=&quot;token key atrule&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;web&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;env_file&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; .env&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;헬스체크 (Healthcheck)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;HEALTHCHECK&lt;/span&gt; &lt;span class=&quot;token options&quot;&gt;&lt;span class=&quot;token property&quot;&gt;--interval&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;30s&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;--timeout&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;10s&lt;/span&gt; &lt;span class=&quot;token property&quot;&gt;--retries&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;3&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;CMD&lt;/span&gt; curl -f http://localhost:8000/health || exit 1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;9. 자주 하는 실수&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1. 컨테이너 내 데이터 저장&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 컨테이너 재시작 시 데이터 사라짐&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run my-app  &lt;span class=&quot;token comment&quot;&gt;# 컨테이너 내부에만 저장&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ Volume을 사용해 데이터 영속성 확보&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; run &lt;span class=&quot;token parameter variable&quot;&gt;-v&lt;/span&gt; my-data:/app/data my-app&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2. latest 태그에만 의존&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 버전 추적 불가&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; pull my-app:latest
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 명시적 버전 태그 사용&lt;/span&gt;
+&lt;span class=&quot;token function&quot;&gt;docker&lt;/span&gt; pull my-app:1.2.3&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;3. root 권한으로 실행&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 보안 위험&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.11&lt;/span&gt;
+...
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 전용 유저 생성&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; python:3.11&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;RUN&lt;/span&gt; useradd -m appuser&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;USER&lt;/span&gt; appuser&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;4. 민감 정보를 이미지에 포함&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;dockerfile&quot;&gt;&lt;pre class=&quot;language-dockerfile&quot;&gt;&lt;code class=&quot;language-dockerfile&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 이미지에 비밀번호가 기록됨&lt;/span&gt;
+&lt;span class=&quot;token instruction&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;ENV&lt;/span&gt; DB_PASSWORD=mysecret&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 실행 시 환경변수로 주입&lt;/span&gt;
+docker run -e DB_PASSWORD=$DB_PASSWORD my-app&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;참고 자료&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.docker.com/&quot;&gt;Docker 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://hub.docker.com/&quot;&gt;Docker Hub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://labs.play-with-docker.com/&quot;&gt;Play with Docker (브라우저에서 Docker 실습)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.docker.com/compose/&quot;&gt;Docker Compose 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Claude AI&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[CCW(Counter Clock Wise)]]></title><description><![CDATA[CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/CCW/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/CCW/</guid><pubDate>Sat, 26 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C가 있을 때, 세 점을 이은 방향이 &lt;strong&gt;시계 방향&lt;/strong&gt;인지 &lt;strong&gt;반시계 방향&lt;/strong&gt;인지, 혹은 &lt;strong&gt;일직선&lt;/strong&gt;인지를 판별하는 기하 알고리즘입니다.&lt;/p&gt;
 &lt;h2&gt;판별 결과&lt;/h2&gt;
 &lt;p&gt;외적의 결과값에 따라 세 가지로 나뉩니다.&lt;/p&gt;
 &lt;table&gt;

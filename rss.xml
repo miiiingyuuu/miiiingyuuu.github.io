@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 06 Apr 2026 08:38:34 GMT</lastBuildDate><item><title><![CDATA[스택으로 히스토그램 최대 직사각형 찾기]]></title><description><![CDATA[백준 3050 집들이 문제는 2D 격자에서 벽이 없는 가장 큰 직사각형 방을 찾는 문제입니다. 핵심은 이 문제를 "히스토그램에서 가장 큰 직사각형 찾기" 로 변환한 뒤, 스택을 이용해 O(N…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/histogram/Index/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/histogram/Index/</guid><pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;백준 3050 집들이&lt;/strong&gt; 문제는 2D 격자에서 벽이 없는 가장 큰 직사각형 방을 찾는 문제입니다. 핵심은 이 문제를 &lt;strong&gt;&quot;히스토그램에서 가장 큰 직사각형 찾기&quot;&lt;/strong&gt; 로 변환한 뒤, 스택을 이용해 O(N)에 풀어내는 것입니다. 처음 보면 접근 방법이 전혀 안 보이지만, 핵심 아이디어를 이해하면 같은 패턴의 문제를 반복적으로 적용할 수 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 09 Apr 2026 11:16:10 GMT</lastBuildDate><item><title><![CDATA[스택으로 히스토그램 최대 직사각형 찾기]]></title><description><![CDATA[백준 3050 집들이 문제는 2D 격자에서 벽이 없는 가장 큰 직사각형 방을 찾는 문제입니다. 핵심은 이 문제를 "히스토그램에서 가장 큰 직사각형 찾기" 로 변환한 뒤, 스택을 이용해 O(N…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/histogram/Index/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/histogram/Index/</guid><pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;백준 3050 집들이&lt;/strong&gt; 문제는 2D 격자에서 벽이 없는 가장 큰 직사각형 방을 찾는 문제입니다. 핵심은 이 문제를 &lt;strong&gt;&quot;히스토그램에서 가장 큰 직사각형 찾기&quot;&lt;/strong&gt; 로 변환한 뒤, 스택을 이용해 O(N)에 풀어내는 것입니다. 처음 보면 접근 방법이 전혀 안 보이지만, 핵심 아이디어를 이해하면 같은 패턴의 문제를 반복적으로 적용할 수 있습니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;1. 문제 구조 이해&lt;/h2&gt;
 &lt;h3&gt;히스토그램에서 최대 직사각형 (기본 문제)&lt;/h3&gt;
@@ -1611,6 +1611,113 @@ docker run -e DB_PASSWORD=$DB_PASSWORD my-app&lt;/code&gt;&lt;/pre&gt;&lt;/div&g
 &lt;li&gt;&lt;a href=&quot;https://hub.docker.com/&quot;&gt;Docker Hub&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://labs.play-with-docker.com/&quot;&gt;Play with Docker (브라우저에서 Docker 실습)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://docs.docker.com/compose/&quot;&gt;Docker Compose 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Claude AI&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[[스터디] 토스페이먼츠 SDK — 100년 가는 프론트엔드 코드 만들기]]></title><description><![CDATA[이 글은 토스 테크 블로그의 "100년 가는 프론트엔드 코드, SDK"를 읽고 개인 학습 목적으로 정리한 내용입니다. 왜 이 글을 읽었나 결제 SDK…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/SDK-study/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/SDK-study/</guid><pubDate>Sat, 13 Dec 2025 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;이 글은 토스 테크 블로그의 &lt;a href=&quot;https://toss.tech/article/payments-legacy-3&quot;&gt;&quot;100년 가는 프론트엔드 코드, SDK&quot;&lt;/a&gt;를 읽고 개인 학습 목적으로 정리한 내용입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2&gt;왜 이 글을 읽었나&lt;/h2&gt;
+&lt;p&gt;결제 SDK를 만드는 것이 일반적인 프론트엔드 개발과 얼마나 다른지 궁금했습니다. 평소에 결제 연동을 사용하는 입장에서만 생각했지, 그걸 만드는 입장의 고민을 생각해본 적이 없었는데, 이 글을 통해 SDK 개발만의 특수한 어려움과 그것을 해결하기 위한 설계 원칙을 배울 수 있었습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. SDK란 무엇이고, 일반 개발과 뭐가 다른가&lt;/h2&gt;
+&lt;p&gt;SDK는 단순히 API를 감싸는 래퍼가 아닙니다. 토스페이먼츠 결제 SDK의 경우 가맹점이 자신들의 서비스에 직접 설치하는 라이브러리입니다.&lt;/p&gt;
+&lt;h3&gt;일반 프론트엔드 개발과의 차이&lt;/h3&gt;
+&lt;p&gt;일반적인 웹 애플리케이션 개발은 내가 만든 코드가 내 서버에서 내 환경으로 실행됩니다. 하지만 SDK는 다릅니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;일반 개발:
+내 코드 → 내 서버 → 내 환경에서 실행
+
+SDK 개발:
+내 코드 → 가맹점 코드 안에 삽입 → 가맹점의 환경에서 실행&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 차이가 아주 큰 어려움을 만들어냅니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;실행 환경을 통제할 수 없다&lt;/strong&gt;: React, Vue, jQuery, Vanilla JS 등 가맹점마다 다른 프레임워크와 라이브러리가 충돌할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;수명이 가맹점 코드와 같다&lt;/strong&gt;: 한 번 연동되면 가맹점이 업데이트하기 전까지 몇 년이고 같은 버전이 사용됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;버그가 발생해도 즉시 파악이 어렵다&lt;/strong&gt;: 어떤 가맹점의 어떤 환경에서 문제가 생겼는지 파악하기 위한 별도의 시스템이 없으면 알 방법이 없습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API 제공자 역할도 한다&lt;/strong&gt;: SDK를 쓰는 가맹점 개발자에게 결제라는 서비스를 제공하는 인터페이스이기 때문에 DX(Developer Experience)까지 책임져야 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. V1 SDK의 한계&lt;/h2&gt;
+&lt;p&gt;기존 SDK(V1)는 &quot;가맹점 연동을 쉽게 한다&quot;는 목표로 만들어졌지만, 운영을 거치면서 여러 문제가 드러났습니다.&lt;/p&gt;
+&lt;h3&gt;문제점 목록&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;환경 인식 부재&lt;/strong&gt;
+가맹점의 환경에서 호출된다는 사실을 충분히 고려하지 않고 개발했습니다. 특정 가맹점에서만 결제가 안 된다거나, PC에서는 되는데 모바일에서 안 된다거나, 웹뷰에서만 오류가 나는 등 예측하기 어려운 환경 의존적 버그가 많이 발생했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;추적 시스템 부재&lt;/strong&gt;
+문제가 발생해도 어디서, 어떤 이유로 발생했는지 빠르게 파악할 수 있는 모니터링이 없었습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;확장성 부족&lt;/strong&gt;
+가맹점마다 요구사항이 다양한데, 그걸 수용하다 보니 코드에 여러 맥락이 뒤섞이고 복잡도가 높아졌습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;문서와 코드의 불일치&lt;/strong&gt;
+개발자가 문서를 보고 연동했더니 실제 동작이 다른 경우가 생겼습니다. 문서를 수동으로 관리하다 보니 코드 변경이 문서에 반영되지 않는 상황이 발생한 것입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. V2 SDK — 세 가지 핵심 가치&lt;/h2&gt;
+&lt;p&gt;이런 문제들을 해결하기 위해 V2 SDK를 만들면서 세 가지 핵심 가치를 정의했습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;안정성 (Stability)
+  → SDK는 언제 어디서 호출되어도 안정적으로 동작해야 한다
+
+확장성 (Extensibility)
+  → 가맹점의 새로운 요구사항을 부담 없이 수용할 수 있어야 한다
+
+명확성 (Clarity)
+  → 가맹점 개발자가 무엇이 잘못됐는지 스스로 파악할 수 있어야 한다&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. 안정성 — 어떻게 확보했는가&lt;/h2&gt;
+&lt;h3&gt;테스트 코드로 기반 확보&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;비즈니스 로직을 검증하는 &lt;strong&gt;단위 테스트 300개 이상&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;다양한 연동 유즈케이스를 커버하는 &lt;strong&gt;E2E 통합 테스트 500개 이상&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;단순히 수량이 많은 게 아니라, 가맹점이 실제로 겪을 수 있는 다양한 런타임 환경과 연동 케이스를 시뮬레이션한 테스트라는 점이 핵심입니다.&lt;/p&gt;
+&lt;h3&gt;전용 모니터링 시스템 구축&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Global Trace ID&lt;/strong&gt; 라는 개념을 도입했습니다. 결제 요청이 시작되는 순간부터 완료되는 순간까지 모든 로그에 동일한 trace ID가 붙습니다. 문제가 발생했을 때 이 ID 하나로 전체 흐름을 추적할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;여기에 ElasticSearch 기반의 대시보드와 얼럿 시스템을 구축해서 &lt;strong&gt;배포 후에도 이상 징후를 빠르게 감지&lt;/strong&gt;할 수 있게 했습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;문제 발생 감지 흐름:
+특정 가맹점 환경에서 오류 → SDK 내부 로깅 → ES 대시보드 → 얼럿 발송
+→ 어느 환경, 어느 가맹점, 어떤 상황인지 빠르게 파악 가능&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. 확장성 — 어떻게 설계했는가&lt;/h2&gt;
+&lt;p&gt;V1에서 확장성이 부족했던 이유는 각 요구사항이 들어올 때마다 기존 코드에 분기를 추가하는 방식으로 대응했기 때문입니다. 결국 코드가 여러 맥락을 한 번에 처리하게 되면서 복잡도가 폭발적으로 증가했습니다.&lt;/p&gt;
+&lt;p&gt;V2에서는 &lt;strong&gt;확장 가능한 소프트웨어 구조를 먼저 설계&lt;/strong&gt;하고, 새로운 요구사항이 들어오면 기존 코드를 건드리지 않고 확장할 수 있도록 만들었습니다.&lt;/p&gt;
+&lt;p&gt;또한 기존에는 결제위젯, 브랜드페이, 결제창 등 각 제품마다 별도의 SDK가 있었습니다. 이를 &lt;strong&gt;하나의 SDK로 통합&lt;/strong&gt;해서 일관된 파라미터 타입, 동작 방식, 에러 처리를 제공합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;javascript&quot;&gt;&lt;pre class=&quot;language-javascript&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// V2 SDK — 통합된 하나의 SDK&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; tossPayments &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;loadTossPayments&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;clientKey&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; payment &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; tossPayments&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;payment&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; customerKey &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;// 결제창, 빌링, 브랜드페이 모두 동일한 방식으로 접근&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;await&lt;/span&gt; payment&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;requestPayment&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;await&lt;/span&gt; payment&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token function&quot;&gt;requestBillingAuth&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 명확성 — 어떻게 달성했는가&lt;/h2&gt;
+&lt;h3&gt;계약(Contract) 기반 인터페이스 설계&lt;/h3&gt;
+&lt;p&gt;SDK의 모든 공개 API를 &lt;strong&gt;명확하게 정의된 계약&lt;/strong&gt;으로 관리합니다. 이 계약은 단순한 타입 정의를 넘어, 가맹점 개발자와 토스페이먼츠 사이의 약속입니다.&lt;/p&gt;
+&lt;p&gt;가장 중요한 점은 &lt;strong&gt;이 계약으로부터 문서가 자동 생성&lt;/strong&gt;된다는 것입니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;기존 방식:
+코드 변경 → 개발자가 문서도 수동 업데이트 → 불일치 발생 가능
+
+V2 방식:
+계약(Contract) 변경 → 코드 자동 반영 + 문서 자동 생성 → 항상 일치&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이를 통해 두 가지 문제를 동시에 해결했습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;문서와 코드의 불일치 해소&lt;/li&gt;
+&lt;li&gt;문서 관리 비용 감소&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;명확한 에러 메시지&lt;/h3&gt;
+&lt;p&gt;V1에서는 연동 개발자가 무언가 잘못됐을 때 무엇이 문제인지 파악하기 어려웠습니다. V2에서는 에러 코드와 메시지를 구체적으로 개선해서 &lt;strong&gt;가맹점 개발자가 스스로 문제를 파악하고 해결&lt;/strong&gt;할 수 있게 했습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 내가 배운 것&lt;/h2&gt;
+&lt;h3&gt;SDK는 &quot;오래 살아야 한다&quot;는 전제가 다르다&lt;/h3&gt;
+&lt;p&gt;일반 웹 개발은 코드를 언제든 배포하고 수정할 수 있습니다. 하지만 SDK는 한 번 가맹점에 연동되면 가맹점이 직접 업데이트하기 전까지 그 버전이 계속 사용됩니다. &quot;100년 가는 코드&quot;라는 제목이 과장이 아닌 이유입니다.&lt;/p&gt;
+&lt;p&gt;이런 전제 때문에 SDK 개발에서는 &lt;strong&gt;하위 호환성&lt;/strong&gt;이 특히 중요합니다. 새 기능을 추가하는 건 쉬워도, 기존 인터페이스를 바꾸는 건 모든 가맹점에 영향을 줍니다.&lt;/p&gt;
+&lt;h3&gt;안정성은 테스트 코드로 시작한다&lt;/h3&gt;
+&lt;p&gt;300개의 단위 테스트, 500개의 E2E 테스트. 단순한 숫자가 아니라 &quot;어떤 환경에서도 안정적으로 동작한다&quot;는 것을 증명하는 근거입니다. 예측하기 어려운 환경 의존적 문제를 사전에 잡아내려면 그만큼 촘촘한 테스트가 필요하다는 점을 배웠습니다.&lt;/p&gt;
+&lt;h3&gt;좋은 DX는 좋은 설계에서 나온다&lt;/h3&gt;
+&lt;p&gt;문서가 자동으로 생성된다는 것은 단순히 편의 기능이 아닙니다. 코드와 문서가 항상 일치한다는 것은 &lt;strong&gt;설계 자체가 명확하다&lt;/strong&gt;는 뜻입니다. 계약 기반 설계가 아니었다면 불가능한 일입니다.&lt;/p&gt;
+&lt;h3&gt;모니터링은 배포 후부터가 진짜다&lt;/h3&gt;
+&lt;p&gt;SDK는 QA 환경에서 재현이 어려운 문제가 실제 운영 환경에서 터질 수 있습니다. 그래서 배포 전 테스트만큼, 배포 후의 모니터링 체계가 중요합니다. Global Trace ID처럼 처음부터 추적 가능한 구조로 만드는 것이 핵심이라는 걸 배웠습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;참고&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://toss.tech/article/payments-legacy-3&quot;&gt;토스 테크 블로그 — 100년 가는 프론트엔드 코드, SDK&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://toss.tech/series/payments-legacy&quot;&gt;토스페이먼츠 레거시 개편 시리즈&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.tosspayments.com/sdk/v2/js&quot;&gt;토스페이먼츠 SDK V2 공식 문서&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Claude AI&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[CCW(Counter Clock Wise)]]></title><description><![CDATA[CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/CCW/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/CCW/</guid><pubDate>Sat, 26 Jul 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C가 있을 때, 세 점을 이은 방향이 &lt;strong&gt;시계 방향&lt;/strong&gt;인지 &lt;strong&gt;반시계 방향&lt;/strong&gt;인지, 혹은 &lt;strong&gt;일직선&lt;/strong&gt;인지를 판별하는 기하 알고리즘입니다.&lt;/p&gt;
 &lt;h2&gt;판별 결과&lt;/h2&gt;

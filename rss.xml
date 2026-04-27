@@ -1,4 +1,478 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Fri, 24 Apr 2026 08:20:13 GMT</lastBuildDate><item><title><![CDATA[희소 배열 (Sparse Table)]]></title><description><![CDATA[구간 최솟값을 Q번 물어보는 문제. 단순히 매번 구간을 스캔하면 O(Q×N)이라 Q=N=10^5이면 10^10번 연산이 필요합니다. 세그먼트 트리는 O(Q log N)으로 줄여주지만, 배열이 불변이고 연산이 멱등성을 만족한다면 희소 배열(Sparse…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/sparse-table/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/sparse-table/</guid><pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;구간 최솟값을 Q번 물어보는 문제. 단순히 매번 구간을 스캔하면 O(Q×N)이라 Q=N=10^5이면 10^10번 연산이 필요합니다. 세그먼트 트리는 O(Q log N)으로 줄여주지만, 배열이 불변이고 연산이 멱등성을 만족한다면 &lt;strong&gt;희소 배열(Sparse Table)&lt;/strong&gt; 로 쿼리를 &lt;strong&gt;O(1)&lt;/strong&gt; 에 처리할 수 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 27 Apr 2026 08:17:30 GMT</lastBuildDate><item><title><![CDATA[분할정복을 이용한 거듭제곱 (Fast Exponentiation)]]></title><description><![CDATA[을 구하려면 2를 10번 곱하면 됩니다. 하지만 은요? 단순하게 10^18번 곱하면 우주가 끝나도 계산이 끝나지 않습니다. 분할정복 거듭제곱은 이 문제를 O(log N) 으로 해결합니다. N=10^18이라도 단 60번의 곱셈으로 끝납니다.…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/fast-power/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/fast-power/</guid><pubDate>Mon, 27 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;2^10&lt;/code&gt;을 구하려면 2를 10번 곱하면 됩니다. 하지만 &lt;code class=&quot;language-text&quot;&gt;2^(10^18)&lt;/code&gt;은요? 단순하게 10^18번 곱하면 우주가 끝나도 계산이 끝나지 않습니다. &lt;strong&gt;분할정복 거듭제곱&lt;/strong&gt;은 이 문제를 &lt;strong&gt;O(log N)&lt;/strong&gt; 으로 해결합니다. N=10^18이라도 단 60번의 곱셈으로 끝납니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. 핵심 아이디어&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/27527b79a9c0f5b66675ef174f273983/6a068/complexity.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 48.10126582278481%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAECAwX/xAAWAQEBAQAAAAAAAAAAAAAAAAAAAQL/2gAMAwEAAhADEAAAAckrmIRc/wD/xAAaEAACAgMAAAAAAAAAAAAAAAAAARAREiEx/9oACAEBAAEFArMtXC4z/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8BZ//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABcQAAMBAAAAAAAAAAAAAAAAAABBkSD/2gAIAQEABj8CQoKY/8QAGxABAAICAwAAAAAAAAAAAAAAAQBBEJEhMXH/2gAIAQEAAT8h41oQVF6ItrRm7T//2gAMAwEAAgADAAAAEOsf/8QAFxEBAQEBAAAAAAAAAAAAAAAAAQAhMf/aAAgBAwEBPxDnYC//xAAVEQEBAAAAAAAAAAAAAAAAAAABEP/aAAgBAgEBPxAn/8QAHRAAAgEEAwAAAAAAAAAAAAAAAREAEDFhcUHB0f/aAAgBAQABPxB2Qsjyg6IZHOoca9A6htV//9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Complexity Comparison&quot;
+        title=&quot;&quot;
+        src=&quot;/static/27527b79a9c0f5b66675ef174f273983/828fb/complexity.jpg&quot;
+        srcset=&quot;/static/27527b79a9c0f5b66675ef174f273983/ff44c/complexity.jpg 158w,
+/static/27527b79a9c0f5b66675ef174f273983/a6688/complexity.jpg 315w,
+/static/27527b79a9c0f5b66675ef174f273983/828fb/complexity.jpg 630w,
+/static/27527b79a9c0f5b66675ef174f273983/0ede0/complexity.jpg 945w,
+/static/27527b79a9c0f5b66675ef174f273983/6a068/complexity.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h3&gt;왜 분할이 가능한가?&lt;/h3&gt;
+&lt;p&gt;거듭제곱에는 다음 성질이 있습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;a^n = a^(n/2) × a^(n/2)   (n이 짝수)
+a^n = a^(n-1) × a          (n이 홀수)
+    = a^(n/2) × a^(n/2) × a&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;a^n&lt;/code&gt;을 구하기 위해 &lt;code class=&quot;language-text&quot;&gt;a^n&lt;/code&gt;을 N번 곱하는 것이 아니라, &lt;strong&gt;절반 크기의 문제&lt;/strong&gt; &lt;code class=&quot;language-text&quot;&gt;a^(n/2)&lt;/code&gt; 를 먼저 구한 뒤 제곱하면 됩니다. 이 아이디어가 반복되면서 지수가 절반씩 줄어들어 O(log N) 단계만에 끝납니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;N번 곱셈  →  log₂(N)번 분할로 해결
+
+N=10^9   : 1,000,000,000번  →  30번
+N=10^18  : 10^18번          →  60번&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. 점화식&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/bb80bc591b453f695e2fe76d977f4947/ed9a5/recurrence.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 44.93670886075949%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAIBBf/EABQBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAeSjEtAf/8QAGBAAAwEBAAAAAAAAAAAAAAAAAAESAiD/2gAIAQEAAQUCoWmVx//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/ASf/xAAVEQEBAAAAAAAAAAAAAAAAAAABEP/aAAgBAgEBPwFn/8QAFxAAAwEAAAAAAAAAAAAAAAAAAEGRIP/aAAgBAQAGPwJQUFMf/8QAGhABAQACAwAAAAAAAAAAAAAAAQARQTFhkf/aAAgBAQABPyEQcQLPbYlOvK1E3//aAAwDAQACAAMAAAAQTx//xAAZEQABBQAAAAAAAAAAAAAAAAAAAREhMVH/2gAIAQMBAT8QtA66f//EABgRAAMBAQAAAAAAAAAAAAAAAAABESFR/9oACAECAQE/EHq0i4f/xAAbEAACAgMBAAAAAAAAAAAAAAAAAREhMXHRwf/aAAgBAQABPxCgbocFFGTZuR4NJi1yEMmZH//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Recurrence Relation&quot;
+        title=&quot;&quot;
+        src=&quot;/static/bb80bc591b453f695e2fe76d977f4947/828fb/recurrence.jpg&quot;
+        srcset=&quot;/static/bb80bc591b453f695e2fe76d977f4947/ff44c/recurrence.jpg 158w,
+/static/bb80bc591b453f695e2fe76d977f4947/a6688/recurrence.jpg 315w,
+/static/bb80bc591b453f695e2fe76d977f4947/828fb/recurrence.jpg 630w,
+/static/bb80bc591b453f695e2fe76d977f4947/ed9a5/recurrence.jpg 940w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;분할정복 거듭제곱의 점화식은 다음과 같습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;         ┌  1                              (n == 0, base case)
+pow(a,n) =├  pow(a, n/2)²                  (n이 짝수)
+         └  pow(a, n/2)² × a              (n이 홀수)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;짝수 케이스&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;a^8&lt;/code&gt;을 구하려면 &lt;code class=&quot;language-text&quot;&gt;a^4&lt;/code&gt; 하나만 계산하면 됩니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;a^8 = a^4 × a^4 = (a^4)²
+         ↓
+a^4 = a^2 × a^2 = (a^2)²
+         ↓
+a^2 = a^1 × a^1 = (a^1)²
+         ↓
+a^1 = a  (base case)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;4번의 계산으로 &lt;code class=&quot;language-text&quot;&gt;a^8&lt;/code&gt; 완성 (N=8일 때 단순 반복은 7번).&lt;/p&gt;
+&lt;h3&gt;홀수 케이스&lt;/h3&gt;
+&lt;p&gt;홀수 지수는 1을 빼서 짝수로 만든 뒤 나머지 &lt;code class=&quot;language-text&quot;&gt;a&lt;/code&gt;를 하나 더 곱합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;a^13 = a^12 × a = (a^6)² × a
+             ↓
+a^6  = (a^3)²
+             ↓
+a^3  = a^2 × a = (a^1)² × a
+             ↓
+a^1  = a  (base case)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. 재귀 구현 (Python)&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_recursive&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;분할정복 거듭제곱 — 재귀 버전 O(log N)&quot;&quot;&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# base case&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; base
+
+    &lt;span class=&quot;token comment&quot;&gt;# 절반 계산&lt;/span&gt;
+    half &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;        &lt;span class=&quot;token comment&quot;&gt;# 짝수: 절반의 제곱&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; half &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; half
+    &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;                   &lt;span class=&quot;token comment&quot;&gt;# 홀수: 절반의 제곱 × base&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; half &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; half &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; base
+
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;token comment&quot;&gt;# 1024&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 243&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;재귀 호출 트리&lt;/h3&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/82f032844424f6abfb97ca5a2353adf6/6a068/call_tree.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 51.89873417721519%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAAECBf/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHjKswo/8QAFhABAQEAAAAAAAAAAAAAAAAAESAh/9oACAEBAAEFAjGf/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPwE//8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAgEBPwE//8QAFxAAAwEAAAAAAAAAAAAAAAAAABEgIf/aAAgBAQAGPwJmz//EABsQAAEEAwAAAAAAAAAAAAAAAAABESFBEDFx/9oACAEBAAE/IUY4b2ggWuDJj//aAAwDAQACAAMAAAAQKz//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/ED//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAbEAEBAQACAwAAAAAAAAAAAAABEQAhMVFhkf/aAAgBAQABPxBCJjYFL7upFAIOMuEep0z4D5kL0b//2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Call Tree&quot;
+        title=&quot;&quot;
+        src=&quot;/static/82f032844424f6abfb97ca5a2353adf6/828fb/call_tree.jpg&quot;
+        srcset=&quot;/static/82f032844424f6abfb97ca5a2353adf6/ff44c/call_tree.jpg 158w,
+/static/82f032844424f6abfb97ca5a2353adf6/a6688/call_tree.jpg 315w,
+/static/82f032844424f6abfb97ca5a2353adf6/828fb/call_tree.jpg 630w,
+/static/82f032844424f6abfb97ca5a2353adf6/0ede0/call_tree.jpg 945w,
+/static/82f032844424f6abfb97ca5a2353adf6/6a068/call_tree.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;pow(2, 13)&lt;/code&gt; 을 계산하면 재귀 호출은 4번만 발생합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;pow(2, 13)        ← 홀수: half² × 2
+└── pow(2, 6)     ← 짝수: half²
+    └── pow(2, 3) ← 홀수: half² × 2
+        └── pow(2, 1) ← base case, return 2
+
+pow(2, 1) = 2
+pow(2, 3) = 2² × 2 = 8
+pow(2, 6) = 8² = 64
+pow(2,13) = 64² × 2 = 8192  ✅&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;half = pow(base, exp//2)&lt;/code&gt; 를 변수에 저장하고 재사용하는 것이 핵심입니다. 같은 값을 두 번 계산하지 않도록 반드시 변수에 담아야 합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 동일한 재귀 호출을 두 번 — O(N)으로 돌아감&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 한 번만 계산해서 재사용&lt;/span&gt;
+half &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; half &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; half&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. 반복문 구현 (Iterative)&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/5d035112217531cee20395e969cf6d0e/6a068/iterative.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 48.10126582278481%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAKABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAWAQEBAQAAAAAAAAAAAAAAAAAAAQL/2gAMAwEAAhADEAAAAcxam1JFD//EABgQAAMBAQAAAAAAAAAAAAAAAAABEhAR/9oACAEBAAEFAuotlaz/xAAVEQEBAAAAAAAAAAAAAAAAAAAAEf/aAAgBAwEBPwFH/8QAFREBAQAAAAAAAAAAAAAAAAAAEBH/2gAIAQIBAT8Bp//EABgQAAMBAQAAAAAAAAAAAAAAAABBkSDh/9oACAEBAAY/AuCgpj//xAAcEAADAAEFAAAAAAAAAAAAAAAAATGREBEhQaH/2gAIAQEAAT8h2ovBwTENn1g0UKP/2gAMAwEAAgADAAAAEHgP/8QAGBEAAgMAAAAAAAAAAAAAAAAAAAERITH/2gAIAQMBAT8Qd6QP/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQIBAT8QUz//xAAdEAEAAwABBQAAAAAAAAAAAAABABFBURAhgaHB/9oACAEBAAE/EFiVlPLeZACYa1+oxb4w+S3ljUd+h//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Iterative&quot;
+        title=&quot;&quot;
+        src=&quot;/static/5d035112217531cee20395e969cf6d0e/828fb/iterative.jpg&quot;
+        srcset=&quot;/static/5d035112217531cee20395e969cf6d0e/ff44c/iterative.jpg 158w,
+/static/5d035112217531cee20395e969cf6d0e/a6688/iterative.jpg 315w,
+/static/5d035112217531cee20395e969cf6d0e/828fb/iterative.jpg 630w,
+/static/5d035112217531cee20395e969cf6d0e/0ede0/iterative.jpg 945w,
+/static/5d035112217531cee20395e969cf6d0e/6a068/iterative.jpg 960w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;재귀 방식은 직관적이지만, Python에서 지수가 클 때 재귀 깊이 제한에 걸릴 수 있습니다. 반복문 방식은 스택 오버플로 걱정 없이 동일한 O(log N) 성능을 냅니다.&lt;/p&gt;
+&lt;h3&gt;비트를 활용한 반복문&lt;/h3&gt;
+&lt;p&gt;지수를 이진수로 표현하면 어떤 자릿수의 비트가 1인지에 따라 어떤 거듭제곱을 곱해야 하는지 결정됩니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;13 = 1101₂ = 2³ + 2² + 2⁰ = 8 + 4 + 1
+
+a^13 = a^8 × a^4 × a^1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_iterative&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;분할정복 거듭제곱 — 반복문 버전 O(log N)&quot;&quot;&quot;&lt;/span&gt;
+    result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;            &lt;span class=&quot;token comment&quot;&gt;# 현재 비트가 1이면&lt;/span&gt;
+            result &lt;span class=&quot;token operator&quot;&gt;*=&lt;/span&gt; base           &lt;span class=&quot;token comment&quot;&gt;# 현재 base를 결과에 곱함&lt;/span&gt;
+        base &lt;span class=&quot;token operator&quot;&gt;*=&lt;/span&gt; base                 &lt;span class=&quot;token comment&quot;&gt;# base를 제곱 (다음 비트로 이동)&lt;/span&gt;
+        exp &lt;span class=&quot;token operator&quot;&gt;//=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;                    &lt;span class=&quot;token comment&quot;&gt;# 지수를 오른쪽으로 1비트 이동&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; result
+
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_iterative&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;token comment&quot;&gt;# 8192&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_iterative&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_iterative&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 5&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;단계별 추적 (base=2, exp=13)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;초기: result=1, base=2, exp=13 (1101₂)
+
+Step 1: exp=13 (홀수) → result=1×2=2,   base=4,  exp=6
+Step 2: exp=6  (짝수) → result=2 (유지), base=16, exp=3
+Step 3: exp=3  (홀수) → result=2×16=32, base=256, exp=1
+Step 4: exp=1  (홀수) → result=32×256=8192, base=..., exp=0
+
+→ 결과: 8192 = 2^13  ✅&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;비트 연산으로 최적화&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_bit&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;            &lt;span class=&quot;token comment&quot;&gt;# exp % 2 == 1 과 동일 (더 빠름)&lt;/span&gt;
+            result &lt;span class=&quot;token operator&quot;&gt;*=&lt;/span&gt; base
+        base &lt;span class=&quot;token operator&quot;&gt;*=&lt;/span&gt; base
+        exp &lt;span class=&quot;token operator&quot;&gt;&gt;&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;              &lt;span class=&quot;token comment&quot;&gt;# exp //= 2 와 동일 (더 빠름)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; result&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. 모듈러 거듭제곱 (Modular Exponentiation)&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/47ae1908faf5dd4cf890efd152856bc3/ed9a5/modular.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 46.835443037974684%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAB5NY0jEJ//8QAGBAAAgMAAAAAAAAAAAAAAAAAAREAEiD/2gAIAQEAAQUCZlimcf/EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAUEAEAAAAAAAAAAAAAAAAAAAAg/9oACAEBAAY/Al//xAAbEAACAgMBAAAAAAAAAAAAAAAAARGRECExUf/aAAgBAQABPyGJLlIXipDm3FLC4M//2gAMAwEAAgADAAAAEJgv/8QAGREAAQUAAAAAAAAAAAAAAAAAAAERITFR/9oACAEDAQE/EFPZGH//xAAVEQEBAAAAAAAAAAAAAAAAAAABEP/aAAgBAgEBPxBCf//EAB0QAAICAQUAAAAAAAAAAAAAAAARATEhUWHB0fD/2gAIAQEAAT8QwRHHrAjTPXmgqj7dRBQWP//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Modular&quot;
+        title=&quot;&quot;
+        src=&quot;/static/47ae1908faf5dd4cf890efd152856bc3/828fb/modular.jpg&quot;
+        srcset=&quot;/static/47ae1908faf5dd4cf890efd152856bc3/ff44c/modular.jpg 158w,
+/static/47ae1908faf5dd4cf890efd152856bc3/a6688/modular.jpg 315w,
+/static/47ae1908faf5dd4cf890efd152856bc3/828fb/modular.jpg 630w,
+/static/47ae1908faf5dd4cf890efd152856bc3/ed9a5/modular.jpg 940w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;코딩테스트에서 거듭제곱 문제는 거의 항상 &lt;strong&gt;&quot;결과를 MOD로 나눈 나머지를 출력하라&quot;&lt;/strong&gt; 는 조건이 붙습니다.&lt;/p&gt;
+&lt;h3&gt;왜 MOD가 필요한가?&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;2^100 = 1267650600228229401496703205376
+
+→ 31자리 숫자 → 메모리, 연산 속도 문제
+→ Python은 자동으로 큰 정수 처리하지만 매우 느려짐
+→ 다른 언어(C++, Java)는 오버플로 발생&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;대부분의 문제에서 &lt;code class=&quot;language-text&quot;&gt;MOD = 10^9 + 7 (= 1,000,000,007)&lt;/code&gt; 을 사용합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;10^9 + 7을 사용하는 이유:
+1. 소수(Prime) → 나눗셈의 역원(modular inverse) 계산 가능
+2. 32비트 정수 범위 이내
+3. (10^9+7)² &amp;lt; 2^63 → 64비트 내에서 곱셈 오버플로 없음&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;모듈러 연산의 핵심 성질&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;(a × b) mod m = ((a mod m) × (b mod m)) mod m&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 성질 덕분에 &lt;strong&gt;매 곱셈마다 mod를 적용&lt;/strong&gt;해도 최종 결과가 동일합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_mod&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;모듈러 거듭제곱 O(log N)&quot;&quot;&quot;&lt;/span&gt;
+    result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    base &lt;span class=&quot;token operator&quot;&gt;%=&lt;/span&gt; mod   &lt;span class=&quot;token comment&quot;&gt;# 초기 base도 mod 적용&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; result &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod   &lt;span class=&quot;token comment&quot;&gt;# 매 곱셈마다 mod&lt;/span&gt;
+        base &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod           &lt;span class=&quot;token comment&quot;&gt;# base 제곱 시에도 mod&lt;/span&gt;
+        exp &lt;span class=&quot;token operator&quot;&gt;&gt;&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; result
+
+
+MOD &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_mod&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; MOD&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;      &lt;span class=&quot;token comment&quot;&gt;# 1024&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_mod&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; MOD&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;     &lt;span class=&quot;token comment&quot;&gt;# 976371285  (2^100 mod 10^9+7)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;pow_mod&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; MOD&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 순식간에 계산!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Python에는 &lt;code class=&quot;language-text&quot;&gt;pow(base, exp, mod)&lt;/code&gt; 내장 함수가 있습니다. 세 번째 인자로 mod를 전달하면 내부적으로 분할정복 모듈러 거듭제곱을 수행합니다. 직접 구현한 것보다 훨씬 빠릅니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;pow&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 파이썬 내장 함수 활용 (권장)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 응용 — 행렬 거듭제곱&lt;/h2&gt;
+&lt;p&gt;분할정복 거듭제곱은 정수뿐 아니라 &lt;strong&gt;행렬&lt;/strong&gt;에도 적용할 수 있습니다. 이를 이용하면 피보나치 수열의 N번째 항을 O(log N)에 구할 수 있습니다.&lt;/p&gt;
+&lt;h3&gt;피보나치와 행렬&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[F(n+1)]   [1 1]^n   [1]
+[F(n)  ] = [1 0]   × [0]
+
+→ 행렬을 N번 곱하는 대신 분할정복으로 O(log N)에 계산&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;mat_mul&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;A&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; B&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;2×2 행렬 곱셈&quot;&quot;&quot;&lt;/span&gt;
+    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;A&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    C &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;n &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; i &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; k &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                C&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; A&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;k&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; B&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;k&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; C
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;mat_pow&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;M&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; exp&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;행렬 거듭제곱 — 분할정복 O(log N)&quot;&quot;&quot;&lt;/span&gt;
+    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;M&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;# 단위행렬 (Identity matrix)&lt;/span&gt;
+    result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; i&lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt;j &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; i &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;while&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; mat_mul&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;result&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; M&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        M &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; mat_mul&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;M&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; M&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        exp &lt;span class=&quot;token operator&quot;&gt;&gt;&gt;&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; result
+
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;fibonacci&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;피보나치 N번째 항을 O(log N)에 계산&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; n &lt;span class=&quot;token operator&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; n
+    M &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; mat_pow&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;M&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; mod&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; result&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fibonacci&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 55&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fibonacci&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;token comment&quot;&gt;# 12586269025&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;fibonacci&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token comment&quot;&gt;# 매우 빠르게 계산!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 자주 하는 실수&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1. half를 두 번 재계산&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 동일한 재귀가 두 번 → O(N)으로 되돌아감&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 한 번만 계산&lt;/span&gt;
+half &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; pow_recursive&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; half &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; half&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2. 모듈러 연산 위치 실수&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 마지막에 한 번만 mod → 중간에 오버플로 발생 가능 (C++/Java)&lt;/span&gt;
+result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;**&lt;/span&gt; exp &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 매 곱셈마다 mod 적용&lt;/span&gt;
+result &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; result &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod
+base   &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; base &lt;span class=&quot;token operator&quot;&gt;%&lt;/span&gt; mod&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;3. exp=0 base case 누락&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ base case 없으면 무한 재귀&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_rec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    half &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; pow_rec&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 반드시 base case 처리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;pow_rec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; n &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    half &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; pow_rec&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n&lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;4. 음수 지수 처리 누락&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 음수 지수가 들어올 수 있는 문제라면&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# a^(-n) = 1 / a^n  →  모듈러에서는 모듈러 역원 사용&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 페르마 소정리: a^(p-1) ≡ 1 (mod p)  →  a^(-1) ≡ a^(p-2) (mod p)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;mod_inverse&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; pow_mod&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;a&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; p&lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 시간복잡도 정리&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방식&lt;/th&gt;
+&lt;th&gt;시간복잡도&lt;/th&gt;
+&lt;th&gt;공간복잡도&lt;/th&gt;
+&lt;th&gt;특징&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;단순 반복&lt;/td&gt;
+&lt;td&gt;O(N)&lt;/td&gt;
+&lt;td&gt;O(1)&lt;/td&gt;
+&lt;td&gt;N이 크면 사용 불가&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;분할정복 재귀&lt;/td&gt;
+&lt;td&gt;O(log N)&lt;/td&gt;
+&lt;td&gt;O(log N)&lt;/td&gt;
+&lt;td&gt;직관적, 재귀 스택&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;분할정복 반복&lt;/td&gt;
+&lt;td&gt;O(log N)&lt;/td&gt;
+&lt;td&gt;O(1)&lt;/td&gt;
+&lt;td&gt;실전 권장&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;행렬 거듭제곱&lt;/td&gt;
+&lt;td&gt;O(k³ log N)&lt;/td&gt;
+&lt;td&gt;O(k²)&lt;/td&gt;
+&lt;td&gt;k×k 행렬&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;9. 관련 백준 문제&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;문제&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;핵심&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1629&quot;&gt;1629 곱셈&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Silver I&lt;/td&gt;
+&lt;td&gt;모듈러 거듭제곱 기본&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/10830&quot;&gt;10830 행렬 제곱&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold IV&lt;/td&gt;
+&lt;td&gt;행렬 거듭제곱&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/11444&quot;&gt;11444 피보나치 수 6&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold II&lt;/td&gt;
+&lt;td&gt;행렬 거듭제곱 + 피보나치&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/13171&quot;&gt;13171 A&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold V&lt;/td&gt;
+&lt;td&gt;분할정복 거듭제곱 응용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/15718&quot;&gt;15718 돌아온 떡파이&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold II&lt;/td&gt;
+&lt;td&gt;모듈러 역원 + 거듭제곱&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</content:encoded></item><item><title><![CDATA[희소 배열 (Sparse Table)]]></title><description><![CDATA[구간 최솟값을 Q번 물어보는 문제. 단순히 매번 구간을 스캔하면 O(Q×N)이라 Q=N=10^5이면 10^10번 연산이 필요합니다. 세그먼트 트리는 O(Q log N)으로 줄여주지만, 배열이 불변이고 연산이 멱등성을 만족한다면 희소 배열(Sparse…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/sparse-table/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/sparse-table/</guid><pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;구간 최솟값을 Q번 물어보는 문제. 단순히 매번 구간을 스캔하면 O(Q×N)이라 Q=N=10^5이면 10^10번 연산이 필요합니다. 세그먼트 트리는 O(Q log N)으로 줄여주지만, 배열이 불변이고 연산이 멱등성을 만족한다면 &lt;strong&gt;희소 배열(Sparse Table)&lt;/strong&gt; 로 쿼리를 &lt;strong&gt;O(1)&lt;/strong&gt; 에 처리할 수 있습니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;1. 핵심 아이디어&lt;/h2&gt;
 &lt;p&gt;&lt;span
@@ -3054,6 +3528,353 @@ right &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; arr&lt;span cl
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://killerwhale0917.tistory.com/5&quot;&gt;killerwhale0917 블로그 — Meet in the middle&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://blog.naver.com/kks227/221382873753&quot;&gt;kks227 블로그 — 밋 인 더 미들&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[외판원 순회 (TSP, Traveling Salesman Problem)]]></title><description><![CDATA[외판원 순회 문제(Traveling Salesman Problem, TSP…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/tsp/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/tsp/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;외판원 순회 문제(Traveling Salesman Problem, TSP)&lt;/strong&gt; 는 조합 최적화 분야에서 가장 유명한 문제 중 하나입니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;여러 도시를 방문하며 물건을 팔아야 하는 외판원이, 모든 도시를 정확히 한 번씩 방문하고 출발점으로 돌아올 때 &lt;strong&gt;이동 거리의 합이 최소인 경로&lt;/strong&gt; 를 구하라.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;단순해 보이지만 도시 수가 늘어날수록 경우의 수가 폭발적으로 증가하는 NP-Hard 문제입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. 브루트포스의 한계&lt;/h2&gt;
+&lt;p&gt;가장 직관적인 방법은 모든 방문 순서(순열)를 시도해보는 것입니다. 하지만 n개 도시의 순열 개수는 n!이므로, n이 조금만 커져도 현실적으로 계산이 불가능합니다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 44.30379746835443%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAABAP/aAAwDAQACEAMQAAABySqWYQT/xAAXEAEAAwAAAAAAAAAAAAAAAAARACAh/9oACAEBAAEFAmONP//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAABBECD/2gAIAQEABj8CIY//xAAdEAABBAIDAAAAAAAAAAAAAAABABARITGRQVFh/9oACAEBAAE/IaRA0QOVDPSPjRuG/9oADAMBAAIAAwAAABAgD//EABcRAQEBAQAAAAAAAAAAAAAAAAEAESH/2gAIAQMBAT8QSnbL/8QAGBEAAgMAAAAAAAAAAAAAAAAAAAERITH/2gAIAQIBAT8QVYSz/8QAGhAAAwADAQAAAAAAAAAAAAAAAAERMUFxUf/aAAgBAQABPxC10fmlpWtarHN4uKh64LLoz//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Brute Force vs DP&quot;
+        title=&quot;&quot;
+        src=&quot;/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg&quot;
+        srcset=&quot;/static/be2377feb207e326959433562cd6c12f/ff44c/complexity_compare.jpg 158w,
+/static/be2377feb207e326959433562cd6c12f/a6688/complexity_compare.jpg 315w,
+/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg 630w,
+/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg 900w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;n&lt;/th&gt;
+&lt;th&gt;브루트포스 (n!)&lt;/th&gt;
+&lt;th&gt;DP + 비트마스킹 (n²·2ⁿ)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;120&lt;/td&gt;
+&lt;td&gt;800&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;3,628,800&lt;/td&gt;
+&lt;td&gt;102,400&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1조 3천억&lt;/td&gt;
+&lt;td&gt;7,372,800&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;243경&lt;/td&gt;
+&lt;td&gt;20,971,520&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;브루트포스는 n ≤ 11 수준에서만 현실적입니다. 반면 비트마스킹 DP는 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 정도까지 충분히 풀 수 있습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. 핵심 아이디어 — 비트마스킹 DP&lt;/h2&gt;
+&lt;h3&gt;상태 정의&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited]&lt;/code&gt;를 다음과 같이 정의합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;현재 위치가 도시 &lt;code class=&quot;language-text&quot;&gt;i&lt;/code&gt;이고, 지금까지 방문한 도시 집합이 &lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;일 때,
+&lt;strong&gt;남은 도시를 모두 방문하고 출발점으로 돌아오는 최소 거리&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;visited를 비트마스크로 표현&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;는 정수(integer)로 표현하며, 각 비트가 해당 도시의 방문 여부를 나타냅니다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 45.56962025316456%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/9oADAMBAAIQAxAAAAHJQc0hP//EABYQAQEBAAAAAAAAAAAAAAAAAAEQIP/aAAgBAQABBQIjj//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABYQAQEBAAAAAAAAAAAAAAAAAEEAIP/aAAgBAQAGPwIjP//EABsQAAEFAQEAAAAAAAAAAAAAAAEAEBEhgTHB/9oACAEBAAE/IR4Z0hc3pDfBjD1v/9oADAMBAAIAAwAAABAUP//EABURAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDAQE/EEf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAcEAACAgIDAAAAAAAAAAAAAAABEQAxIWFBUXH/2gAIAQEAAT8QGkJdNmtQWI4zRFcaqBVUiuJ14JcQbn//2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Bitmask State&quot;
+        title=&quot;&quot;
+        src=&quot;/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg&quot;
+        srcset=&quot;/static/8f042906b25036f594777656230ff735/ff44c/bitmask_state.jpg 158w,
+/static/8f042906b25036f594777656230ff735/a6688/bitmask_state.jpg 315w,
+/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg 630w,
+/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg 920w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;도시 4개: A(0번), B(1번), C(2번), D(3번)
+
+visited = 0001 (2진수) = 1  → A만 방문
+visited = 0011 (2진수) = 3  → A, B 방문
+visited = 0111 (2진수) = 7  → A, B, C 방문
+visited = 1111 (2진수) = 15 → 모두 방문 = (1&amp;lt;&amp;lt;n) - 1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;특정 도시 j를 방문했다고 표시하려면 &lt;code class=&quot;language-text&quot;&gt;visited | (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 해당 비트를 1로 설정합니다. 도시 j를 이미 방문했는지 확인하려면 &lt;code class=&quot;language-text&quot;&gt;visited &amp;amp; (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 확인합니다.&lt;/p&gt;
+&lt;h3&gt;점화식&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited] = min(
+    dp[j][visited | (1 &amp;lt;&amp;lt; j)] + dist(i, j)
+)
+단, j는 아직 방문하지 않은 도시&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&quot;현재 i에서 미방문 도시 j로 이동한다고 가정했을 때, j에서 나머지를 최적으로 돌아오는 거리 + i~j 사이의 거리&quot; 중 최솟값을 선택합니다.&lt;/p&gt;
+&lt;h3&gt;종료 조건&lt;/h3&gt;
+&lt;p&gt;모든 도시를 방문한 상태(&lt;code class=&quot;language-text&quot;&gt;visited == (1 &amp;lt;&amp;lt; n) - 1&lt;/code&gt;)에서는 출발점(0번)으로 돌아가는 거리를 반환합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dist&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 복귀&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. 단계별 동작 시각화 (4도시 예제)&lt;/h2&gt;
+&lt;p&gt;4개 도시 A, B, C, D가 있고 거리가 다음과 같을 때 A를 출발점으로 TSP를 풉니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;A ↔ B : 10    A ↔ C : 15    A ↔ D : 20
+B ↔ C : 35    B ↔ D : 25    C ↔ D : 30&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 42.405063291139236%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAIABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAccJIr//xAAWEAADAAAAAAAAAAAAAAAAAAAAEBH/2gAIAQEAAQUCVP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABgQAAIDAAAAAAAAAAAAAAAAAABRARFB/9oACAEBAAE/IUZJRH//2gAMAwEAAgADAAAAEHvf/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8QZ//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/EFn/xAAZEAEAAgMAAAAAAAAAAAAAAAABABEhUfH/2gAIAQEAAT8QDSVkS49M/9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;DP Steps&quot;
+        title=&quot;&quot;
+        src=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg&quot;
+        srcset=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/ff44c/dp_steps.jpg 158w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/a6688/dp_steps.jpg 315w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg 630w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/0ede0/dp_steps.jpg 945w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/3ac88/dp_steps.jpg 1260w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg 2070w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;각 단계를 재귀 트리로 정리하면 다음과 같습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dfs(A, 0001)
+├── A→B : dfs(B, 0011)
+│   ├── B→C : dfs(C, 0111) → C→D→A = 30+20 = 50 → 35+50 = 85
+│   └── B→D : dfs(D, 1011) → D→C→A = 30+15 = 45 → 25+45 = 70  ← 최솟값
+├── A→C : dfs(C, 0101)
+│   ├── C→B : dfs(B, 0111) → B→D→A = 25+20 = 45 → 35+45 = 80
+│   └── C→D : dfs(D, 1101) → D→B→A = 25+10 = 35 → 30+35 = 65  ← 최솟값
+└── A→D : dfs(D, 1001)
+    ├── D→B : dfs(B, 1011) → B→C→A = 35+15 = 50 → 25+50 = 75
+    └── D→C : dfs(C, 1101) → C→B→A = 35+10 = 45 → 30+45 = 75
+
+최적: A→B→D→C→A = 10+25+30+15 = 80&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. Python 구현&lt;/h2&gt;
+&lt;h3&gt;전체 코드 (최솟값)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; math
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; functools &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; lru_cache
+
+&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;solve&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    graph &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    INF &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    dp &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;INF&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# 모든 도시 방문 완료 → 출발점(0)으로 귀환&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; INF
+
+        &lt;span class=&quot;token comment&quot;&gt;# 이미 계산된 상태면 재사용 (메모이제이션)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; INF&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; next_city &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token comment&quot;&gt;# 이미 방문했거나 경로가 없으면 skip&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+            cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+            dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; cost&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 0번 도시에서 출발 (visited = 0001)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+solve&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;핵심 로직 흐름&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. dfs(현재 도시, 방문 상태) 호출
+2. 종료 조건: visited == (1&amp;lt;&amp;lt;n)-1 이면 출발점까지 거리 반환
+3. 이미 계산된 dp[현재][visited] 가 있으면 바로 반환
+4. 미방문 도시 j마다:
+   - dfs(j, visited | (1&amp;lt;&amp;lt;j)) 재귀 호출
+   - 반환값 + dist(현재→j) 를 dp에 업데이트
+5. dp[현재][visited] 반환&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. 경로 복원&lt;/h2&gt;
+&lt;p&gt;최솟값뿐 아니라 &lt;strong&gt;어떤 순서로 방문해야 하는지&lt;/strong&gt; 경로도 출력하려면 dp 테이블을 역추적합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;print_path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 모두 방문했으면 종료&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 귀환&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+
+    next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+        &lt;span class=&quot;token comment&quot;&gt;# dp[j][next_visited] + dist(current→j) 가 최소인 도시를 다음 목적지로 선택&lt;/span&gt;
+        next_visited &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; cost &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; min_cost&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cost
+            next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; j
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; next_city &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용 예&lt;/span&gt;
+path &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot; → &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;join&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; p &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 출력 예: 0 → 1 → 3 → 2 → 0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 시간 복잡도 분석&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;내용&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;부분 문제 수&lt;/td&gt;
+&lt;td&gt;현재 위치 n가지 × visited 상태 2ⁿ가지 = &lt;strong&gt;n·2ⁿ&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;각 부분 문제 해결 비용&lt;/td&gt;
+&lt;td&gt;미방문 도시 탐색 &lt;strong&gt;O(n)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;총 시간복잡도&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(n²·2ⁿ)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;공간복잡도&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(n·2ⁿ)&lt;/strong&gt; — dp 테이블 크기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;브루트포스 O(n!)에 비해 압도적으로 빠르지만, 여전히 지수 시간이므로 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 이 실용적인 한계입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 자주 하는 실수&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1. 방문 체크 방향 혼동&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — 이미 방문한 도시를 skip하는 게 아니라 반대로 처리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름 — 이미 방문한 도시면 skip&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2. 점화식에서 인덱스 혼동&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — dp[i]에서 갱신해야 하는데 dp[j]로 작성&lt;/span&gt;
+dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름&lt;/span&gt;
+dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;3. 출발점 복귀 조건에서 0 거리 처리&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 도시 간 경로가 없을 때 0으로 표현하는 문제의 경우&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 돌아오는 길이 없으면&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; INF
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 관련 백준 문제&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;문제&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/2098&quot;&gt;2098 외판원 순회&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;TSP 기본 문제 — 비트마스킹 DP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1102&quot;&gt;1102 발전소&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;비트마스킹 DP 응용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1562&quot;&gt;1562 계단 수&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;비트마스킹 + DP 조합 연습&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;참고 자료&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://velog.io/@dltmdrl1244/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%99%B8%ED%8C%90%EC%9B%90-%EC%88%9C%ED%9A%8CTSP-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98&quot;&gt;[알고리즘] 외판원 순회(TSP) 알고리즘&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[트라이 (Trie)]]></title><description><![CDATA[검색창에 'ap'를 입력하는 순간 'apple', 'application', 'apply' 같은 단어가 뜨는 자동완성 기능. 이 기능의 핵심에 트라이(Trie…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/trie/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/trie/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;검색창에 &apos;ap&apos;를 입력하는 순간 &apos;apple&apos;, &apos;application&apos;, &apos;apply&apos; 같은 단어가 뜨는 자동완성 기능. 이 기능의 핵심에 &lt;strong&gt;트라이(Trie)&lt;/strong&gt; 가 있습니다. 트라이는 문자열을 저장하고 빠르게 탐색하기 위해 설계된 트리 형태의 자료구조입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;1. 트라이(Trie)란?&lt;/h2&gt;
@@ -3612,353 +4433,6 @@ sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;setrecursionlim
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://velog.io/@kimdukbae/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%8A%B8%EB%9D%BC%EC%9D%B4-Trie&quot;&gt;[자료구조] 트라이 (Trie)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Claude AI&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[외판원 순회 (TSP, Traveling Salesman Problem)]]></title><description><![CDATA[외판원 순회 문제(Traveling Salesman Problem, TSP…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/tsp/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/tsp/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;외판원 순회 문제(Traveling Salesman Problem, TSP)&lt;/strong&gt; 는 조합 최적화 분야에서 가장 유명한 문제 중 하나입니다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;여러 도시를 방문하며 물건을 팔아야 하는 외판원이, 모든 도시를 정확히 한 번씩 방문하고 출발점으로 돌아올 때 &lt;strong&gt;이동 거리의 합이 최소인 경로&lt;/strong&gt; 를 구하라.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;단순해 보이지만 도시 수가 늘어날수록 경우의 수가 폭발적으로 증가하는 NP-Hard 문제입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;1. 브루트포스의 한계&lt;/h2&gt;
-&lt;p&gt;가장 직관적인 방법은 모든 방문 순서(순열)를 시도해보는 것입니다. 하지만 n개 도시의 순열 개수는 n!이므로, n이 조금만 커져도 현실적으로 계산이 불가능합니다.&lt;/p&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 44.30379746835443%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAABAP/aAAwDAQACEAMQAAABySqWYQT/xAAXEAEAAwAAAAAAAAAAAAAAAAARACAh/9oACAEBAAEFAmONP//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAABBECD/2gAIAQEABj8CIY//xAAdEAABBAIDAAAAAAAAAAAAAAABABARITGRQVFh/9oACAEBAAE/IaRA0QOVDPSPjRuG/9oADAMBAAIAAwAAABAgD//EABcRAQEBAQAAAAAAAAAAAAAAAAEAESH/2gAIAQMBAT8QSnbL/8QAGBEAAgMAAAAAAAAAAAAAAAAAAAERITH/2gAIAQIBAT8QVYSz/8QAGhAAAwADAQAAAAAAAAAAAAAAAAERMUFxUf/aAAgBAQABPxC10fmlpWtarHN4uKh64LLoz//Z&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;Brute Force vs DP&quot;
-        title=&quot;&quot;
-        src=&quot;/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg&quot;
-        srcset=&quot;/static/be2377feb207e326959433562cd6c12f/ff44c/complexity_compare.jpg 158w,
-/static/be2377feb207e326959433562cd6c12f/a6688/complexity_compare.jpg 315w,
-/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg 630w,
-/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg 900w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;n&lt;/th&gt;
-&lt;th&gt;브루트포스 (n!)&lt;/th&gt;
-&lt;th&gt;DP + 비트마스킹 (n²·2ⁿ)&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;5&lt;/td&gt;
-&lt;td&gt;120&lt;/td&gt;
-&lt;td&gt;800&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;10&lt;/td&gt;
-&lt;td&gt;3,628,800&lt;/td&gt;
-&lt;td&gt;102,400&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;15&lt;/td&gt;
-&lt;td&gt;1조 3천억&lt;/td&gt;
-&lt;td&gt;7,372,800&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;20&lt;/td&gt;
-&lt;td&gt;243경&lt;/td&gt;
-&lt;td&gt;20,971,520&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;브루트포스는 n ≤ 11 수준에서만 현실적입니다. 반면 비트마스킹 DP는 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 정도까지 충분히 풀 수 있습니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;2. 핵심 아이디어 — 비트마스킹 DP&lt;/h2&gt;
-&lt;h3&gt;상태 정의&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited]&lt;/code&gt;를 다음과 같이 정의합니다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;현재 위치가 도시 &lt;code class=&quot;language-text&quot;&gt;i&lt;/code&gt;이고, 지금까지 방문한 도시 집합이 &lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;일 때,
-&lt;strong&gt;남은 도시를 모두 방문하고 출발점으로 돌아오는 최소 거리&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;visited를 비트마스크로 표현&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;는 정수(integer)로 표현하며, 각 비트가 해당 도시의 방문 여부를 나타냅니다.&lt;/p&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 45.56962025316456%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/9oADAMBAAIQAxAAAAHJQc0hP//EABYQAQEBAAAAAAAAAAAAAAAAAAEQIP/aAAgBAQABBQIjj//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABYQAQEBAAAAAAAAAAAAAAAAAEEAIP/aAAgBAQAGPwIjP//EABsQAAEFAQEAAAAAAAAAAAAAAAEAEBEhgTHB/9oACAEBAAE/IR4Z0hc3pDfBjD1v/9oADAMBAAIAAwAAABAUP//EABURAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDAQE/EEf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAcEAACAgIDAAAAAAAAAAAAAAABEQAxIWFBUXH/2gAIAQEAAT8QGkJdNmtQWI4zRFcaqBVUiuJ14JcQbn//2Q==&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;Bitmask State&quot;
-        title=&quot;&quot;
-        src=&quot;/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg&quot;
-        srcset=&quot;/static/8f042906b25036f594777656230ff735/ff44c/bitmask_state.jpg 158w,
-/static/8f042906b25036f594777656230ff735/a6688/bitmask_state.jpg 315w,
-/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg 630w,
-/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg 920w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;도시 4개: A(0번), B(1번), C(2번), D(3번)
-
-visited = 0001 (2진수) = 1  → A만 방문
-visited = 0011 (2진수) = 3  → A, B 방문
-visited = 0111 (2진수) = 7  → A, B, C 방문
-visited = 1111 (2진수) = 15 → 모두 방문 = (1&amp;lt;&amp;lt;n) - 1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;특정 도시 j를 방문했다고 표시하려면 &lt;code class=&quot;language-text&quot;&gt;visited | (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 해당 비트를 1로 설정합니다. 도시 j를 이미 방문했는지 확인하려면 &lt;code class=&quot;language-text&quot;&gt;visited &amp;amp; (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 확인합니다.&lt;/p&gt;
-&lt;h3&gt;점화식&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited] = min(
-    dp[j][visited | (1 &amp;lt;&amp;lt; j)] + dist(i, j)
-)
-단, j는 아직 방문하지 않은 도시&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&quot;현재 i에서 미방문 도시 j로 이동한다고 가정했을 때, j에서 나머지를 최적으로 돌아오는 거리 + i~j 사이의 거리&quot; 중 최솟값을 선택합니다.&lt;/p&gt;
-&lt;h3&gt;종료 조건&lt;/h3&gt;
-&lt;p&gt;모든 도시를 방문한 상태(&lt;code class=&quot;language-text&quot;&gt;visited == (1 &amp;lt;&amp;lt; n) - 1&lt;/code&gt;)에서는 출발점(0번)으로 돌아가는 거리를 반환합니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dist&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 복귀&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;3. 단계별 동작 시각화 (4도시 예제)&lt;/h2&gt;
-&lt;p&gt;4개 도시 A, B, C, D가 있고 거리가 다음과 같을 때 A를 출발점으로 TSP를 풉니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;A ↔ B : 10    A ↔ C : 15    A ↔ D : 20
-B ↔ C : 35    B ↔ D : 25    C ↔ D : 30&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 42.405063291139236%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAIABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAccJIr//xAAWEAADAAAAAAAAAAAAAAAAAAAAEBH/2gAIAQEAAQUCVP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABgQAAIDAAAAAAAAAAAAAAAAAABRARFB/9oACAEBAAE/IUZJRH//2gAMAwEAAgADAAAAEHvf/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8QZ//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/EFn/xAAZEAEAAgMAAAAAAAAAAAAAAAABABEhUfH/2gAIAQEAAT8QDSVkS49M/9k=&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;DP Steps&quot;
-        title=&quot;&quot;
-        src=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg&quot;
-        srcset=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/ff44c/dp_steps.jpg 158w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/a6688/dp_steps.jpg 315w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg 630w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/0ede0/dp_steps.jpg 945w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/3ac88/dp_steps.jpg 1260w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg 2070w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;각 단계를 재귀 트리로 정리하면 다음과 같습니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dfs(A, 0001)
-├── A→B : dfs(B, 0011)
-│   ├── B→C : dfs(C, 0111) → C→D→A = 30+20 = 50 → 35+50 = 85
-│   └── B→D : dfs(D, 1011) → D→C→A = 30+15 = 45 → 25+45 = 70  ← 최솟값
-├── A→C : dfs(C, 0101)
-│   ├── C→B : dfs(B, 0111) → B→D→A = 25+20 = 45 → 35+45 = 80
-│   └── C→D : dfs(D, 1101) → D→B→A = 25+10 = 35 → 30+35 = 65  ← 최솟값
-└── A→D : dfs(D, 1001)
-    ├── D→B : dfs(B, 1011) → B→C→A = 35+15 = 50 → 25+50 = 75
-    └── D→C : dfs(C, 1101) → C→B→A = 35+10 = 45 → 30+45 = 75
-
-최적: A→B→D→C→A = 10+25+30+15 = 80&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;4. Python 구현&lt;/h2&gt;
-&lt;h3&gt;전체 코드 (최솟값)&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
-&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; math
-&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; functools &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; lru_cache
-
-&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
-
-&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;solve&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-    graph &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    INF &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-    dp &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;INF&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;token comment&quot;&gt;# 모든 도시 방문 완료 → 출발점(0)으로 귀환&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; INF
-
-        &lt;span class=&quot;token comment&quot;&gt;# 이미 계산된 상태면 재사용 (메모이제이션)&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; INF&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; next_city &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token comment&quot;&gt;# 이미 방문했거나 경로가 없으면 skip&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-            cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-            dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; cost&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;token comment&quot;&gt;# 0번 도시에서 출발 (visited = 0001)&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-solve&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;핵심 로직 흐름&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. dfs(현재 도시, 방문 상태) 호출
-2. 종료 조건: visited == (1&amp;lt;&amp;lt;n)-1 이면 출발점까지 거리 반환
-3. 이미 계산된 dp[현재][visited] 가 있으면 바로 반환
-4. 미방문 도시 j마다:
-   - dfs(j, visited | (1&amp;lt;&amp;lt;j)) 재귀 호출
-   - 반환값 + dist(현재→j) 를 dp에 업데이트
-5. dp[현재][visited] 반환&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;5. 경로 복원&lt;/h2&gt;
-&lt;p&gt;최솟값뿐 아니라 &lt;strong&gt;어떤 순서로 방문해야 하는지&lt;/strong&gt; 경로도 출력하려면 dp 테이블을 역추적합니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;print_path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;token comment&quot;&gt;# 모두 방문했으면 종료&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 귀환&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
-
-    next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
-    min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-        &lt;span class=&quot;token comment&quot;&gt;# dp[j][next_visited] + dist(current→j) 가 최소인 도시를 다음 목적지로 선택&lt;/span&gt;
-        next_visited &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-        cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; cost &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; min_cost&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cost
-            next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; j
-
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; next_city &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# 사용 예&lt;/span&gt;
-path &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot; → &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;join&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; p &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token comment&quot;&gt;# 출력 예: 0 → 1 → 3 → 2 → 0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;6. 시간 복잡도 분석&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;항목&lt;/th&gt;
-&lt;th&gt;내용&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;부분 문제 수&lt;/td&gt;
-&lt;td&gt;현재 위치 n가지 × visited 상태 2ⁿ가지 = &lt;strong&gt;n·2ⁿ&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;각 부분 문제 해결 비용&lt;/td&gt;
-&lt;td&gt;미방문 도시 탐색 &lt;strong&gt;O(n)&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;총 시간복잡도&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;O(n²·2ⁿ)&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;공간복잡도&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;O(n·2ⁿ)&lt;/strong&gt; — dp 테이블 크기&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;브루트포스 O(n!)에 비해 압도적으로 빠르지만, 여전히 지수 시간이므로 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 이 실용적인 한계입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;7. 자주 하는 실수&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;1. 방문 체크 방향 혼동&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — 이미 방문한 도시를 skip하는 게 아니라 반대로 처리&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름 — 이미 방문한 도시면 skip&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;2. 점화식에서 인덱스 혼동&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — dp[i]에서 갱신해야 하는데 dp[j]로 작성&lt;/span&gt;
-dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름&lt;/span&gt;
-dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;3. 출발점 복귀 조건에서 0 거리 처리&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 도시 간 경로가 없을 때 0으로 표현하는 문제의 경우&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 돌아오는 길이 없으면&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; INF
-    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;8. 관련 백준 문제&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;문제&lt;/th&gt;
-&lt;th&gt;난이도&lt;/th&gt;
-&lt;th&gt;설명&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/2098&quot;&gt;2098 외판원 순회&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;TSP 기본 문제 — 비트마스킹 DP&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1102&quot;&gt;1102 발전소&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;비트마스킹 DP 응용&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1562&quot;&gt;1562 계단 수&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;비트마스킹 + DP 조합 연습&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;hr&gt;
-&lt;h2&gt;참고 자료&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://velog.io/@dltmdrl1244/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%99%B8%ED%8C%90%EC%9B%90-%EC%88%9C%ED%9A%8CTSP-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98&quot;&gt;[알고리즘] 외판원 순회(TSP) 알고리즘&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[프림 알고리즘 (Prim's Algorithm)]]></title><description><![CDATA[이전 포스트에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 프림 알고리즘(Prim's Algorithm) 을 정리합니다. 최소 신장 트리(MST…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</guid><pubDate>Thu, 10 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;/mst-kruskal&quot;&gt;이전 포스트&lt;/a&gt;에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 &lt;strong&gt;프림 알고리즘(Prim&apos;s Algorithm)&lt;/strong&gt; 을 정리합니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;최소 신장 트리(MST) 복습&lt;/h2&gt;

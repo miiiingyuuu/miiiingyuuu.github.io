@@ -2,7 +2,7 @@
 title: "[스터디] MAB 알고리즘으로 실시간 정렬 시스템 만들기 — 무신사 테크블로그 읽기"
 date: "2024-08-29"
 category: ["Backend", "Algorithm", "Data"]
-description: "무신사 테크블로그의 'MAB 알고리즘을 이용하여 효율적으로 정렬하기'를 읽고, Multi-Armed Bandit의 개념, Exploration vs Exploitation 트레이드오프, Thompson Sampling, Apache Druid를 활용한 실시간 시스템 구축 과정을 정리합니다."
+description: "무신사 테크블로그의 'MAB 알고리즘을 이용하여 효율적으로 정렬하기'를 읽고, Multi-Armed Bandit의 개념, Exploration vs Exploitation 트레이드오프, Thompson Sampling, Apache Druid를 활용한 실시간 시스템 구축 과정을 정리"
 ---
 
 > 이 글은 무신사 테크블로그의 ["MAB 알고리즘을 이용하여 효율적으로 정렬하기"](https://techblog.musinsa.com/mab-211d14d2090b)를 읽고 개인 학습 목적으로 정리한 내용입니다.

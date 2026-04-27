@@ -2,7 +2,7 @@
 title: "[스터디] 코드가 최신 스펙이다 — 포스타입의 사내 RAG 챗봇 구축기 읽기"
 date: "2026-03-15"
 category: ["Backend", "AI", "Architecture"]
-description: "포스타입 테크블로그의 '사내 AI 챗봇 도입기 1부'를 읽고 RAG 시스템의 개념, Chunking 전략, Metadata Filtering, Hybrid 검색, 자동 동기화 파이프라인까지 정리합니다."
+description: "포스타입 테크블로그의 '사내 AI 챗봇 도입기 1부'를 읽고 RAG 시스템의 개념, Chunking 전략, Metadata Filtering, Hybrid 검색, 자동 동기화 파이프라인까지 정리"
 ---
 
 > 이 글은 포스타입 팀블로그의 ["스펙 문서에 없는데요?" 최신 스펙 갱신을 위한 사내 AI 챗봇 도입기 1부](https://www.postype.com/@team/post/21465430)를 읽고 개인 학습 목적으로 정리한 내용입니다.

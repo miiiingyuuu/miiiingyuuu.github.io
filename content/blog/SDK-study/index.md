@@ -2,7 +2,7 @@
 title: "[스터디] 토스페이먼츠 SDK — 100년 가는 프론트엔드 코드 만들기"
 date: "2025-12-13"
 category: ["Frontend", "Architecture"]
-description: "토스 테크 블로그의 '100년 가는 프론트엔드 코드, SDK' 글을 읽고 SDK 개발의 특수성, V2 SDK 핵심 가치, 안정성·확장성·명확성을 확보하기 위한 설계 원칙을 정리합니다."
+description: "토스 테크 블로그의 '100년 가는 프론트엔드 코드, SDK' 글을 읽고 SDK 개발의 특수성, V2 SDK 핵심 가치, 안정성·확장성·명확성을 확보하기 위한 설계 원칙을 정리"
 ---
 
 > 이 글은 토스 테크 블로그의 ["100년 가는 프론트엔드 코드, SDK"](https://toss.tech/article/payments-legacy-3)를 읽고 개인 학습 목적으로 정리한 내용입니다.

@@ -2,7 +2,7 @@
 title: "프론트엔드 로그인 구현 (JWT, AccessToken, RefreshToken)"
 date: "2024-07-14"
 category: ["Frontend", "React", "Security"]
-description: "JWT 인증 방식의 개념부터 Access Token/Refresh Token 관리 전략, Axios 인터셉터를 활용한 자동 갱신, 보안 고려사항까지 프론트엔드 로그인 구현 전반을 정리합니다."
+description: "JWT 인증 방식의 개념부터 Access Token/Refresh Token 관리 전략, Axios 인터셉터를 활용한 자동 갱신, 보안 고려사항까지 프론트엔드 로그인 구현 전반을 정리"
 ---
 
 팀 프로젝트에서 자체 로그인 기능을 구현하면서 JWT 토큰 방식에 대해 깊이 공부하게 되었습니다. 개념은 알고 있었지만 막상 구현하면서 토큰 저장 위치, 자동 갱신 처리, 보안 이슈까지 생각보다 고려할 것이 많았습니다. 이 글에서 그 과정을 정리합니다.

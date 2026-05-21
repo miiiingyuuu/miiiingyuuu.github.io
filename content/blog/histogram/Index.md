@@ -1,7 +1,7 @@
 ---
 title: "스택으로 히스토그램 최대 직사각형 찾기"
 date: "2026-04-03"
-category: ["Algorithm", "Stack"]
+category: ["Algorithm", "DataStructure"]
 description: "히스토그램에서 최대 넓이의 직사각형을 스택으로 O(N)에 구하는 알고리즘과, 2D 격자 문제(백준 3050 집들이)에 적용하는 방법까지 단계별로 정리"
 ---
 

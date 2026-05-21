@@ -1,7 +1,7 @@
 ---
 title: "트리 순회 — 전위, 중위, 후위, 레벨 순회"
 date: "2025-02-15"
-category: ["Algorithm", "DataStructure", "Tree"]
+category: ["Algorithm", "DataStructure"]
 description: "이진 트리의 네 가지 순회 방법(전위, 중위, 후위, 레벨 순회)의 개념과 동작 원리, Python 구현까지 단계별로 정리"
 ---
 

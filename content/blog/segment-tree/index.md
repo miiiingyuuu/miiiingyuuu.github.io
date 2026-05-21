@@ -1,7 +1,7 @@
 ---
 title: "세그먼트 트리 (Segment Tree)"
 date: "2026-01-29"
-category: ["Algorithm", "Tree"]
+category: ["Algorithm", "DataStructure"]
 description: "구간 값을 효율적으로 저장하고 탐색하는 세그먼트 트리의 개념 정리"
 ---
 

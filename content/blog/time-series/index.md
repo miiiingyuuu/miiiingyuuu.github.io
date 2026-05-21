@@ -1,7 +1,7 @@
 ---
 title: "시계열 데이터 분석 — ARIMA, SARIMA, LSTM으로 환율 예측하기"
 date: "2024-08-01"
-category: ["ML", "Time Series", "DeepLearning"]
+category: ["AI", "Time Series"]
 description: "환율 예측 프로젝트에서 사용한 시계열 분석 모델 3가지(ARIMA, SARIMA, LSTM)를 개념부터 구현까지 정리"
 ---
 

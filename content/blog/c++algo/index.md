@@ -1,7 +1,7 @@
 ---
 title: "C++ 코딩테스트 대비 정리"
 date: "2025-07-20"
-category: ["Algorithm", "C++"]
+category: ["Algorithm", "C"]
 description: "Python으로 코딩테스트를 준비했다가 C++로 전환하는 분들을 위해, 문법 대응표부터 STL 컨테이너, 입출력 최적화, 오버플로 처리, 알고리즘 템플릿까지 코딩테스트에 필요한 핵심만 정리"
 ---
 

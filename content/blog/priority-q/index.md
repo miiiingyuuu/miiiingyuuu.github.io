@@ -1,7 +1,7 @@
 ---
 title: "우선순위 큐와 힙 (Priority Queue & heapq)"
 date: "2024-09-05"
-category: ["Algorithm", "DataStructure", "Tree"]
+category: ["Algorithm", "DataStructure"]
 description: "우선순위 큐의 개념, 힙 자료구조의 동작 원리, Python heapq 모듈 사용법(최소 힙/최대 힙/커스텀 정렬)까지 정리"
 ---
 

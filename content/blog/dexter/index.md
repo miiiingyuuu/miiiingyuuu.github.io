@@ -7,7 +7,7 @@ description: "GitHub Stars 17k+를 기록하며 주목받고 있는 오픈소스
 
 # Dexter: AI 기반 자율 금융 리서치 에이전트 분석
 
-> **GitHub**: [virattt/dexter](https://github.com/virattt/dexter) | ⭐ 17.4k Stars | 🍴 2.1k Forks
+> **GitHub**: [virattt/dexter](https://github.com/virattt/dexter)
 
 ---
 

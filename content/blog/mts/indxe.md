@@ -1,5 +1,5 @@
 ---
-title: "[스터디] MTS(Mobile Trading System)"
+title: "MTS(Mobile Trading System)"
 date: "2026-06-08"
 category: ["FinTech", "Architecture"]
 description: "금융권 취업 준비를 위한 MTS(Mobile Trading System) 개념 정리. HTS·WTS와의 차이부터 시작해 주문 처리 흐름, 실시간 시세 아키텍처, 보안 체계, 국내 증권사별 MTS 전략 비교, 그리고 프론트엔드 개발자 관점에서 바라본 MTS 기술 포인트까지 한 곳에 정리"

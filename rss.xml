@@ -1,4 +1,961 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 20 Jul 2026 13:47:08 GMT</lastBuildDate><item><title><![CDATA[데이터 분석을 위한 Python]]></title><description><![CDATA[데이터 분석을 위한 Python — Pydantic · asyncio · pandas · Polars · sklearn 핵심 정리 0. 전체 흐름 한눈에 보기 데이터 분석 파이프라인은 일반적으로 아래 순서로 흘러간다. 1. Pydantic…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/data-analysis/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/data-analysis/</guid><pubDate>Mon, 20 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;데이터 분석을 위한 Python — Pydantic · asyncio · pandas · Polars · sklearn 핵심 정리&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 25 Jul 2026 06:30:01 GMT</lastBuildDate><item><title><![CDATA[DB 개요 & 데이터 모델링]]></title><description><![CDATA[DB 개요 & 데이터 모델링 — 파서·옵티마이저부터 쿼리 리라이팅까지 1. 파서(Parser)와 옵티마이저(Optimizer) SQL 쿼리를 입력하면 DB…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/database/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/database/</guid><pubDate>Fri, 24 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;DB 개요 &amp;#x26; 데이터 모델링 — 파서·옵티마이저부터 쿼리 리라이팅까지&lt;/h1&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. 파서(Parser)와 옵티마이저(Optimizer)&lt;/h2&gt;
+&lt;p&gt;SQL 쿼리를 입력하면 DB 엔진 내부에서는 다음 단계를 거쳐 실행된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[SQL 문자열 입력]
+        │
+   ① Lexer (어휘 분석)
+        │  토큰 분리: SELECT, *, FROM, users, WHERE, age, &gt;, 18
+        ▼
+   ② Parser (구문 분석)
+        │  토큰 → Parse Tree (AST) 생성, 문법 오류 감지
+        ▼
+   ③ Semantic Analyzer (의미 분석)
+        │  테이블·컬럼 존재 여부, 권한 확인
+        ▼
+   ④ Query Rewriter
+        │  VIEW 전개, 서브쿼리 변환, 규칙 기반 변환
+        ▼
+   ⑤ Optimizer (최적화)
+        │  통계 정보 기반 실행 계획 생성 (비용 추정)
+        │  여러 후보 실행 계획 중 최저 비용 선택
+        ▼
+   ⑥ Executor (실행)
+        │  선택된 실행 계획대로 데이터 접근
+        ▼
+   [결과 반환]&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;옵티마이저의 비용 추정&lt;/h3&gt;
+&lt;p&gt;옵티마이저는 &lt;strong&gt;통계 정보(Statistics)&lt;/strong&gt; 를 바탕으로 각 실행 계획의 비용을 추정한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;통계 정보&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;pg_statistic&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컬럼별 값 분포, 카디널리티, 히스토그램&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;n_distinct&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;유니크 값의 수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;correlation&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;물리 저장 순서와 논리 순서의 상관관계&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 통계 정보 수동 갱신 (PostgreSQL)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;ANALYZE&lt;/span&gt; users&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 테이블별 통계 확인&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; tablename&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; attname&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; n_distinct&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; correlation
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; pg_stats
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; tablename &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;users&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;옵티마이저 힌트 (MySQL)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 특정 인덱스 강제 사용&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token comment&quot;&gt;/*+ INDEX(orders idx_created_at) */&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; orders
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-01&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 풀 테이블 스캔 강제&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token comment&quot;&gt;/*+ FULL(users) */&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; users &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; age &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;18&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. 데이터 모델링 &amp;#x26; ERD&lt;/h2&gt;
+&lt;h3&gt;2-1. 데이터 모델링 3단계&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;개념적 모델링 (Conceptual)
+  → 비즈니스 요구사항을 엔티티·관계로 추상화
+  → 결과물: 개념 ERD
+
+논리적 모델링 (Logical)
+  → 특정 DBMS에 독립적인 정규화된 스키마 설계
+  → 결과물: 테이블·컬럼·PK·FK 정의
+
+물리적 모델링 (Physical)
+  → 실제 DBMS에 맞는 DDL 작성, 인덱스·파티션 설계
+  → 결과물: CREATE TABLE 스크립트&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;2-2. ERD 핵심 표기법 (IE 표기법)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;엔티티 (Entity)      : 직사각형 □
+속성 (Attribute)     : 타원형 또는 컬럼 목록
+관계 (Relationship)  : 선 + 카디널리티 기호
+
+카디널리티 표기
+  ─────|─────    1 (정확히 1)
+  ─────&amp;lt;─────    N (다수)
+  ─────|○────    0 또는 1 (선택)
+  ─────&amp;lt;○────    0 또는 N (선택)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;2-3. ERD 예시: 금융 거래 시스템&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;┌──────────────┐          ┌──────────────┐
+│   customers  │          │   accounts   │
+├──────────────┤          ├──────────────┤
+│ PK customer_id│─────────│ PK account_id│
+│    name      │  1 : N   │ FK customer_id│
+│    email     │          │    balance   │
+│    created_at│          │    type      │
+└──────────────┘          └──────┬───────┘
+                                 │ 1
+                                 │
+                                 │ N
+                          ┌──────▼───────┐
+                          │ transactions │
+                          ├──────────────┤
+                          │ PK tx_id     │
+                          │ FK account_id │
+                          │    amount    │
+                          │    type      │
+                          │    created_at│
+                          └──────────────┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- DDL 예시&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; customers &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    customer_id BIGSERIAL &lt;span class=&quot;token keyword&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    name        &lt;span class=&quot;token keyword&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    email       &lt;span class=&quot;token keyword&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;UNIQUE&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    created_at  TIMESTAMPTZ &lt;span class=&quot;token keyword&quot;&gt;DEFAULT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;NOW&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; accounts &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    account_id  BIGSERIAL &lt;span class=&quot;token keyword&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    customer_id &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; customers&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    balance     &lt;span class=&quot;token keyword&quot;&gt;NUMERIC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;DEFAULT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;type&lt;/span&gt;        &lt;span class=&quot;token keyword&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;CHECK&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;IN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;CHECKING&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;SAVINGS&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    tx_id       BIGSERIAL &lt;span class=&quot;token keyword&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    account_id  &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    amount      &lt;span class=&quot;token keyword&quot;&gt;NUMERIC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;type&lt;/span&gt;        &lt;span class=&quot;token keyword&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;CHECK&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;IN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;DEBIT&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;CREDIT&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    created_at  TIMESTAMPTZ &lt;span class=&quot;token keyword&quot;&gt;DEFAULT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;NOW&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. 특수 관계: 자기참조와 배타적 관계&lt;/h2&gt;
+&lt;h3&gt;3-1. 자기참조 (Self-Referencing)&lt;/h3&gt;
+&lt;p&gt;같은 테이블의 행이 자기 자신의 다른 행을 참조하는 구조다. 계층적 데이터(조직도, 카테고리, 댓글 트리)에서 자주 사용된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 조직도: 직원이 자신의 상급자를 참조&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; employees &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    employee_id BIGSERIAL &lt;span class=&quot;token keyword&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    name        &lt;span class=&quot;token keyword&quot;&gt;VARCHAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    manager_id  &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; employees&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;employee_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- 자기참조&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 데이터 예시&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- employee_id | name    | manager_id&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--      1      | CEO     |  NULL      ← 최상위 (manager 없음)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--      2      | CTO     |  1&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--      3      | CFO     |  1&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--      4      | Dev Lead|  2&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 계층 조회 (재귀 CTE 활용)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WITH&lt;/span&gt; RECURSIVE org_tree &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token comment&quot;&gt;-- 앵커: 루트 노드 (CEO)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; employee_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; manager_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; depth
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees
+    &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; manager_id &lt;span class=&quot;token operator&quot;&gt;IS&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;UNION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ALL&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 재귀: 하위 직원 탐색&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;employee_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;manager_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; ot&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;depth &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees e
+    &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; org_tree ot &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;manager_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ot&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;employee_id
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; LPAD&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;  &apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; depth &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos; &apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; name &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; org_chart&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; depth
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; org_tree
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; depth&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; employee_id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;3-2. 배타적 관계 (Exclusive Arc / Exclusive Relationship)&lt;/h3&gt;
+&lt;p&gt;하나의 엔티티가 여러 엔티티 중 &lt;strong&gt;반드시 하나하고만&lt;/strong&gt; 관계를 가지는 구조다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;예: 결제 수단은 신용카드, 계좌이체, 포인트 중 하나여야 한다.
+
+payments
+├── card_id (NULL 가능)     → credit_cards 참조
+├── account_id (NULL 가능)  → bank_accounts 참조
+└── point_id (NULL 가능)    → point_wallets 참조
+
+제약: card_id, account_id, point_id 중 정확히 하나만 NOT NULL&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; payments &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    payment_id  BIGSERIAL &lt;span class=&quot;token keyword&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    amount      &lt;span class=&quot;token keyword&quot;&gt;NUMERIC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    card_id     &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; credit_cards&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;card_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    account_id  &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; bank_accounts&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    point_id    &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REFERENCES&lt;/span&gt; point_wallets&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;point_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 배타적 관계 강제: 정확히 하나만 NOT NULL&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;CONSTRAINT&lt;/span&gt; chk_exclusive_payment &lt;span class=&quot;token keyword&quot;&gt;CHECK&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;card_id &lt;span class=&quot;token operator&quot;&gt;IS&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;::&lt;span class=&quot;token keyword&quot;&gt;INT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id &lt;span class=&quot;token operator&quot;&gt;IS&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;::&lt;span class=&quot;token keyword&quot;&gt;INT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;point_id &lt;span class=&quot;token operator&quot;&gt;IS&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;::&lt;span class=&quot;token keyword&quot;&gt;INT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. 정규화 (Normalization)&lt;/h2&gt;
+&lt;p&gt;데이터 중복과 이상현상(삽입·수정·삭제 이상)을 제거하기 위해 테이블을 분해하는 과정이다.&lt;/p&gt;
+&lt;h3&gt;정규형 단계별 요약&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;정규형&lt;/th&gt;
+&lt;th&gt;조건&lt;/th&gt;
+&lt;th&gt;제거하는 문제&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;1NF&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;모든 속성이 원자값 (반복 그룹 제거)&lt;/td&gt;
+&lt;td&gt;배열·중첩 값&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;2NF&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;1NF + 부분 함수 종속 제거&lt;/td&gt;
+&lt;td&gt;복합 PK의 일부에만 종속된 속성&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;3NF&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;2NF + 이행 함수 종속 제거&lt;/td&gt;
+&lt;td&gt;PK → A → B 형태의 간접 종속&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;BCNF&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;3NF + 모든 결정자가 후보키&lt;/td&gt;
+&lt;td&gt;후보키가 아닌 결정자 제거&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;단계별 예시&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[비정규형]
+주문번호 | 고객명 | 상품코드들          | 담당자 | 담당자부서
+  1001   | 홍길동 | [P001, P002, P003] | 김철수 | 영업팀
+
+[1NF 적용: 반복 그룹 제거]
+주문번호 | 고객명 | 상품코드 | 담당자 | 담당자부서
+  1001   | 홍길동 |  P001   | 김철수 | 영업팀
+  1001   | 홍길동 |  P002   | 김철수 | 영업팀
+  1001   | 홍길동 |  P003   | 김철수 | 영업팀
+
+[2NF 적용: 부분 함수 종속 제거]
+→ PK = (주문번호, 상품코드)
+→ 고객명, 담당자, 담당자부서는 주문번호에만 종속 (부분 종속)
+→ 분리:
+  주문(주문번호, 고객명, 담당자, 담당자부서)
+  주문상품(주문번호, 상품코드)
+
+[3NF 적용: 이행 함수 종속 제거]
+→ 주문번호 → 담당자 → 담당자부서 (이행 종속)
+→ 분리:
+  주문(주문번호, 고객명, 담당자코드)
+  담당자(담당자코드, 담당자명, 담당자부서)
+  주문상품(주문번호, 상품코드)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. JOIN과 서브쿼리&lt;/h2&gt;
+&lt;h3&gt;5-1. JOIN 종류&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- INNER JOIN: 양쪽 모두 일치하는 행만&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+&lt;span class=&quot;token keyword&quot;&gt;INNER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; accounts a &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- LEFT JOIN: 왼쪽 전체 + 오른쪽 일치 (불일치는 NULL)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+&lt;span class=&quot;token keyword&quot;&gt;LEFT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; accounts a &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 계좌가 없는 고객도 조회됨 (balance = NULL)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- FULL OUTER JOIN: 양쪽 전체 (불일치는 NULL)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+&lt;span class=&quot;token keyword&quot;&gt;FULL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OUTER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; accounts a &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- CROSS JOIN: 카테시안 곱 (조건 없음)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; p&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;product_name
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+&lt;span class=&quot;token keyword&quot;&gt;CROSS&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; products p&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 고객 수 × 상품 수 행 생성&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- SELF JOIN: 같은 테이블끼리 조인 (자기참조 활용)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; employee&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; m&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; manager
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees e
+&lt;span class=&quot;token keyword&quot;&gt;LEFT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; employees m &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;manager_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; m&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;employee_id&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;5-2. 서브쿼리 종류&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- ① 스칼라 서브쿼리: SELECT 절에서 단일 값 반환&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt;
+    a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; avg_balance&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- 스칼라&lt;/span&gt;
+    a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; diff_from_avg
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts a&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ② 인라인 뷰: FROM 절의 서브쿼리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; dept&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; avg_sal
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; department &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; dept&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;salary&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; avg_sal
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees
+    &lt;span class=&quot;token keyword&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; department
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; dept_stats
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; avg_sal &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ③ 중첩 서브쿼리: WHERE 절&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 잔액이 평균 이상인 계좌 조회&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; balance &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ④ EXISTS vs IN 비교&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- EXISTS: 존재 여부만 확인, 조기 종료 → 대용량에 유리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;EXISTS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts a &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- IN: 전체 결과셋을 메모리에 올림 → 소규모에 적합&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; customer_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; name
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; customer_id &lt;span class=&quot;token operator&quot;&gt;IN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; customer_id &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. CTE (Common Table Expression)&lt;/h2&gt;
+&lt;p&gt;CTE는 쿼리 내에서 이름을 가진 임시 결과셋을 정의한다. 복잡한 쿼리를 단계적으로 분해해 가독성을 높인다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 기본 CTE: WITH 절&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WITH&lt;/span&gt;
+high_balance &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; customer_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; balance
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts
+    &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; balance &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+customer_info &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;email
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customers c
+    &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; high_balance hb &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; c&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; hb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; ci&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; ci&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;email&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; hb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; customer_info ci
+&lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; high_balance hb &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; ci&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; hb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;customer_id
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; hb&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;재귀 CTE&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 1부터 10까지 수열 생성&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WITH&lt;/span&gt; RECURSIVE numbers &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; n          &lt;span class=&quot;token comment&quot;&gt;-- 앵커 멤버&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;UNION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ALL&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; n &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;           &lt;span class=&quot;token comment&quot;&gt;-- 재귀 멤버&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; numbers
+    &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; n &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;           &lt;span class=&quot;token comment&quot;&gt;-- 종료 조건 (반드시 필요)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; n &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; numbers&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 계층 데이터 탐색 (조직도)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WITH&lt;/span&gt; RECURSIVE subordinates &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; employee_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; manager_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; depth
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees
+    &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; employee_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- CTO부터 시작&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;UNION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ALL&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;employee_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;name&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;manager_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; s&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;depth &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; employees e
+    &lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; subordinates s &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; e&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;manager_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; s&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;employee_id
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; LPAD&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;  &apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; depth &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos; &apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; name &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; hierarchy
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; subordinates&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 집계 함수와 윈도우 함수&lt;/h2&gt;
+&lt;h3&gt;7-1. 집계 함수&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt;
+    sector&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;                    &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; total_count&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;DISTINCT&lt;/span&gt; customer_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; unique_customers&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;SUM&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;                 &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; total_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;                 &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; avg_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;MIN&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;                 &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; min_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;MAX&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;                 &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; max_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    PERCENTILE_CONT&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;WITHIN&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; median_amount
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; sector
+&lt;span class=&quot;token keyword&quot;&gt;HAVING&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;SUM&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;   &lt;span class=&quot;token comment&quot;&gt;-- 집계 후 필터 (WHERE는 집계 전 필터)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; total_amount &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;7-2. 윈도우 함수&lt;/h3&gt;
+&lt;p&gt;집계와 달리 행을 그룹화하지 않고 &lt;strong&gt;각 행을 유지하면서&lt;/strong&gt; 집계 결과를 함께 보여준다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt;
+    account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    created_at&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 누적 합계&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;SUM&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id
+        &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at
+        &lt;span class=&quot;token keyword&quot;&gt;ROWS&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;BETWEEN&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;UNBOUNDED&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;PRECEDING&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;CURRENT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ROW&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; running_total&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 이동 평균 (최근 3건)&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id
+        &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at
+        &lt;span class=&quot;token keyword&quot;&gt;ROWS&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;BETWEEN&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;PRECEDING&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;CURRENT&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ROW&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; moving_avg_3&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 순위&lt;/span&gt;
+    RANK&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;       &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; amount &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; rnk&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    DENSE_RANK&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; amount &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; dense_rnk&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    ROW_NUMBER&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; row_num&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 이전/다음 행 값&lt;/span&gt;
+    LAG&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; prev_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    LEAD&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id &lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; next_amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;-- 전체 대비 비율&lt;/span&gt;
+    &lt;span class=&quot;token function&quot;&gt;ROUND&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+        amount &lt;span class=&quot;token operator&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;SUM&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OVER&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; account_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;AS&lt;/span&gt; pct_of_total
+
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;7-3. RANK vs DENSE_RANK vs ROW_NUMBER&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;함수&lt;/th&gt;
+&lt;th&gt;동점 처리&lt;/th&gt;
+&lt;th&gt;예시 (점수: 90, 90, 80)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ROW_NUMBER()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;동점도 다른 번호&lt;/td&gt;
+&lt;td&gt;1, 2, 3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;RANK()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;동점 같은 번호, 다음 번호 건너뜀&lt;/td&gt;
+&lt;td&gt;1, 1, 3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;DENSE_RANK()&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;동점 같은 번호, 다음 번호 연속&lt;/td&gt;
+&lt;td&gt;1, 1, 2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 트랜잭션&lt;/h2&gt;
+&lt;h3&gt;8-1. ACID&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;속성&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Atomicity&lt;/strong&gt; (원자성)&lt;/td&gt;
+&lt;td&gt;트랜잭션 내 모든 작업이 전부 성공하거나 전부 실패&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Consistency&lt;/strong&gt; (일관성)&lt;/td&gt;
+&lt;td&gt;트랜잭션 전후 DB 무결성 제약 조건 유지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Isolation&lt;/strong&gt; (격리성)&lt;/td&gt;
+&lt;td&gt;동시 트랜잭션이 서로 간섭하지 않음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Durability&lt;/strong&gt; (지속성)&lt;/td&gt;
+&lt;td&gt;커밋된 트랜잭션은 장애 후에도 유지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;8-2. 동시성 이상현상&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;이상현상&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;th&gt;예시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Dirty Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;커밋 안 된 데이터를 다른 트랜잭션이 읽음&lt;/td&gt;
+&lt;td&gt;T1이 잔액 수정 중(미커밋), T2가 수정된 잔액 읽음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Non-Repeatable Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;같은 쿼리를 두 번 실행했더니 결과가 다름&lt;/td&gt;
+&lt;td&gt;T1이 잔액 조회 → T2가 잔액 수정·커밋 → T1이 다시 조회하면 다른 값&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Phantom Read&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;같은 범위 쿼리를 두 번 실행했더니 행 수가 다름&lt;/td&gt;
+&lt;td&gt;T1이 잔액 &gt; 0 조회 → T2가 새 계좌 삽입·커밋 → T1이 다시 조회하면 행 추가됨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Lost Update&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;두 트랜잭션이 같은 행을 동시에 수정해 하나의 수정이 덮어씌워짐&lt;/td&gt;
+&lt;td&gt;T1, T2가 동시에 잔액 +1000 → 둘 중 하나의 수정이 유실&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;8-3. 격리 수준 4단계&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;격리 수준&lt;/th&gt;
+&lt;th&gt;Dirty Read&lt;/th&gt;
+&lt;th&gt;Non-Repeatable Read&lt;/th&gt;
+&lt;th&gt;Phantom Read&lt;/th&gt;
+&lt;th&gt;성능&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;READ UNCOMMITTED&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;발생&lt;/td&gt;
+&lt;td&gt;발생&lt;/td&gt;
+&lt;td&gt;발생&lt;/td&gt;
+&lt;td&gt;최고&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;READ COMMITTED&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;발생&lt;/td&gt;
+&lt;td&gt;발생&lt;/td&gt;
+&lt;td&gt;높음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;REPEATABLE READ&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;발생 (MySQL은 방지)&lt;/td&gt;
+&lt;td&gt;중간&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SERIALIZABLE&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;방지&lt;/td&gt;
+&lt;td&gt;최저&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 격리 수준 설정 (PostgreSQL)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;BEGIN&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SET&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TRANSACTION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ISOLATION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;LEVEL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;REPEATABLE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;READ&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- ... 쿼리 실행&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;COMMIT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 세션 기본값 변경&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SET&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;SESSION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TRANSACTION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ISOLATION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;LEVEL&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;READ&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;COMMITTED&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;8-4. MVCC (Multi-Version Concurrency Control)&lt;/h3&gt;
+&lt;p&gt;MVCC는 데이터의 &lt;strong&gt;여러 버전을 동시에 유지&lt;/strong&gt;해 읽기와 쓰기가 서로를 블로킹하지 않도록 하는 메커니즘이다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[MVCC 동작 원리 — PostgreSQL]
+
+각 행에 숨겨진 시스템 컬럼:
+  xmin: 이 버전을 생성한 트랜잭션 ID
+  xmax: 이 버전을 삭제(또는 수정)한 트랜잭션 ID
+
+UPDATE accounts SET balance = 2000 WHERE account_id = 1;
+  → 기존 행(balance=1000)의 xmax에 현재 txid 기록 (논리적 삭제)
+  → 새 행(balance=2000)을 xmin=현재 txid로 삽입
+
+동시 SELECT 트랜잭션은 스냅샷 기준으로 자신이 볼 수 있는 버전을 선택
+  → LOCK 없이 읽기 가능 (Read는 Write를 블로킹하지 않음)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;8-5. LOCK&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 행 단위 잠금&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;UPDATE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;               &lt;span class=&quot;token comment&quot;&gt;-- 쓰기 잠금 (다른 트랜잭션의 읽기/쓰기 모두 블로킹)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; accounts
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;SHARE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;                &lt;span class=&quot;token comment&quot;&gt;-- 읽기 잠금 (다른 트랜잭션의 쓰기만 블로킹)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- SKIP LOCKED: 잠긴 행 건너뜀 (큐 처리에 유용)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; job_queue
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;PENDING&apos;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;UPDATE&lt;/span&gt; SKIP LOCKED&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;8-6. 데드락 (Deadlock)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[데드락 발생 시나리오]
+
+T1: accounts(id=1) 잠금 → accounts(id=2) 잠금 시도 (대기)
+T2: accounts(id=2) 잠금 → accounts(id=1) 잠금 시도 (대기)
+
+T1은 T2를 기다리고, T2는 T1을 기다림 → 무한 대기
+
+[DB의 자동 감지 &amp;amp; 해결]
+DB가 대기 그래프에서 사이클을 감지하면
+비용이 적은 트랜잭션을 희생(ROLLBACK)해 데드락 해소
+
+[예방 전략]
+1. 항상 같은 순서로 리소스를 접근
+   (id=1 먼저, id=2 나중 — 모든 트랜잭션 동일하게)
+2. 트랜잭션을 짧게 유지
+3. SELECT FOR UPDATE 범위 최소화&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;8-7. 동시성 제어 전략&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;낙관적 락 (Optimistic Lock)
+  → 충돌이 드물다는 가정
+  → 버전 컬럼(version)으로 충돌 감지, 충돌 시 재시도
+
+비관적 락 (Pessimistic Lock)
+  → 충돌이 빈번하다는 가정
+  → SELECT FOR UPDATE로 선점, 다른 트랜잭션 블로킹
+
+금융 시스템 예시:
+  계좌 이체 → 비관적 락 (이중 출금 절대 불가)
+  게시글 좋아요 → 낙관적 락 (가끔 충돌해도 재시도 가능)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;9. 인덱스 &amp;#x26; B-Tree / B+Tree&lt;/h2&gt;
+&lt;h3&gt;9-1. B-Tree vs B+Tree&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;B-Tree&lt;/th&gt;
+&lt;th&gt;B+Tree&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;데이터 저장 위치&lt;/td&gt;
+&lt;td&gt;모든 노드 (내부 + 리프)&lt;/td&gt;
+&lt;td&gt;리프 노드에만&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;리프 노드 연결&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;연결 리스트로 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;범위 검색&lt;/td&gt;
+&lt;td&gt;트리 전체 탐색 필요&lt;/td&gt;
+&lt;td&gt;리프 리스트 순회로 효율적&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;포인터 수&lt;/td&gt;
+&lt;td&gt;적음&lt;/td&gt;
+&lt;td&gt;많음 (내부 노드에 데이터 없어서)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;실제 사용&lt;/td&gt;
+&lt;td&gt;일부 파일시스템&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;RDBMS 인덱스 (사실상 표준)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[B+Tree 구조]
+
+       [30 | 60]          ← 내부 노드 (키만 있음, 데이터 없음)
+      /     |     \
+  [10|20] [40|50] [70|80] ← 리프 노드 (실제 데이터 포인터)
+     ↔        ↔       ↔   ← 리프 노드들이 연결 리스트로 연결
+                              → 범위 검색 시 순차 탐색 가능&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;9-2. 클러스터형 인덱스 vs 비클러스터형 인덱스&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;클러스터형 (Clustered)&lt;/th&gt;
+&lt;th&gt;비클러스터형 (Non-Clustered)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;물리 저장 순서&lt;/td&gt;
+&lt;td&gt;인덱스 순서 = 데이터 저장 순서&lt;/td&gt;
+&lt;td&gt;별도 인덱스 구조&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;테이블당 개수&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;1개만 가능&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;여러 개 가능&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;범위 검색 속도&lt;/td&gt;
+&lt;td&gt;매우 빠름&lt;/td&gt;
+&lt;td&gt;상대적으로 느림&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;삽입/수정 비용&lt;/td&gt;
+&lt;td&gt;높음 (물리 재배치 발생)&lt;/td&gt;
+&lt;td&gt;낮음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PostgreSQL 구현&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;CLUSTER&lt;/code&gt; 명령 (재구성 후 고정)&lt;/td&gt;
+&lt;td&gt;일반 &lt;code class=&quot;language-text&quot;&gt;CREATE INDEX&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;MySQL InnoDB&lt;/td&gt;
+&lt;td&gt;PK가 클러스터형 인덱스&lt;/td&gt;
+&lt;td&gt;Secondary Index&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- PostgreSQL: 클러스터형 인덱스 설정&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_accounts_balance &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; accounts&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;balance&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+CLUSTER accounts &lt;span class=&quot;token keyword&quot;&gt;USING&lt;/span&gt; idx_accounts_balance&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 이후 INSERT는 물리 순서 보장 안 됨 → 주기적으로 CLUSTER 재실행 필요&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 비클러스터형 인덱스 생성&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_tx_created_at  &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_tx_account     &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 복합 인덱스 (선두 컬럼 원칙: account_id로만 검색해도 사용 가능)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_tx_account_date &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 커버링 인덱스: SELECT 컬럼까지 인덱스에 포함 → 테이블 접근 불필요&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INDEX&lt;/span&gt; idx_tx_covering &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_id&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    INCLUDE &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;amount&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;10. 실행계획 진단: EXPLAIN &amp;#x26; EXPLAIN ANALYZE&lt;/h2&gt;
+&lt;h3&gt;10-1. 기본 사용법&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 실행 계획만 확인 (쿼리 미실행)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;EXPLAIN&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 실제 실행 후 실측값 포함&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;EXPLAIN&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;ANALYZE&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 버퍼(캐시) 사용 현황 포함&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;EXPLAIN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;ANALYZE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; BUFFERS&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; FORMAT &lt;span class=&quot;token keyword&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; t&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;balance
+&lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; t
+&lt;span class=&quot;token keyword&quot;&gt;JOIN&lt;/span&gt; accounts a &lt;span class=&quot;token keyword&quot;&gt;ON&lt;/span&gt; t&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; a&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;account_id
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; t&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;created_at &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;NOW&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;INTERVAL&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;7 days&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;10-2. 실행 계획 트리 읽는 법&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;-- EXPLAIN 출력 예시
+Gather  (cost=1000.00..5000.00 rows=1000 width=64)
+                                 ↑           ↑
+                              예상 행 수   행당 바이트
+        (actual time=10.5..150.2 rows=980 loops=1)
+                                  ↑
+                               실제 행 수
+
+  → Hash Join  (cost=500.00..3000.00 rows=1000 width=64)
+              Hash Cond: (t.account_id = a.account_id)
+       → Seq Scan on transactions t
+           Filter: (created_at &gt; (now() - &apos;7 days&apos;::interval))
+           Rows Removed by Filter: 9020
+       → Hash
+           → Index Scan using accounts_pkey on accounts a&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;트리 읽는 순서: 가장 안쪽(들여쓰기 깊은 곳)부터 위로&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;10-3. 비용 모델 해석&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;cost=시작비용..총비용
+
+시작비용: 첫 번째 행을 반환하기까지의 비용
+총비용:   마지막 행을 반환하기까지의 총비용
+
+단위: 디스크 페이지 읽기 1회 = 1.0 (기준값)
+seq_page_cost    = 1.0  (순차 읽기)
+random_page_cost = 4.0  (랜덤 읽기, SSD면 1.1~1.5로 낮춤)
+cpu_tuple_cost   = 0.01 (행 처리)
+cpu_operator_cost= 0.0025 (연산자 처리)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- SSD 환경 최적화 설정&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SET&lt;/span&gt; random_page_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1.1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SET&lt;/span&gt; effective_cache_size &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;4GB&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- OS 파일 캐시 크기 힌트&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;10-4. 스캔 방식 비교&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;스캔 종류&lt;/th&gt;
+&lt;th&gt;동작&lt;/th&gt;
+&lt;th&gt;사용 시점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Seq Scan&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;테이블 전체 순차 읽기&lt;/td&gt;
+&lt;td&gt;선택률 높을 때 (전체의 20%+ 반환)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Index Scan&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;인덱스 → 힙(테이블) 랜덤 접근&lt;/td&gt;
+&lt;td&gt;선택률 낮을 때 (소수 행 반환)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Index-Only Scan&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;인덱스만 읽음 (테이블 접근 없음)&lt;/td&gt;
+&lt;td&gt;커버링 인덱스일 때&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Bitmap Index Scan&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;인덱스로 비트맵 생성 → 힙 접근&lt;/td&gt;
+&lt;td&gt;중간 선택률, OR 조건&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;10-5. BUFFERS 해석&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;EXPLAIN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token keyword&quot;&gt;ANALYZE&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; BUFFERS&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_id &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 출력 예시&lt;/span&gt;
+Buffers: shared hit&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;120&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--              ↑          ↑&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;--         캐시 히트    디스크에서 읽음&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- shared hit이 많을수록 좋음 (메모리에서 처리)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- read가 많으면 → 캐시 미스 → 성능 저하 신호&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;11. 쿼리 리라이팅&lt;/h2&gt;
+&lt;h3&gt;11-1. SARGable (Search ARGument ABLE)&lt;/h3&gt;
+&lt;p&gt;인덱스를 효과적으로 사용할 수 있는 형태의 조건식을 &lt;strong&gt;SARGable&lt;/strong&gt;이라고 한다.&lt;br&gt;
+컬럼에 함수나 연산을 적용하면 인덱스를 탈 수 없게 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- ❌ Non-SARGable: 컬럼에 함수 적용 → 인덱스 무효화 (Seq Scan 발생)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;YEAR&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2026&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; UPPER&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;email&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;USER@EXAMPLE.COM&apos;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; amount &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5000&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; SUBSTR&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;account_no&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;110&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ✅ SARGable: 컬럼을 그대로, 상수를 가공&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-01&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2027-01-01&apos;&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; email &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; LOWER&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;USER@EXAMPLE.COM&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; amount &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;4900&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; account_no &lt;span class=&quot;token operator&quot;&gt;LIKE&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;110%&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ❌ OR 조건도 인덱스 무효화 가능 → UNION으로 분리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;ACTIVE&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;OR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;PENDING&apos;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ✅ IN으로 대체 또는 UNION ALL&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;IN&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;ACTIVE&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;PENDING&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;11-2. N+1 문제&lt;/h3&gt;
+&lt;p&gt;ORM에서 연관 데이터를 조회할 때 발생하는 대표적인 성능 문제다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;[N+1 문제 발생 시나리오]
+1. 계좌 목록 조회: SELECT * FROM accounts  → 쿼리 1번
+2. 각 계좌의 고객 조회:
+   SELECT * FROM customers WHERE customer_id = 1  → 쿼리 N번
+   SELECT * FROM customers WHERE customer_id = 2
+   ...
+총 쿼리 수: 1 + N
+
+[해결 1: JOIN으로 한 번에 조회]
+SELECT a.*, c.name, c.email
+FROM accounts a
+JOIN customers c ON a.customer_id = c.customer_id;
+
+[해결 2: IN 절로 배치 조회]
+-- 1. 계좌 목록 조회
+SELECT * FROM accounts;
+-- 2. 고객 ID 목록으로 한 번에 조회
+SELECT * FROM customers
+WHERE customer_id IN (1, 2, 3, ...);&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;11-3. 페이지네이션: OFFSET vs 키셋(Keyset)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- ❌ OFFSET 방식: 페이지가 깊어질수록 느려짐&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 100만 번째 페이지: 100만 건을 읽고 버림&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OFFSET&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- 1,000,000건 스캔 후 20건 반환&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- ✅ 키셋(Cursor) 페이지네이션: 항상 O(log N)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 이전 페이지의 마지막 행 값을 커서로 사용&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-06-01 12:00:00&apos;&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;-- 마지막으로 본 값&lt;/span&gt;
+   &lt;span class=&quot;token operator&quot;&gt;OR&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;created_at &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-06-01 12:00:00&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; tx_id &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;99999&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; created_at &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; tx_id &lt;span class=&quot;token keyword&quot;&gt;DESC&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방식&lt;/th&gt;
+&lt;th&gt;장점&lt;/th&gt;
+&lt;th&gt;단점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;OFFSET&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;구현 간단, 임의 페이지 이동 가능&lt;/td&gt;
+&lt;td&gt;깊은 페이지에서 O(N) 성능 저하&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;키셋(Cursor)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;항상 O(log N), 데이터 삽입/삭제에 안정적&lt;/td&gt;
+&lt;td&gt;임의 페이지 이동 불가, 복합 키 처리 복잡&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;금융 거래 내역 조회처럼 &lt;strong&gt;대용량 + 무한 스크롤&lt;/strong&gt; 구조에는 키셋 페이지네이션이 필수다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;11-4. 파티셔닝&lt;/h3&gt;
+&lt;p&gt;대용량 테이블을 논리적으로 분할해 쿼리 성능과 관리 효율을 높이는 기법이다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;sql&quot;&gt;&lt;pre class=&quot;language-sql&quot;&gt;&lt;code class=&quot;language-sql&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;-- 범위 파티셔닝: 날짜 기준 월별 분할&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+    tx_id      BIGSERIAL&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    account_id &lt;span class=&quot;token keyword&quot;&gt;BIGINT&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    amount     &lt;span class=&quot;token keyword&quot;&gt;NUMERIC&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+    created_at TIMESTAMPTZ &lt;span class=&quot;token operator&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;token boolean&quot;&gt;NULL&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;BY&lt;/span&gt; RANGE &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;created_at&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 파티션 테이블 생성&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; transactions_2026_01
+    &lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OF&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;2026-01-01&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TO&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;2026-02-01&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TABLE&lt;/span&gt; transactions_2026_02
+    &lt;span class=&quot;token keyword&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;OF&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;FOR&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;VALUES&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;2026-02-01&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;TO&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;2026-03-01&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;-- 파티션 프루닝: WHERE 조건이 파티션 키와 일치하면&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- 해당 파티션만 스캔 (나머지 파티션은 읽지 않음)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;transactions&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;WHERE&lt;/span&gt; created_at &lt;span class=&quot;token operator&quot;&gt;BETWEEN&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-01&apos;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&apos;2026-01-31&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;-- → transactions_2026_01 파티션만 스캔&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;파티셔닝 전략 선택 기준
+
+범위 파티셔닝 (RANGE)  : 날짜·ID 범위 기반 검색이 많을 때
+해시 파티셔닝 (HASH)   : 균등 분산이 목적일 때 (특정 컬럼 쏠림 방지)
+목록 파티셔닝 (LIST)   : 지역·상태 등 카테고리 기반 분리할 때&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;12. 핵심 요약&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;주제&lt;/th&gt;
+&lt;th&gt;핵심 포인트&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;파서·옵티마이저&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SQL → 토큰 → AST → 실행계획 선택, 통계 정보가 핵심&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;정규화&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;1NF(원자값) → 2NF(부분 종속 제거) → 3NF(이행 종속 제거)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;트랜잭션 격리&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;READ COMMITTED가 실무 기본값, MVCC로 읽기-쓰기 블로킹 방지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;인덱스&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;B+Tree, 클러스터형은 테이블당 1개, 선두 컬럼 원칙&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;EXPLAIN&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;안쪽 노드부터 읽기, cost·actual time·Buffers 비교&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;쿼리 최적화&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;SARGable 조건 유지, N+1 JOIN으로 해결, 깊은 페이지는 키셋&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;📎 참고 자료&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.postgresql.org/docs/current/query-plan-statistics.html&quot;&gt;PostgreSQL 공식 문서 — Query Planning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.postgresql.org/docs/current/sql-explain.html&quot;&gt;PostgreSQL 공식 문서 — EXPLAIN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://use-the-index-luke.com/&quot;&gt;Use The Index Luke&lt;/a&gt; — 인덱스 완벽 가이드&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.postgresql.org/docs/current/mvcc.html&quot;&gt;PostgreSQL MVCC 공식 문서&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[데이터 분석을 위한 Python]]></title><description><![CDATA[데이터 분석을 위한 Python — Pydantic · asyncio · pandas · Polars · sklearn 핵심 정리 0. 전체 흐름 한눈에 보기 데이터 분석 파이프라인은 일반적으로 아래 순서로 흘러간다. 1. Pydantic…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/data-analysis/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/data-analysis/</guid><pubDate>Mon, 20 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;데이터 분석을 위한 Python — Pydantic · asyncio · pandas · Polars · sklearn 핵심 정리&lt;/h1&gt;
 &lt;hr&gt;
 &lt;h2&gt;0. 전체 흐름 한눈에 보기&lt;/h2&gt;
 &lt;p&gt;데이터 분석 파이프라인은 일반적으로 아래 순서로 흘러간다.&lt;/p&gt;

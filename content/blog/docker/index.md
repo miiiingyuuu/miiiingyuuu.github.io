@@ -1,7 +1,7 @@
 ---
 title: "Docker"
 date: "2026-01-11"
-category: ["DevOps", "Docker", "Backend"]
+category: ["DevOps", "Backend"]
 description: "Docker의 개념, VM과의 차이, 이미지/컨테이너/볼륨 등 핵심 구성요소, Dockerfile 작성법, 주요 명령어, Docker Compose까지 실무 중심으로 정리"
 ---
 
@@ -68,14 +68,14 @@ Infrastructure
         └── Container 3: Bins/Libs + App C  (수 MB)
 ```
 
-| 비교 항목 | VM | Container |
-|-----------|-----|-----------|
-| OS | Guest OS 포함 | Host OS 커널 공유 |
-| 이미지 크기 | GB 단위 | MB 단위 |
-| 시작 시간 | 수십 초 | 1초 이내 |
-| 리소스 사용 | 높음 | 낮음 |
-| 격리 수준 | 강함 (하드웨어 수준) | 보통 (프로세스 수준) |
-| 이식성 | 낮음 | 매우 높음 |
+| 비교 항목   | VM                   | Container            |
+| ----------- | -------------------- | -------------------- |
+| OS          | Guest OS 포함        | Host OS 커널 공유    |
+| 이미지 크기 | GB 단위              | MB 단위              |
+| 시작 시간   | 수십 초              | 1초 이내             |
+| 리소스 사용 | 높음                 | 낮음                 |
+| 격리 수준   | 강함 (하드웨어 수준) | 보통 (프로세스 수준) |
+| 이식성      | 낮음                 | 매우 높음            |
 
 ---
 
@@ -146,18 +146,18 @@ COPY . /app
 
 ### 주요 명령어
 
-| 명령어 | 설명 |
-|--------|------|
-| `FROM` | 베이스 이미지 지정 (첫 번째 명령어) |
-| `WORKDIR` | 작업 디렉토리 설정 |
-| `COPY` | 호스트 파일을 이미지로 복사 |
-| `ADD` | COPY + URL/압축파일 지원 |
-| `RUN` | 빌드 시 실행할 명령어 |
-| `ENV` | 환경 변수 설정 |
-| `EXPOSE` | 컨테이너가 사용할 포트 명시 |
-| `CMD` | 컨테이너 시작 시 기본 실행 명령어 |
+| 명령어       | 설명                                       |
+| ------------ | ------------------------------------------ |
+| `FROM`       | 베이스 이미지 지정 (첫 번째 명령어)        |
+| `WORKDIR`    | 작업 디렉토리 설정                         |
+| `COPY`       | 호스트 파일을 이미지로 복사                |
+| `ADD`        | COPY + URL/압축파일 지원                   |
+| `RUN`        | 빌드 시 실행할 명령어                      |
+| `ENV`        | 환경 변수 설정                             |
+| `EXPOSE`     | 컨테이너가 사용할 포트 명시                |
+| `CMD`        | 컨테이너 시작 시 기본 실행 명령어          |
 | `ENTRYPOINT` | 컨테이너 시작 시 실행될 명령어 (변경 불가) |
-| `ARG` | 빌드 시점 변수 |
+| `ARG`        | 빌드 시점 변수                             |
 
 ### Python 웹 앱 Dockerfile 예시
 
@@ -341,22 +341,22 @@ docker run --network my-net my-app:1.0
 ### docker-compose.yml 구조
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   # 웹 애플리케이션
   web:
-    build: .                      # 현재 디렉토리의 Dockerfile로 빌드
+    build: . # 현재 디렉토리의 Dockerfile로 빌드
     ports:
       - "8080:8000"
     environment:
       - DATABASE_URL=postgresql://user:pass@db:5432/mydb
       - REDIS_URL=redis://redis:6379
-    depends_on:                   # db, redis가 먼저 시작됨
+    depends_on: # db, redis가 먼저 시작됨
       - db
       - redis
     volumes:
-      - ./app:/app                # 개발 시 코드 실시간 반영
+      - ./app:/app # 개발 시 코드 실시간 반영
     restart: unless-stopped
 
   # PostgreSQL 데이터베이스
@@ -367,7 +367,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     volumes:
-      - db_data:/var/lib/postgresql/data   # 데이터 영속성
+      - db_data:/var/lib/postgresql/data # 데이터 영속성
     ports:
       - "5432:5432"
 

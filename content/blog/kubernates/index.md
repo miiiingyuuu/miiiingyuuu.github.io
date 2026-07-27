@@ -1,7 +1,7 @@
 ---
 title: "쿠버네티스(Kubernetes)"
 date: "2026-01-20"
-category: ["DevOps", "Kubernetes", "Backend"]
+category: ["DevOps", "Cloud", "Backend"]
 description: "쿠버네티스의 개념, 핵심 오브젝트(Pod/Deployment/Service/Ingress), 스케줄링, ConfigMap/Secret, 헬스체크, HPA까지 실무 중심으로 정리"
 ---
 
@@ -139,7 +139,7 @@ spec:
         - containerPort: 8080
       resources:
         requests:
-          cpu: "250m"      # 0.25 CPU core
+          cpu: "250m" # 0.25 CPU core
           memory: "256Mi"
         limits:
           cpu: "500m"
@@ -159,11 +159,11 @@ kind: Deployment
 metadata:
   name: my-app-deployment
 spec:
-  replicas: 3              # Pod 3개 유지
+  replicas: 3 # Pod 3개 유지
   selector:
     matchLabels:
-      app: my-app          # 이 레이블을 가진 Pod를 관리
-  template:                # 생성할 Pod의 템플릿
+      app: my-app # 이 레이블을 가진 Pod를 관리
+  template: # 생성할 Pod의 템플릿
     metadata:
       labels:
         app: my-app
@@ -176,8 +176,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1          # 동시에 최대 1개 추가 생성
-      maxUnavailable: 0    # 배포 중 사용 불가 Pod = 0 (무중단)
+      maxSurge: 1 # 동시에 최대 1개 추가 생성
+      maxUnavailable: 0 # 배포 중 사용 불가 Pod = 0 (무중단)
 ```
 
 ### ReplicaSet — Pod 복제본 관리
@@ -200,12 +200,12 @@ metadata:
   name: my-app-service
 spec:
   selector:
-    app: my-app           # app=my-app 레이블을 가진 Pod에 연결
+    app: my-app # app=my-app 레이블을 가진 Pod에 연결
   ports:
     - protocol: TCP
-      port: 80            # Service 포트
-      targetPort: 8080    # Pod 포트
-  type: ClusterIP         # 기본값: 클러스터 내부에서만 접근 가능
+      port: 80 # Service 포트
+      targetPort: 8080 # Pod 포트
+  type: ClusterIP # 기본값: 클러스터 내부에서만 접근 가능
 ```
 
 #### Service 타입
@@ -264,7 +264,7 @@ spec:
   tls:
     - hosts:
         - myapp.example.com
-      secretName: tls-secret   # TLS 인증서
+      secretName: tls-secret # TLS 인증서
 ```
 
 ```
@@ -379,9 +379,9 @@ livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
-  initialDelaySeconds: 30    # 시작 후 30초 대기 (앱 부팅 시간)
-  periodSeconds: 10          # 10초마다 체크
-  failureThreshold: 3        # 3번 연속 실패 시 재시작
+  initialDelaySeconds: 30 # 시작 후 30초 대기 (앱 부팅 시간)
+  periodSeconds: 10 # 10초마다 체크
+  failureThreshold: 3 # 3번 연속 실패 시 재시작
 ```
 
 ### Readiness Probe — 트래픽 받을 준비가 됐는가?
@@ -407,7 +407,7 @@ startupProbe:
   httpGet:
     path: /actuator/health
     port: 8080
-  failureThreshold: 30       # 최대 30 × 10초 = 5분 대기
+  failureThreshold: 30 # 최대 30 × 10초 = 5분 대기
   periodSeconds: 10
 ```
 
@@ -444,15 +444,15 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: my-app-deployment
-  minReplicas: 2             # 최소 2개
-  maxReplicas: 10            # 최대 10개
+  minReplicas: 2 # 최소 2개
+  maxReplicas: 10 # 최대 10개
   metrics:
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70   # CPU 70% 초과 시 스케일 아웃
+          averageUtilization: 70 # CPU 70% 초과 시 스케일 아웃
     - type: Resource
       resource:
         name: memory
@@ -484,11 +484,11 @@ metadata:
   name: mysql-pvc
 spec:
   accessModes:
-    - ReadWriteOnce          # 하나의 노드에서 읽기/쓰기
+    - ReadWriteOnce # 하나의 노드에서 읽기/쓰기
   resources:
     requests:
       storage: 10Gi
-  storageClassName: gp2      # AWS EBS gp2 타입
+  storageClassName: gp2 # AWS EBS gp2 타입
 ```
 
 ```yaml
@@ -759,7 +759,8 @@ image: my-app:1.2.3
 ```yaml
 # ❌ 절대 하면 안 됨 — Git에 비밀번호가 남음
 data:
-  DB_PASSWORD: mypassword  # 평문
+  DB_PASSWORD: mypassword # 평문
+
 
 # ✅ kubectl create secret 또는 외부 시크릿 관리 도구 사용
 # kubectl create secret generic app-secret \

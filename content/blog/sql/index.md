@@ -1,7 +1,7 @@
 ---
 title: "SQL 코딩테스트 대비"
 date: "2025-09-25"
-category: ["Data", "SQL"]
+category: ["Database"]
 description: "CASE WHEN, LEAST/GREATEST, IFNULL/COALESCE, DATE 함수, 윈도우 함수, 서브쿼리, 정규표현식 등 SQL 코딩테스트에서 자주 등장하지만 헷갈리는 특수 문법을 예제 중심으로 정리"
 ---
 

@@ -187,7 +187,7 @@ Container Runtime
         <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>
       <span class="token key atrule">resources</span><span class="token punctuation">:</span>
         <span class="token key atrule">requests</span><span class="token punctuation">:</span>
-          <span class="token key atrule">cpu</span><span class="token punctuation">:</span> <span class="token string">"250m"</span>      <span class="token comment"># 0.25 CPU core</span>
+          <span class="token key atrule">cpu</span><span class="token punctuation">:</span> <span class="token string">"250m"</span> <span class="token comment"># 0.25 CPU core</span>
           <span class="token key atrule">memory</span><span class="token punctuation">:</span> <span class="token string">"256Mi"</span>
         <span class="token key atrule">limits</span><span class="token punctuation">:</span>
           <span class="token key atrule">cpu</span><span class="token punctuation">:</span> <span class="token string">"500m"</span>
@@ -203,11 +203,11 @@ Container Runtime
 <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
   <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app<span class="token punctuation">-</span>deployment
 <span class="token key atrule">spec</span><span class="token punctuation">:</span>
-  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">3</span>              <span class="token comment"># Pod 3개 유지</span>
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">3</span> <span class="token comment"># Pod 3개 유지</span>
   <span class="token key atrule">selector</span><span class="token punctuation">:</span>
     <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
-      <span class="token key atrule">app</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app          <span class="token comment"># 이 레이블을 가진 Pod를 관리</span>
-  <span class="token key atrule">template</span><span class="token punctuation">:</span>                <span class="token comment"># 생성할 Pod의 템플릿</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app <span class="token comment"># 이 레이블을 가진 Pod를 관리</span>
+  <span class="token key atrule">template</span><span class="token punctuation">:</span> <span class="token comment"># 생성할 Pod의 템플릿</span>
     <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
       <span class="token key atrule">labels</span><span class="token punctuation">:</span>
         <span class="token key atrule">app</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app
@@ -220,8 +220,8 @@ Container Runtime
   <span class="token key atrule">strategy</span><span class="token punctuation">:</span>
     <span class="token key atrule">type</span><span class="token punctuation">:</span> RollingUpdate
     <span class="token key atrule">rollingUpdate</span><span class="token punctuation">:</span>
-      <span class="token key atrule">maxSurge</span><span class="token punctuation">:</span> <span class="token number">1</span>          <span class="token comment"># 동시에 최대 1개 추가 생성</span>
-      <span class="token key atrule">maxUnavailable</span><span class="token punctuation">:</span> <span class="token number">0</span>    <span class="token comment"># 배포 중 사용 불가 Pod = 0 (무중단)</span></code></pre></div>
+      <span class="token key atrule">maxSurge</span><span class="token punctuation">:</span> <span class="token number">1</span> <span class="token comment"># 동시에 최대 1개 추가 생성</span>
+      <span class="token key atrule">maxUnavailable</span><span class="token punctuation">:</span> <span class="token number">0</span> <span class="token comment"># 배포 중 사용 불가 Pod = 0 (무중단)</span></code></pre></div>
 <h3>ReplicaSet — Pod 복제본 관리</h3>
 <p>Deployment가 내부적으로 사용하는 오브젝트입니다. 직접 사용할 일은 거의 없습니다.</p>
 <div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">Deployment → ReplicaSet → Pod × N</code></pre></div>
@@ -234,12 +234,12 @@ Container Runtime
   <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app<span class="token punctuation">-</span>service
 <span class="token key atrule">spec</span><span class="token punctuation">:</span>
   <span class="token key atrule">selector</span><span class="token punctuation">:</span>
-    <span class="token key atrule">app</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app           <span class="token comment"># app=my-app 레이블을 가진 Pod에 연결</span>
+    <span class="token key atrule">app</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app <span class="token comment"># app=my-app 레이블을 가진 Pod에 연결</span>
   <span class="token key atrule">ports</span><span class="token punctuation">:</span>
     <span class="token punctuation">-</span> <span class="token key atrule">protocol</span><span class="token punctuation">:</span> TCP
-      <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">80</span>            <span class="token comment"># Service 포트</span>
-      <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">8080</span>    <span class="token comment"># Pod 포트</span>
-  <span class="token key atrule">type</span><span class="token punctuation">:</span> ClusterIP         <span class="token comment"># 기본값: 클러스터 내부에서만 접근 가능</span></code></pre></div>
+      <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">80</span> <span class="token comment"># Service 포트</span>
+      <span class="token key atrule">targetPort</span><span class="token punctuation">:</span> <span class="token number">8080</span> <span class="token comment"># Pod 포트</span>
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> ClusterIP <span class="token comment"># 기본값: 클러스터 내부에서만 접근 가능</span></code></pre></div>
 <h4>Service 타입</h4>
 <div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">ClusterIP (기본값)
   - 클러스터 내부에서만 접근 가능
@@ -289,7 +289,7 @@ ExternalName
   <span class="token key atrule">tls</span><span class="token punctuation">:</span>
     <span class="token punctuation">-</span> <span class="token key atrule">hosts</span><span class="token punctuation">:</span>
         <span class="token punctuation">-</span> myapp.example.com
-      <span class="token key atrule">secretName</span><span class="token punctuation">:</span> tls<span class="token punctuation">-</span>secret   <span class="token comment"># TLS 인증서</span></code></pre></div>
+      <span class="token key atrule">secretName</span><span class="token punctuation">:</span> tls<span class="token punctuation">-</span>secret <span class="token comment"># TLS 인증서</span></code></pre></div>
 <div class="gatsby-highlight" data-language="text"><pre class="language-text"><code class="language-text">외부 트래픽 흐름:
   Client → Ingress (도메인/경로 기반 라우팅)
          → Service A (order-service)
@@ -432,9 +432,9 @@ kubectl create secret generic app-secret <span class="token punctuation">\</span
   <span class="token key atrule">httpGet</span><span class="token punctuation">:</span>
     <span class="token key atrule">path</span><span class="token punctuation">:</span> /actuator/health/liveness
     <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
-  <span class="token key atrule">initialDelaySeconds</span><span class="token punctuation">:</span> <span class="token number">30</span>    <span class="token comment"># 시작 후 30초 대기 (앱 부팅 시간)</span>
-  <span class="token key atrule">periodSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span>          <span class="token comment"># 10초마다 체크</span>
-  <span class="token key atrule">failureThreshold</span><span class="token punctuation">:</span> <span class="token number">3</span>        <span class="token comment"># 3번 연속 실패 시 재시작</span></code></pre></div>
+  <span class="token key atrule">initialDelaySeconds</span><span class="token punctuation">:</span> <span class="token number">30</span> <span class="token comment"># 시작 후 30초 대기 (앱 부팅 시간)</span>
+  <span class="token key atrule">periodSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span> <span class="token comment"># 10초마다 체크</span>
+  <span class="token key atrule">failureThreshold</span><span class="token punctuation">:</span> <span class="token number">3</span> <span class="token comment"># 3번 연속 실패 시 재시작</span></code></pre></div>
 <h3>Readiness Probe — 트래픽 받을 준비가 됐는가?</h3>
 <p>실패하면 Service에서 해당 Pod를 <strong>제외</strong>합니다 (재시작 아님). DB 연결 완료 등 준비 상태 확인에 사용합니다.</p>
 <div class="gatsby-highlight" data-language="yaml"><pre class="language-yaml"><code class="language-yaml"><span class="token key atrule">readinessProbe</span><span class="token punctuation">:</span>
@@ -450,7 +450,7 @@ kubectl create secret generic app-secret <span class="token punctuation">\</span
   <span class="token key atrule">httpGet</span><span class="token punctuation">:</span>
     <span class="token key atrule">path</span><span class="token punctuation">:</span> /actuator/health
     <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">8080</span>
-  <span class="token key atrule">failureThreshold</span><span class="token punctuation">:</span> <span class="token number">30</span>       <span class="token comment"># 최대 30 × 10초 = 5분 대기</span>
+  <span class="token key atrule">failureThreshold</span><span class="token punctuation">:</span> <span class="token number">30</span> <span class="token comment"># 최대 30 × 10초 = 5분 대기</span>
   <span class="token key atrule">periodSeconds</span><span class="token punctuation">:</span> <span class="token number">10</span></code></pre></div>
 <h3>Spring Boot Actuator 연동</h3>
 <div class="gatsby-highlight" data-language="yaml"><pre class="language-yaml"><code class="language-yaml"><span class="token comment"># application.yml</span>
@@ -477,15 +477,15 @@ kubectl create secret generic app-secret <span class="token punctuation">\</span
     <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
     <span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
     <span class="token key atrule">name</span><span class="token punctuation">:</span> my<span class="token punctuation">-</span>app<span class="token punctuation">-</span>deployment
-  <span class="token key atrule">minReplicas</span><span class="token punctuation">:</span> <span class="token number">2</span>             <span class="token comment"># 최소 2개</span>
-  <span class="token key atrule">maxReplicas</span><span class="token punctuation">:</span> <span class="token number">10</span>            <span class="token comment"># 최대 10개</span>
+  <span class="token key atrule">minReplicas</span><span class="token punctuation">:</span> <span class="token number">2</span> <span class="token comment"># 최소 2개</span>
+  <span class="token key atrule">maxReplicas</span><span class="token punctuation">:</span> <span class="token number">10</span> <span class="token comment"># 최대 10개</span>
   <span class="token key atrule">metrics</span><span class="token punctuation">:</span>
     <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> Resource
       <span class="token key atrule">resource</span><span class="token punctuation">:</span>
         <span class="token key atrule">name</span><span class="token punctuation">:</span> cpu
         <span class="token key atrule">target</span><span class="token punctuation">:</span>
           <span class="token key atrule">type</span><span class="token punctuation">:</span> Utilization
-          <span class="token key atrule">averageUtilization</span><span class="token punctuation">:</span> <span class="token number">70</span>   <span class="token comment"># CPU 70% 초과 시 스케일 아웃</span>
+          <span class="token key atrule">averageUtilization</span><span class="token punctuation">:</span> <span class="token number">70</span> <span class="token comment"># CPU 70% 초과 시 스케일 아웃</span>
     <span class="token punctuation">-</span> <span class="token key atrule">type</span><span class="token punctuation">:</span> Resource
       <span class="token key atrule">resource</span><span class="token punctuation">:</span>
         <span class="token key atrule">name</span><span class="token punctuation">:</span> memory
@@ -509,11 +509,11 @@ kubectl get hpa
   <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>pvc
 <span class="token key atrule">spec</span><span class="token punctuation">:</span>
   <span class="token key atrule">accessModes</span><span class="token punctuation">:</span>
-    <span class="token punctuation">-</span> ReadWriteOnce          <span class="token comment"># 하나의 노드에서 읽기/쓰기</span>
+    <span class="token punctuation">-</span> ReadWriteOnce <span class="token comment"># 하나의 노드에서 읽기/쓰기</span>
   <span class="token key atrule">resources</span><span class="token punctuation">:</span>
     <span class="token key atrule">requests</span><span class="token punctuation">:</span>
       <span class="token key atrule">storage</span><span class="token punctuation">:</span> 10Gi
-  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> gp2      <span class="token comment"># AWS EBS gp2 타입</span></code></pre></div>
+  <span class="token key atrule">storageClassName</span><span class="token punctuation">:</span> gp2 <span class="token comment"># AWS EBS gp2 타입</span></code></pre></div>
 <div class="gatsby-highlight" data-language="yaml"><pre class="language-yaml"><code class="language-yaml"><span class="token comment"># Deployment에서 PVC 사용</span>
 <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
   <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>storage
@@ -741,7 +741,8 @@ kubectl get all <span class="token parameter variable">-n</span> my-app</code></
 <p><strong>4. Secret을 YAML 파일에 평문으로 커밋</strong></p>
 <div class="gatsby-highlight" data-language="yaml"><pre class="language-yaml"><code class="language-yaml"><span class="token comment"># ❌ 절대 하면 안 됨 — Git에 비밀번호가 남음</span>
 <span class="token key atrule">data</span><span class="token punctuation">:</span>
-  <span class="token key atrule">DB_PASSWORD</span><span class="token punctuation">:</span> mypassword  <span class="token comment"># 평문</span>
+  <span class="token key atrule">DB_PASSWORD</span><span class="token punctuation">:</span> mypassword <span class="token comment"># 평문</span>
+
 
 <span class="token comment"># ✅ kubectl create secret 또는 외부 시크릿 관리 도구 사용</span>
 <span class="token comment"># kubectl create secret generic app-secret \</span>

@@ -7,6 +7,27 @@
 /**
  * @type {import('gatsby').GatsbySSR['onRenderBody']}
  */
-exports.onRenderBody = ({ setHtmlAttributes }) => {
+const React = require("react")
+
+const themeScript = `
+(function () {
+  try {
+    var savedTheme = localStorage.getItem("theme");
+    var theme = savedTheme === "light" || savedTheme === "dark"
+      ? savedTheme
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  } catch (error) {}
+})();
+`
+
+exports.onRenderBody = ({ setHtmlAttributes, setHeadComponents }) => {
   setHtmlAttributes({ lang: `en` })
+  setHeadComponents([
+    React.createElement("script", {
+      key: "theme-script",
+      dangerouslySetInnerHTML: { __html: themeScript },
+    }),
+  ])
 }

@@ -1,7 +1,7 @@
 ---
 title: "Java 백엔드 핵심 기술 정리"
 date: "2026-08-06"
-category: ["Java", "Backend"]
+category: ["Java", "Backend", "Spring"]
 description: "Spring Boot 기반 인증 게시판 실습을 통해 학습한 백엔드 핵심 기술 정리. JDBC와 PreparedStatement, Spring IoC/DI, Security Filter Chain과 JWT 인증 흐름, JPA 영속성 컨텍스트와 변경 감지, Spring Data JPA, DTO 분리 이유, Docker와 Docker Compose 배포, 모놀리식 vs MSA 비교까지 개념 중심으로 정리"
 ---
 

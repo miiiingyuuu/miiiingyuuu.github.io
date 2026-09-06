@@ -1,7 +1,7 @@
 ---
-title: "머신러닝과 딥러닝 이해하기: 분류·회귀부터 CNN과 LSTM까지"
+title: "머신러닝과 딥러닝 이해하기"
 date: "2026-09-03"
-category: ["AI"]
+category: ["AI", "Machine Learning"]
 description: "머신러닝과 딥러닝의 차이, 데이터 분할과 전처리, 분류·회귀·군집화·이상 탐지·시계열 그리고 신경망의 학습 원리를 실습 경험과 함께 정리"
 ---
 

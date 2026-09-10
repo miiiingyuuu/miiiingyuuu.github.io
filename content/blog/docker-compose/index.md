@@ -890,9 +890,9 @@ Docker부터 Docker Compose까지의 내용을 한 흐름으로 연결하면 다
 
 ## 정리 기준 자료
 
-- `docs/Cloud_컨테이너 이해 및 애플리케이션 컨테이너화_이용우_v2.1.pdf`
-- `docs/1. 기초개념이해_이용우_v1.0.pdf`
-- `docs/2.Linux 이해_이용우_v1.0.pdf`
-- `skala-container/00.sample-container`
-- `skala-container/01.answer-code`
+- `Cloud_컨테이너 이해 및 애플리케이션 컨테이너화_이용우`
+- `1. 기초개념이해_이용우`
+- `2.Linux 이해_이용우`
+- `00.sample-container`
+- `01.answer-code`
 

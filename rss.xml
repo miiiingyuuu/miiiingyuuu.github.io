@@ -1,4 +1,815 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 10 Sep 2026 09:38:13 GMT</lastBuildDate><item><title><![CDATA[Spring AI 실습 총정리]]></title><description><![CDATA[Spring AI 실습 총정리 — ChatClient에서 RAG, MCP, Multi-Agent까지 LLM을 애플리케이션에 연결하는 가장 단순한 방법은 사용자의 질문을 모델 API…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/spring-ai/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/spring-ai/</guid><pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring AI 실습 총정리 — ChatClient에서 RAG, MCP, Multi-Agent까지&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Mon, 14 Sep 2026 09:05:59 GMT</lastBuildDate><item><title><![CDATA[Kubernetes 이해]]></title><description><![CDATA[Kubernetes…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/k8s/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/k8s/</guid><pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Kubernetes 이해 — 선언적 배포에서 서비스, 설정, 스토리지, 무중단 운영까지&lt;/h1&gt;
+&lt;p&gt;컨테이너는 애플리케이션과 실행 환경을 이미지로 묶어 어디서든 일관되게 실행할 수 있게 한다. 하지만 운영 환경에서는 컨테이너를 실행하는 것만으로 충분하지 않다. 여러 서버 중 어디에서 실행할지 결정해야 하고, 장애가 발생하면 복구해야 하며, 트래픽에 맞춰 실행 개수를 조절해야 한다. 새 버전을 배포하는 동안에도 서비스가 계속 요청을 처리해야 한다.&lt;/p&gt;
+&lt;p&gt;Kubernetes는 이런 운영 문제를 &lt;strong&gt;원하는 상태를 선언하고 시스템이 그 상태를 계속 유지하는 방식&lt;/strong&gt;으로 해결한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;애플리케이션 코드
+  → 컨테이너 이미지 빌드
+  → Registry에 이미지 저장
+  → Kubernetes에 원하는 상태 선언
+  → Pod 배치와 실행
+  → Service를 통한 안정적인 연결
+  → 설정과 스토리지 주입
+  → 상태 검사와 점진적 배포
+  → 메트릭과 로그를 통한 관측&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 글은 명령어를 순서대로 따라 하는 실습 기록보다, 각 구성 요소가 어떤 문제를 해결하며 서로 어떻게 연결되는지에 초점을 맞춘다.&lt;/p&gt;
+&lt;h2&gt;1. Kubernetes가 해결하려는 문제&lt;/h2&gt;
+&lt;p&gt;서버 한 대에서 컨테이너 하나를 실행하는 일은 어렵지 않다. 운영 규모가 커지면 실행 자체보다 실행 이후의 관리가 복잡해진다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;운영 상황&lt;/th&gt;
+&lt;th&gt;필요한 동작&lt;/th&gt;
+&lt;th&gt;Kubernetes의 해법&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;컨테이너가 종료됐다&lt;/td&gt;
+&lt;td&gt;다시 실행&lt;/td&gt;
+&lt;td&gt;kubelet의 컨테이너 관리와 Controller의 복구&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;서버가 장애 상태다&lt;/td&gt;
+&lt;td&gt;다른 서버에 다시 배치&lt;/td&gt;
+&lt;td&gt;Scheduler와 Controller&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;API 서버를 항상 3개 유지해야 한다&lt;/td&gt;
+&lt;td&gt;부족한 복제본 생성&lt;/td&gt;
+&lt;td&gt;Deployment와 ReplicaSet&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod가 교체되면서 IP가 바뀐다&lt;/td&gt;
+&lt;td&gt;안정적인 접속점 제공&lt;/td&gt;
+&lt;td&gt;Service와 CoreDNS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;새 버전을 중단 없이 배포해야 한다&lt;/td&gt;
+&lt;td&gt;기존 Pod를 점진적으로 교체&lt;/td&gt;
+&lt;td&gt;RollingUpdate&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;환경마다 설정이 다르다&lt;/td&gt;
+&lt;td&gt;실행 시점에 설정 주입&lt;/td&gt;
+&lt;td&gt;ConfigMap과 Secret&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod가 교체되어도 데이터가 남아야 한다&lt;/td&gt;
+&lt;td&gt;실행 환경과 데이터 분리&lt;/td&gt;
+&lt;td&gt;PV와 PVC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;실행 중인 앱이 요청을 처리할 수 있는지 알아야 한다&lt;/td&gt;
+&lt;td&gt;상태 검사&lt;/td&gt;
+&lt;td&gt;Startup, Readiness, Liveness Probe&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Docker도 단일 호스트에서 재시작 정책과 네트워크, 볼륨을 제공한다. Kubernetes의 역할은 여러 Node에 걸친 배포와 복구, 네트워크 연결, 설정, 저장소, 배포 전략을 공통 API로 관리하는 데 있다.&lt;/p&gt;
+&lt;h2&gt;2. 핵심 철학은 원하는 상태다&lt;/h2&gt;
+&lt;p&gt;명령적 방식은 시스템이 수행할 절차를 직접 지시한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;컨테이너 하나 실행
+→ 하나 더 실행
+→ 장애 컨테이너 삭제
+→ 다시 하나 실행&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Kubernetes의 선언적 방식은 최종적으로 유지할 상태를 기술한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 선언은 “이 애플리케이션의 Pod가 항상 3개 존재해야 한다”는 의미다. Controller는 원하는 상태와 현재 상태를 비교하고 차이를 줄이는 동작을 반복한다. 이를 **조정 루프(Reconciliation Loop)**라고 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;원하는 상태: 3개
+현재 상태:   2개
+       ↓ 차이 발견
+Pod 1개 추가 생성
+       ↓
+현재 상태:   3개
+       ↓
+계속 관찰&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 구조에서 &lt;code class=&quot;language-text&quot;&gt;kubectl apply&lt;/code&gt;의 성공은 YAML이 API Server에 반영됐다는 뜻이다. 이미지 다운로드, 컨테이너 시작, 애플리케이션 준비까지 끝났다는 뜻은 아니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl apply &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; deploy.yaml
+kubectl rollout status deployment/my-api
+kubectl get pods&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;3. Manifest, Resource, Object, spec과 status&lt;/h2&gt;
+&lt;p&gt;Kubernetes YAML을 이해하려면 비슷하게 보이는 용어를 구분해야 한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;용어&lt;/th&gt;
+&lt;th&gt;의미&lt;/th&gt;
+&lt;th&gt;예시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Manifest&lt;/td&gt;
+&lt;td&gt;원하는 상태를 표현한 YAML 또는 JSON 문서&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;deploy.yaml&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Resource&lt;/td&gt;
+&lt;td&gt;Kubernetes API가 관리하는 자원의 유형&lt;/td&gt;
+&lt;td&gt;Pod, Deployment, Service&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Object&lt;/td&gt;
+&lt;td&gt;클러스터에 실제 생성된 개별 인스턴스&lt;/td&gt;
+&lt;td&gt;이름이 &lt;code class=&quot;language-text&quot;&gt;my-api&lt;/code&gt;인 Deployment&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;spec&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;사용자가 요청한 원하는 상태&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;replicas: 3&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;status&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;시스템이 관찰한 실제 상태&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;readyReplicas: 2&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;기본 Manifest는 네 영역으로 읽을 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; apps/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Deployment
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+  &lt;span class=&quot;token key atrule&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; production
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;apiVersion&lt;/code&gt;: 이 리소스를 해석할 API 그룹과 버전&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;kind&lt;/code&gt;: 생성할 리소스의 유형&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;metadata&lt;/code&gt;: 이름, Namespace, label과 annotation 같은 식별 정보&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;spec&lt;/code&gt;: 사용자가 원하는 리소스 상태&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;실제 Object를 조회하면 Kubernetes가 부여한 UID와 생성 시간, &lt;code class=&quot;language-text&quot;&gt;status&lt;/code&gt; 등이 추가된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get deployment my-api &lt;span class=&quot;token parameter variable&quot;&gt;-o&lt;/span&gt; yaml&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;4. Kubernetes를 구성하는 컴포넌트&lt;/h2&gt;
+&lt;p&gt;Kubernetes 클러스터는 관리 기능을 담당하는 Control Plane과 애플리케이션을 실행하는 Worker Node로 나뉜다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;사용자와 자동화 도구
+        │ kubectl / REST API
+        ▼
+┌──────────────── Control Plane ────────────────┐
+│ API Server ◀──────────────▶ etcd              │
+│     ▲                                         │
+│     ├── Scheduler                             │
+│     └── Controller Manager                    │
+└─────┼─────────────────────────────────────────┘
+      │ Watch와 상태 보고
+      ▼
+┌──────────────── Worker Node ──────────────────┐
+│ kubelet → Container Runtime → Pod             │
+│ kube-proxy 또는 대체 네트워크 구현             │
+└───────────────────────────────────────────────┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;구성 요소&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;API Server&lt;/td&gt;
+&lt;td&gt;모든 Kubernetes API 요청의 공통 진입점&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;etcd&lt;/td&gt;
+&lt;td&gt;리소스와 클러스터 상태를 보관하는 분산 저장소&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Scheduler&lt;/td&gt;
+&lt;td&gt;아직 Node가 정해지지 않은 Pod를 실행할 Node 선택&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Controller Manager&lt;/td&gt;
+&lt;td&gt;원하는 상태와 현재 상태를 맞추는 여러 Controller 실행&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;kubelet&lt;/td&gt;
+&lt;td&gt;Node에 배정된 Pod를 실행하고 상태를 API Server에 보고&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Container Runtime&lt;/td&gt;
+&lt;td&gt;이미지를 가져오고 컨테이너 프로세스를 실행&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CNI Plugin&lt;/td&gt;
+&lt;td&gt;Pod 네트워크 구성&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CoreDNS&lt;/td&gt;
+&lt;td&gt;클러스터 내부 Service 이름 해석&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Control Plane 구성 요소는 보통 API Server를 통해 상태를 조회하고 변경한다. etcd에 직접 접근하는 공통 구조로 이해하면 안 된다.&lt;/p&gt;
+&lt;h3&gt;kubelet은 API Server를 계속 polling할까&lt;/h3&gt;
+&lt;p&gt;kubelet은 1초마다 “새 Pod가 있는가”를 반복 질문하는 단순 polling 방식으로 동작하지 않는다. API Server에 장기 &lt;strong&gt;Watch 연결&lt;/strong&gt;을 열고 자신에게 배정된 Pod의 변경 이벤트를 전달받는다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;kubelet ── Watch 연결 ──▶ API Server
+        변경이 없으면 연결을 유지하며 대기
+        변경되면 이벤트 수신
+
+kubelet ── Node·Pod 상태 보고 ──▶ API Server&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;연결이 끊어지면 kubelet은 목록을 다시 동기화하고 Watch를 재연결한다. 별도의 동기화 루프와 Node Lease 갱신도 수행한다. 원하는 상태는 Watch로 받아 실행하고, 관찰한 실제 상태는 API Server에 보고하는 양방향 관계다.&lt;/p&gt;
+&lt;h2&gt;5. 코드가 Pod로 실행되기까지&lt;/h2&gt;
+&lt;p&gt;Kubernetes가 소스 코드를 직접 빌드하는 것은 아니다. 일반적인 배포 흐름은 다음과 같다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;소스 코드 + Dockerfile
+        │ docker build
+        ▼
+컨테이너 이미지
+        │ docker push
+        ▼
+Container Registry
+        │ Node의 Runtime이 pull
+        ▼
+Pod 안의 컨테이너 실행&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이미지 주소는 다음처럼 구성된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;registry.example.com/team/my-api:1.0
+└ Registry 주소 ┘ └경로┘ └Image┘ └Tag┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;docker push&lt;/code&gt;는 이미지를 Registry에 저장하고, &lt;code class=&quot;language-text&quot;&gt;kubectl apply&lt;/code&gt;는 Kubernetes 리소스를 생성하거나 변경한다. 이미지를 push했다고 Pod가 자동 생성되는 것은 아니다.&lt;/p&gt;
+&lt;p&gt;Tag는 변경 가능한 이름표다. 같은 &lt;code class=&quot;language-text&quot;&gt;1.0&lt;/code&gt; Tag로 새 이미지를 push하더라도 실행 중인 Pod가 자동으로 교체되지 않는다. 특정 이미지 내용을 정확히 고정하려면 &lt;code class=&quot;language-text&quot;&gt;sha256&lt;/code&gt; digest를 사용할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;registry.example.com/team/my-api@sha256:...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;6. Pod는 함께 배치되는 최소 단위다&lt;/h2&gt;
+&lt;p&gt;Pod는 Kubernetes가 Node에 배치하는 최소 실행 단위이며 하나 이상의 컨테이너를 포함한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Cluster
+  ├─ Node A
+  │    ├─ Pod 1 → API Container
+  │    └─ Pod 2 → API Container
+  └─ Node B
+       └─ Pod 3 → API Container&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;같은 Pod의 컨테이너는 다음 실행 환경을 공유한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;하나의 Pod IP&lt;/li&gt;
+&lt;li&gt;네트워크와 포트 공간&lt;/li&gt;
+&lt;li&gt;hostname&lt;/li&gt;
+&lt;li&gt;Pod에 정의한 Volume&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;따라서 같은 Pod의 컨테이너는 &lt;code class=&quot;language-text&quot;&gt;localhost&lt;/code&gt;로 통신할 수 있다. 반면 컨테이너의 기본 파일 시스템은 분리되어 있으므로 파일을 공유하려면 공통 Volume을 마운트해야 한다.&lt;/p&gt;
+&lt;p&gt;프런트엔드, API, 데이터베이스를 하나의 Pod에 넣는 방식은 각각 독립적으로 확장하고 교체하기 어렵다. 일반적으로 서로 다른 생명주기와 확장 요구를 가진 애플리케이션은 Pod를 분리한다. 여러 컨테이너가 항상 함께 움직여야 할 때 sidecar 같은 다중 컨테이너 패턴을 사용한다.&lt;/p&gt;
+&lt;h3&gt;컨테이너 재시작과 Pod 재생성은 다르다&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;상황&lt;/th&gt;
+&lt;th&gt;동작 주체와 결과&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod 안의 컨테이너 프로세스 종료&lt;/td&gt;
+&lt;td&gt;kubelet이 재시작 정책에 따라 컨테이너 재시작 가능&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Deployment가 관리하는 Pod 삭제&lt;/td&gt;
+&lt;td&gt;ReplicaSet Controller가 새 Pod 생성&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Controller 없이 만든 단독 Pod 삭제&lt;/td&gt;
+&lt;td&gt;일반적으로 자동 재생성되지 않음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;새 Pod는 기존 Pod가 이동한 것이 아니다. 새로운 UID와 IP를 받을 수 있으므로 애플리케이션이 Pod IP에 직접 의존해서는 안 된다.&lt;/p&gt;
+&lt;h2&gt;7. Deployment가 Pod의 개수와 버전을 관리한다&lt;/h2&gt;
+&lt;p&gt;Deployment는 Stateless 애플리케이션의 복제본 수와 업데이트, 롤백을 관리하는 리소스다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Deployment
+  └─ ReplicaSet
+       ├─ Pod A
+       └─ Pod B&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;대표적인 Deployment는 다음과 같다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; apps/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Deployment
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;matchLabels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+  &lt;span class=&quot;token key atrule&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+    &lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; api
+          &lt;span class=&quot;token key atrule&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; registry.example.com/team/my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1.0&lt;/span&gt;
+          &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Deployment의 selector와 Pod template의 label은 반드시 일치해야 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Deployment selector: app=my-api
+                         │ 일치
+Pod label:            app=my-api&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;replicas&lt;/code&gt;를 1에서 2로 바꾸면 같은 ReplicaSet이 Pod를 하나 더 생성한다. 이미지나 환경변수처럼 &lt;code class=&quot;language-text&quot;&gt;spec.template&lt;/code&gt;이 변경되면 새로운 ReplicaSet이 생기고 새 Pod가 기존 Pod를 교체한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get deployment my-api
+kubectl get replicaset &lt;span class=&quot;token parameter variable&quot;&gt;-l&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;my-api
+kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-l&lt;/span&gt; &lt;span class=&quot;token assign-left variable&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;my-api
+kubectl rollout status deployment/my-api&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이전 ReplicaSet이 &lt;code class=&quot;language-text&quot;&gt;DESIRED=0&lt;/code&gt; 상태로 남을 수 있다. 이는 이상 상태가 아니라 배포 이력과 롤백을 위해 보존된 결과일 수 있다.&lt;/p&gt;
+&lt;h2&gt;8. Service가 변하는 Pod 앞에 안정적인 주소를 만든다&lt;/h2&gt;
+&lt;p&gt;Pod는 교체될 수 있고 IP도 변한다. Service는 label selector로 Pod 집합을 선택하고, 그 앞에 안정적인 ClusterIP와 DNS 이름을 제공한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Client
+  │ http://my-api:8080
+  ▼
+Service: my-api
+  │ selector: app=my-api
+  ▼
+EndpointSlice
+  ├─ Pod A IP:8080
+  └─ Pod B IP:8080&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Service
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; ClusterIP
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+  &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; http
+      &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;targetPort&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Service는 Deployment 이름을 참조하지 않는다. &lt;strong&gt;Service selector와 Pod label의 일치 여부&lt;/strong&gt;가 연결을 결정한다. 이름이 같아도 label이 다르면 연결되지 않고, 이름이 달라도 label이 맞으면 연결된다.&lt;/p&gt;
+&lt;h3&gt;port, targetPort, containerPort&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Client → Service:8080 → Pod Application:8080
+             port              targetPort&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;의미&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;containerPort&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컨테이너가 사용할 예정인 포트에 관한 선언적 정보&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Service &lt;code class=&quot;language-text&quot;&gt;port&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;클라이언트가 Service에 접속하는 포트&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Service &lt;code class=&quot;language-text&quot;&gt;targetPort&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Service가 Pod로 전달할 대상 포트&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;containerPort&lt;/code&gt;나 Dockerfile의 &lt;code class=&quot;language-text&quot;&gt;EXPOSE&lt;/code&gt;가 애플리케이션의 실제 리슨 포트를 변경하지는 않는다. 애플리케이션이 &lt;code class=&quot;language-text&quot;&gt;targetPort&lt;/code&gt;에서 실제로 요청을 받아야 한다.&lt;/p&gt;
+&lt;h3&gt;EndpointSlice는 실제 목적지를 표현한다&lt;/h3&gt;
+&lt;p&gt;EndpointSlice는 Service가 트래픽을 전달할 Pod IP와 포트를 기록한다. 기존의 Endpoints 리소스를 확장성 있게 대체하는 구조다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get endpointslices &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-l&lt;/span&gt; kubernetes.io/service-name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;my-api&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Service와 Pod가 모두 존재하더라도 selector와 label이 다르거나 Pod가 준비되지 않았다면 정상적인 요청 대상이 없을 수 있다.&lt;/p&gt;
+&lt;h3&gt;Service 유형&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;유형&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ClusterIP&lt;/td&gt;
+&lt;td&gt;클러스터 내부에 가상 IP와 DNS 이름 제공&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NodePort&lt;/td&gt;
+&lt;td&gt;각 Node IP의 특정 포트로 Service 노출&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LoadBalancer&lt;/td&gt;
+&lt;td&gt;클라우드 등의 외부 Load Balancer와 연동&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ExternalName&lt;/td&gt;
+&lt;td&gt;외부 DNS 이름을 CNAME으로 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;9. CoreDNS가 Service Discovery를 제공한다&lt;/h2&gt;
+&lt;p&gt;Kubernetes 내부의 클라이언트는 매번 Pod IP를 찾지 않고 Service 이름을 호출한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;API Client Pod
+  │ my-api 주소 질의
+  ▼
+CoreDNS
+  │ Service ClusterIP 반환
+  ▼
+Service
+  │ EndpointSlice의 준비된 목적지 선택
+  ▼
+API Pod&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;같은 Namespace에서는 짧은 이름을 사용할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;http://my-api:8080&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;전체 DNS 이름은 다음 형태다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;my-api.production.svc.cluster.local
+└Service┘ └ Namespace┘ └클러스터 서비스 도메인┘&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;CoreDNS는 일반적인 ClusterIP Service의 이름을 Service IP로 해석한다. 실제 Pod 목적지는 EndpointSlice가 관리한다.&lt;/p&gt;
+&lt;h2&gt;10. Namespace는 논리적인 관리 경계다&lt;/h2&gt;
+&lt;p&gt;Namespace는 하나의 클러스터를 팀, 프로젝트, 환경 단위로 나누는 논리적 공간이다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;서로 다른 Namespace에는 같은 이름의 Service와 Deployment가 존재할 수 있다.&lt;/li&gt;
+&lt;li&gt;Role과 RoleBinding으로 Namespace 범위의 권한을 나눌 수 있다.&lt;/li&gt;
+&lt;li&gt;ResourceQuota와 LimitRange로 자원 사용 정책을 적용할 수 있다.&lt;/li&gt;
+&lt;li&gt;Namespace가 네트워크를 자동으로 격리하지는 않는다. 네트워크 격리에는 NetworkPolicy가 필요하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Namespace에 속하는 리소스&lt;/th&gt;
+&lt;th&gt;클러스터 전체 범위 리소스&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod, Deployment, Service&lt;/td&gt;
+&lt;td&gt;Node&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ConfigMap, Secret&lt;/td&gt;
+&lt;td&gt;PersistentVolume&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PVC, Ingress&lt;/td&gt;
+&lt;td&gt;StorageClass&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Role, RoleBinding&lt;/td&gt;
+&lt;td&gt;ClusterRole, ClusterRoleBinding&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production
+kubectl get pods --all-namespaces
+kubectl config set-context &lt;span class=&quot;token parameter variable&quot;&gt;--current&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--namespace&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;production&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;11. ConfigMap과 Secret으로 설정을 외부화한다&lt;/h2&gt;
+&lt;p&gt;환경에 따라 DB 주소, API Endpoint, 로그 레벨이 달라진다. 이런 값을 이미지에 고정하면 설정을 변경할 때마다 이미지를 다시 빌드해야 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;동일한 애플리케이션 이미지
+  ├─ Dev ConfigMap
+  ├─ QA ConfigMap
+  └─ Prod ConfigMap&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ConfigMap은 일반 설정을 key-value나 파일 형태로 관리한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; ConfigMap
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;config
+&lt;span class=&quot;token key atrule&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;application-prod.yaml&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token scalar string&quot;&gt;
+    server:
+      port: 8080
+    logging:
+      level:
+        root: INFO&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pod에서는 환경변수로 주입하거나 Volume으로 마운트할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; api
+    &lt;span class=&quot;token key atrule&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; SPRING_PROFILES_ACTIVE
+        &lt;span class=&quot;token key atrule&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; prod
+    &lt;span class=&quot;token key atrule&quot;&gt;volumeMounts&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; config&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;volume
+        &lt;span class=&quot;token key atrule&quot;&gt;mountPath&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /app/config
+&lt;span class=&quot;token key atrule&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; config&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;volume
+    &lt;span class=&quot;token key atrule&quot;&gt;configMap&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;config&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;최종적으로 ConfigMap의 Key가 컨테이너 내부 파일이 된다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;ConfigMap: my-api-config
+  └─ application-prod.yaml
+        ↓ Volume mount
+/app/config/application-prod.yaml
+        ↓
+Spring Boot가 prod 설정으로 읽음&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ConfigMap을 변경해도 실행 중인 애플리케이션이 설정을 자동으로 다시 읽는다고 보장할 수 없다. 프로세스가 시작 시점에만 설정을 읽는다면 Deployment를 재시작해야 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl rollout restart deployment/my-api&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;비밀번호, 인증서, Token 같은 민감한 값은 Secret으로 분리한다. Secret의 기본 base64 표현은 암호화가 아니므로 접근 권한과 저장 시 암호화 정책도 함께 고려해야 한다.&lt;/p&gt;
+&lt;h2&gt;12. Volume, PV, PVC가 데이터 생명주기를 분리한다&lt;/h2&gt;
+&lt;p&gt;컨테이너의 쓰기 가능 계층은 컨테이너와 생명주기를 함께한다. Pod가 교체되어도 유지해야 하는 데이터는 외부 스토리지에 저장해야 한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Pod
+  │ PVC를 마운트
+  ▼
+PersistentVolumeClaim
+  │ 조건에 맞는 저장소 요청
+  ▼
+PersistentVolume
+  │ 실제 스토리지 구현
+  ▼
+EBS, EFS, NFS, Cloud Disk 등&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;리소스&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;PV&lt;/td&gt;
+&lt;td&gt;클러스터가 사용할 수 있는 저장소를 표현&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PVC&lt;/td&gt;
+&lt;td&gt;애플리케이션이 필요한 용량과 접근 방식을 요청&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;StorageClass&lt;/td&gt;
+&lt;td&gt;동적 프로비저닝에 사용할 저장소 종류와 정책&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CSI Driver&lt;/td&gt;
+&lt;td&gt;Kubernetes와 실제 스토리지 시스템 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; PersistentVolumeClaim
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;data
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;accessModes&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; ReadWriteMany
+  &lt;span class=&quot;token key atrule&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;storage&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; 1Gi
+  &lt;span class=&quot;token key atrule&quot;&gt;storageClassName&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; shared&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;filesystem&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;접근 모드는 이름을 정확히 해석해야 한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;ReadWriteOnce(RWO)&lt;/code&gt;: 한 Node에서 읽기·쓰기&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;ReadWriteMany(RWX)&lt;/code&gt;: 여러 Node에서 읽기·쓰기&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;ReadWriteOncePod(RWOP)&lt;/code&gt;: 지원되는 환경에서 한 Pod로 접근 제한&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;RWO&lt;/code&gt;를 Pod 하나만 사용할 수 있다는 의미로 해석하면 부정확하다. 핵심 경계는 Node다.&lt;/p&gt;
+&lt;p&gt;PVC의 &lt;code class=&quot;language-text&quot;&gt;Bound&lt;/code&gt;는 PV와 논리적으로 연결됐다는 뜻이다. 애플리케이션 컨테이너에서 마운트와 파일 접근까지 성공했다는 의미는 아니므로 Pod Events와 실제 mount 상태도 확인해야 한다.&lt;/p&gt;
+&lt;h2&gt;13. Ingress가 외부 HTTP 요청의 경로를 결정한다&lt;/h2&gt;
+&lt;p&gt;ClusterIP Service는 주로 클러스터 내부 통신에 사용한다. 외부 사용자가 하나의 도메인으로 프런트엔드와 API를 호출하려면 HTTP 경로를 내부 Service에 연결하는 진입 규칙이 필요하다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Browser
+  │ https://app.example.com
+  ▼
+Ingress Controller
+  ├─ /api/* → API Service → API Pod
+  └─ /*     → Web Service → Nginx Pod&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; networking.k8s.io/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Ingress
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;app&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;ingress
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;ingressClassName&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; nginx
+  &lt;span class=&quot;token key atrule&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; app.example.com
+      &lt;span class=&quot;token key atrule&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /api
+            &lt;span class=&quot;token key atrule&quot;&gt;pathType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Prefix
+            &lt;span class=&quot;token key atrule&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+              &lt;span class=&quot;token key atrule&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;api
+                &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                  &lt;span class=&quot;token key atrule&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+          &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /
+            &lt;span class=&quot;token key atrule&quot;&gt;pathType&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Prefix
+            &lt;span class=&quot;token key atrule&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+              &lt;span class=&quot;token key atrule&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; my&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;web
+                &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                  &lt;span class=&quot;token key atrule&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Ingress는 라우팅 규칙이고 Ingress Controller는 규칙을 실제로 처리하는 프로그램&lt;/strong&gt;이다. Ingress Object만 생성하고 Controller가 없다면 외부 트래픽을 처리할 수 없다.&lt;/p&gt;
+&lt;p&gt;또한 Ingress에 &lt;code class=&quot;language-text&quot;&gt;host&lt;/code&gt;를 적는 것만으로 인터넷 DNS 레코드나 TLS 인증서가 자동 생성되는 것은 아니다. DNS, Load Balancer, Ingress Controller, 인증서 관리 구성이 함께 필요하다.&lt;/p&gt;
+&lt;h2&gt;14. Probe는 실행 상태와 서비스 가능 상태를 구분한다&lt;/h2&gt;
+&lt;p&gt;컨테이너 프로세스가 실행 중이어도 애플리케이션 초기화가 끝나지 않았거나 요청 처리 기능이 고장 났을 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Running: 컨테이너 프로세스가 실행 중
+Ready:   현재 Service 요청을 받을 준비가 됨&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Kubernetes는 세 가지 Probe를 제공한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Probe&lt;/th&gt;
+&lt;th&gt;확인하는 질문&lt;/th&gt;
+&lt;th&gt;실패 시 대표 동작&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Startup&lt;/td&gt;
+&lt;td&gt;애플리케이션 기동이 끝났는가&lt;/td&gt;
+&lt;td&gt;컨테이너 재시작 대상&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Readiness&lt;/td&gt;
+&lt;td&gt;지금 요청을 처리할 수 있는가&lt;/td&gt;
+&lt;td&gt;Service의 일반 요청 대상에서 제외&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Liveness&lt;/td&gt;
+&lt;td&gt;재시작해야 회복될 상태인가&lt;/td&gt;
+&lt;td&gt;컨테이너 재시작&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;startupProbe&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;httpGet&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /actuator/health/liveness
+    &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;periodSeconds&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;failureThreshold&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;token key atrule&quot;&gt;livenessProbe&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;httpGet&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /actuator/health/liveness
+    &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;periodSeconds&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;failureThreshold&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+
+&lt;span class=&quot;token key atrule&quot;&gt;readinessProbe&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;httpGet&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; /actuator/health/readiness
+    &lt;span class=&quot;token key atrule&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;8080&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;periodSeconds&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;5&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;failureThreshold&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Startup Probe가 설정되면 성공하기 전까지 Liveness와 Readiness 검사를 미룬다. 시작이 느린 애플리케이션이 초기화 중에 반복 재시작되는 문제를 줄일 수 있다.&lt;/p&gt;
+&lt;p&gt;Readiness 실패는 컨테이너를 재시작하지 않는다. 해당 Pod가 요청을 받을 준비가 되지 않았다고 판단해 일반적인 Service 트래픽 대상에서 제외한다. 반면 Liveness 실패는 같은 Pod 안의 컨테이너를 재시작한다.&lt;/p&gt;
+&lt;p&gt;DB와 같은 외부 의존성의 일시 장애를 Liveness에 무조건 포함하면 모든 API Pod가 동시에 재시작되어 장애를 키울 수 있다. 각 Probe는 애플리케이션의 실제 복구 전략에 맞게 설계해야 한다.&lt;/p&gt;
+&lt;h2&gt;15. RollingUpdate와 Blue/Green 배포&lt;/h2&gt;
+&lt;p&gt;새 버전을 배포할 때 모든 기존 Pod를 먼저 종료하면 서비스 중단이 발생한다. Kubernetes는 Deployment의 RollingUpdate로 Pod를 점진적으로 교체한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;기존 ReplicaSet: 3 → 2 → 1 → 0
+신규 ReplicaSet: 0 → 1 → 2 → 3&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;strategy&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; RollingUpdate
+  &lt;span class=&quot;token key atrule&quot;&gt;rollingUpdate&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;maxUnavailable&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;maxSurge&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;maxUnavailable: 0&lt;/code&gt;: 원하는 복제본 수보다 준비된 Pod가 적어지지 않게 진행&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;maxSurge: 1&lt;/code&gt;: 교체 중 목표 복제본보다 최대 한 개 더 생성&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;RollingUpdate 중에는 신·구 버전이 동시에 요청을 처리할 수 있다. API와 DB 스키마가 두 버전에서 호환되어야 한다.&lt;/p&gt;
+&lt;p&gt;Blue/Green은 기존 버전과 신규 버전을 각각 완성된 환경으로 유지한 후 트래픽 대상을 전환한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Blue Deployment + Blue Service: 현재 운영
+Green Deployment + Green Service: 신규 버전 검증
+
+Ingress backend
+  Blue Service → Green Service로 전환&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방식&lt;/th&gt;
+&lt;th&gt;장점&lt;/th&gt;
+&lt;th&gt;고려할 점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;RollingUpdate&lt;/td&gt;
+&lt;td&gt;추가 자원이 비교적 적고 Deployment에서 기본 지원&lt;/td&gt;
+&lt;td&gt;배포 중 두 버전 공존&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Blue/Green&lt;/td&gt;
+&lt;td&gt;전환 전 신규 환경 검증, 빠른 트래픽 복귀&lt;/td&gt;
+&lt;td&gt;두 환경을 위한 추가 자원 필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Canary&lt;/td&gt;
+&lt;td&gt;일부 트래픽에 먼저 신버전 노출&lt;/td&gt;
+&lt;td&gt;비율 제어와 분석을 위한 추가 라우팅 필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;배포 전략만 설정했다고 무중단이 자동 보장되지는 않는다. Readiness Probe, graceful shutdown, 종료 유예 시간, API 호환성과 충분한 클러스터 자원이 함께 필요하다.&lt;/p&gt;
+&lt;h2&gt;16. 관측성은 로그, 메트릭, 트레이스를 연결한다&lt;/h2&gt;
+&lt;p&gt;애플리케이션이 실행되고 있다는 사실만으로 정상 운영을 판단할 수 없다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;데이터&lt;/th&gt;
+&lt;th&gt;답하는 질문&lt;/th&gt;
+&lt;th&gt;예시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;로그&lt;/td&gt;
+&lt;td&gt;어떤 사건과 오류가 발생했는가&lt;/td&gt;
+&lt;td&gt;예외 메시지, 요청 실패 원인&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;메트릭&lt;/td&gt;
+&lt;td&gt;얼마나 많이, 느리게 발생하는가&lt;/td&gt;
+&lt;td&gt;요청 수, 오류율, 지연, CPU&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;트레이스&lt;/td&gt;
+&lt;td&gt;요청이 여러 서비스를 어떻게 통과했는가&lt;/td&gt;
+&lt;td&gt;API → 결제 → DB 호출 경로&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Spring Boot Actuator와 Prometheus를 사용하는 흐름은 다음과 같다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Application
+  → /actuator/prometheus에 메트릭 노출
+  ← Prometheus가 주기적으로 scrape
+  → 시계열 데이터 저장
+  → Grafana가 조회하고 시각화&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pod annotation은 수집 대상 탐색에 활용될 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;prometheus.io/scrape&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;true&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;prometheus.io/port&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;8080&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;prometheus.io/path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;/actuator/prometheus&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 annotation을 실제로 읽을지는 Prometheus의 수집 설정에 달려 있다. annotation만 붙였다고 메트릭 수집이 자동 완성되는 것은 아니다.&lt;/p&gt;
+&lt;p&gt;대시보드에서는 요청량, 오류율, 응답 지연, CPU와 메모리, 재시작 수를 함께 봐야 한다. CPU가 낮아도 외부 API나 DB 응답을 기다리느라 서비스 지연이 커질 수 있다.&lt;/p&gt;
+&lt;h2&gt;17. 장애 상태를 읽는 기준&lt;/h2&gt;
+&lt;p&gt;Pod 목록의 &lt;code class=&quot;language-text&quot;&gt;STATUS&lt;/code&gt;는 문제의 출발점이며 최종 원인 자체는 아니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;상태&lt;/th&gt;
+&lt;th&gt;의미와 주요 원인&lt;/th&gt;
+&lt;th&gt;우선 확인할 곳&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;Pending&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;아직 Node 배치나 실행 준비를 완료하지 못함&lt;/td&gt;
+&lt;td&gt;자원, 스케줄링, PVC Events&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ContainerCreating&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이미지, 네트워크, Volume 준비 중&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;describe pod&lt;/code&gt; Events&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ErrImagePull&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이미지 가져오기 실패&lt;/td&gt;
+&lt;td&gt;이미지 주소, Tag, Registry 권한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;ImagePullBackOff&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이미지 pull 재시도 간격을 늘리는 중&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;describe pod&lt;/code&gt; Events&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;CrashLoopBackOff&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;컨테이너가 반복 종료됨&lt;/td&gt;
+&lt;td&gt;현재·이전 컨테이너 로그&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;Running 0/1&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;실행 중이지만 Ready가 아님&lt;/td&gt;
+&lt;td&gt;Readiness Probe와 앱 상태&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;OOMKilled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;메모리 한도를 초과해 종료됐을 가능성&lt;/td&gt;
+&lt;td&gt;종료 이유, 사용량, memory limit&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;문제 해결은 다음 순서로 범위를 좁히는 것이 효율적이다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 1. 올바른 Cluster와 Namespace인지 확인&lt;/span&gt;
+kubectl config current-context
+kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production
+
+&lt;span class=&quot;token comment&quot;&gt;# 2. Pod 상태와 Events 확인&lt;/span&gt;
+kubectl describe pod POD_NAME &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production
+kubectl get events &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production --sort-by&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;.metadata.creationTimestamp
+
+&lt;span class=&quot;token comment&quot;&gt;# 3. 애플리케이션 로그 확인&lt;/span&gt;
+kubectl logs POD_NAME &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production &lt;span class=&quot;token parameter variable&quot;&gt;--tail&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;
+kubectl logs POD_NAME &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production &lt;span class=&quot;token parameter variable&quot;&gt;--previous&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--tail&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 4. Service 연결 확인&lt;/span&gt;
+kubectl get &lt;span class=&quot;token function&quot;&gt;service&lt;/span&gt; my-api &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production &lt;span class=&quot;token parameter variable&quot;&gt;-o&lt;/span&gt; yaml
+kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production --show-labels
+kubectl get endpointslices &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-l&lt;/span&gt; kubernetes.io/service-name&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;my-api
+
+&lt;span class=&quot;token comment&quot;&gt;# 5. Ingress 확인&lt;/span&gt;
+kubectl describe ingress my-app-ingress &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; production&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;ImagePullBackOff&lt;/code&gt;는 이미지 다운로드 문제이고 &lt;code class=&quot;language-text&quot;&gt;CrashLoopBackOff&lt;/code&gt;는 이미지를 실행한 뒤 프로세스가 반복 종료되는 문제다. 전자는 Events, 후자는 로그가 가장 중요한 단서가 된다.&lt;/p&gt;
+&lt;h2&gt;18. 전체 요청과 제어 흐름&lt;/h2&gt;
+&lt;p&gt;Kubernetes의 각 리소스는 독립된 기능처럼 보이지만 하나의 배포와 요청 흐름을 구성한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. 개발자가 이미지를 Registry에 push
+2. Deployment Manifest를 API Server에 apply
+3. API Server가 원하는 상태를 저장
+4. Deployment Controller가 ReplicaSet 생성
+5. ReplicaSet Controller가 Pod 생성
+6. Scheduler가 Pod를 실행할 Node 선택
+7. 해당 Node의 kubelet이 변경을 Watch
+8. Container Runtime이 Registry에서 이미지를 pull
+9. 컨테이너 실행 후 kubelet이 상태 보고
+10. Readiness Probe가 성공하면 Pod가 요청 처리 준비
+11. Service selector가 Pod label과 일치하는 Pod 선택
+12. EndpointSlice에 준비된 Pod IP와 포트 반영
+13. CoreDNS가 Service 이름을 ClusterIP로 해석
+14. Ingress가 외부 HTTP 경로를 Service에 연결
+15. Service 또는 네트워크 구현이 요청을 Pod로 전달
+16. Prometheus가 메트릭을 수집하고 Grafana가 시각화&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 흐름에서 가장 중요한 관계는 네 가지다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Deployment selector = Pod label
+Service selector    = Pod label
+Service port        → Pod targetPort
+PVC                 → PV → 실제 Storage&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Kubernetes를 이해한다는 것은 YAML 필드를 외우는 것보다, &lt;strong&gt;원하는 상태가 어떤 Controller에 의해 실제 상태로 바뀌고, 네트워크 요청이 어떤 리소스를 거쳐 준비된 Pod에 도달하는지 설명할 수 있는 것&lt;/strong&gt;에 가깝다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Spring AI]]></title><description><![CDATA[Spring AI 실습 총정리 — ChatClient에서 RAG, MCP, Multi-Agent까지 LLM을 애플리케이션에 연결하는 가장 단순한 방법은 사용자의 질문을 모델 API…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/spring-ai/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/spring-ai/</guid><pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Spring AI 실습 총정리 — ChatClient에서 RAG, MCP, Multi-Agent까지&lt;/h1&gt;
 &lt;p&gt;LLM을 애플리케이션에 연결하는 가장 단순한 방법은 사용자의 질문을 모델 API에 보내고 문자열 응답을 받는 것이다. 하지만 실제 서비스를 만들려면 단순 호출만으로는 부족하다.&lt;/p&gt;
 &lt;p&gt;대화의 목적과 규칙을 전달해야 하고, 응답을 Java 객체로 변환해야 하며, 사내 문서나 최신 데이터를 근거로 답하게 해야 한다. 이전 대화를 기억하거나 파일·날씨 API 같은 외부 기능을 실행해야 할 수도 있다. 기능이 복잡해지면 하나의 모델 호출에 모든 책임을 맡기기보다 전문 Agent로 분리해 협업시키는 구조도 필요하다.&lt;/p&gt;
 &lt;p&gt;Spring AI는 이러한 기능을 Spring 애플리케이션의 구성 방식에 맞게 연결한다.&lt;/p&gt;
@@ -1704,7 +2515,7 @@ docker-compose.yaml
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;2.Linux 이해_이용우&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;00.sample-container&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;01.answer-code&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[모델 개발 및 최적화 이해하기]]></title><description><![CDATA[…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/models/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/models/</guid><pubDate>Sun, 06 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;모델 개발 및 최적화 이해하기: 성능과 일반화, 운영을 연결하는 과정&lt;/h1&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[모델 개발 및 최적화]]></title><description><![CDATA[…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/models/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/models/</guid><pubDate>Sun, 06 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;모델 개발 및 최적화 이해하기: 성능과 일반화, 운영을 연결하는 과정&lt;/h1&gt;
 &lt;p&gt;머신러닝의 기본 원리를 학습한 다음에는 자연스럽게 “어떤 모델이 가장 좋은가?”라는 질문으로 넘어간다. 하지만 모델 개발 및 최적화의 목적은 단순히 가장 높은 점수를 찾는 것이 아니다.&lt;/p&gt;
 &lt;p&gt;모델 개발은 현실의 문제를 데이터와 예측 문제로 정의하고, 학습 가능한 형태로 구현해 새로운 데이터에 적용할 수 있게 만드는 과정이다. 모델 최적화는 이 과정에서 발생하는 여러 선택을 검증 데이터와 평가 기준에 따라 조정하는 작업이다.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -2499,7 +3310,7 @@ Threshold와 업무 비용 변화
 &lt;blockquote&gt;
 &lt;p&gt;왜 이 모델을 선택했으며, 그 성능을 얼마나 신뢰할 수 있고, 새로운 데이터에서도 같은 과정을 유지할 수 있는가?&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;이 질문에 답할 수 있을 때 학습된 모델은 실험 결과를 넘어 실제로 사용할 수 있는 예측 시스템에 가까워진다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[머신러닝과 딥러닝 이해하기]]></title><description><![CDATA[머신러닝과 딥러닝 이해하기: 분류·회귀부터 CNN과 LSTM까지 머신러닝과 딥러닝을 처음 공부할 때는 알고리즘 이름부터 외우기 쉽다. Logistic Regression, Random Forest, XGBoost, CNN, LSTM…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/ml-dl/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/ml-dl/</guid><pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;머신러닝과 딥러닝 이해하기: 분류·회귀부터 CNN과 LSTM까지&lt;/h1&gt;
+&lt;p&gt;이 질문에 답할 수 있을 때 학습된 모델은 실험 결과를 넘어 실제로 사용할 수 있는 예측 시스템에 가까워진다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[머신러닝과 딥러닝]]></title><description><![CDATA[머신러닝과 딥러닝 이해하기: 분류·회귀부터 CNN과 LSTM까지 머신러닝과 딥러닝을 처음 공부할 때는 알고리즘 이름부터 외우기 쉽다. Logistic Regression, Random Forest, XGBoost, CNN, LSTM…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/ml-dl/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/ml-dl/</guid><pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;머신러닝과 딥러닝 이해하기: 분류·회귀부터 CNN과 LSTM까지&lt;/h1&gt;
 &lt;p&gt;머신러닝과 딥러닝을 처음 공부할 때는 알고리즘 이름부터 외우기 쉽다. Logistic Regression, Random Forest, XGBoost, CNN, LSTM처럼 알아야 할 모델이 계속 등장하기 때문이다.&lt;/p&gt;
 &lt;p&gt;하지만 여러 실습을 진행하고 나니 더 중요한 것은 모델 이름이 아니라 다음 질문에 답하는 일이었다.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -3279,7 +4090,7 @@ Transformer
 목적에 맞는 지표로 평가하며
 새로운 데이터에서도 동작하는지 확인하는 것&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;이것이 머신러닝과 딥러닝 모델을 이해하는 공통 기반이다.&lt;/p&gt;
-&lt;p&gt;다음 글에서는 이 기반 위에서 Baseline을 만들고, Hyperparameter와 Feature를 조정하고, Validation과 교차검증을 사용해 최종 모델을 선택하는 &lt;strong&gt;모델 개발 및 최적화 과정&lt;/strong&gt;을 정리할 예정이다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[LLM 아키텍처 이해하기]]></title><description><![CDATA[LLM 아키텍처 이해하기 — 텍스트가 답변이 되기까지 LLM을 공부할 때 가장 먼저 마주치는 어려움은 용어가 많다는 것이다. Tokenization, Embedding, Attention, Transformer, Pretraining, Fine…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/llm/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/llm/</guid><pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;LLM 아키텍처 이해하기 — 텍스트가 답변이 되기까지&lt;/h1&gt;
+&lt;p&gt;다음 글에서는 이 기반 위에서 Baseline을 만들고, Hyperparameter와 Feature를 조정하고, Validation과 교차검증을 사용해 최종 모델을 선택하는 &lt;strong&gt;모델 개발 및 최적화 과정&lt;/strong&gt;을 정리할 예정이다.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[LLM 아키텍처]]></title><description><![CDATA[LLM 아키텍처 이해하기 — 텍스트가 답변이 되기까지 LLM을 공부할 때 가장 먼저 마주치는 어려움은 용어가 많다는 것이다. Tokenization, Embedding, Attention, Transformer, Pretraining, Fine…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/llm/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/llm/</guid><pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;LLM 아키텍처 이해하기 — 텍스트가 답변이 되기까지&lt;/h1&gt;
 &lt;hr&gt;
 &lt;p&gt;LLM을 공부할 때 가장 먼저 마주치는 어려움은 용어가 많다는 것이다. Tokenization, Embedding, Attention, Transformer, Pretraining, Fine-tuning이 각각 별개의 기술처럼 보이기 쉽다. 하지만 이 개념들은 하나의 질문을 해결하기 위해 연결되어 있다.&lt;/p&gt;
 &lt;blockquote&gt;

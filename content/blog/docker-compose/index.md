@@ -2,7 +2,7 @@
 title: "Docker에서 Docker Compose까지"
 date: "2026-09-09"
 category: ["Docker", "DevOps", "Backend"]
-description: "컨테이너의 실행 원리부터 이미지, Dockerfile, 볼륨, 네트워크, PID 1, OCI 런타임, Docker Compose까지 하나의 흐름으로 정리한다."
+description: "컨테이너의 실행 원리부터 이미지, Dockerfile, 볼륨, 네트워크, PID 1, OCI 런타임, Docker Compose까지 하나의 흐름으로 정리"
 ---
 
 # Docker에서 Docker Compose까지: 컨테이너 기술의 구조와 실행 원리

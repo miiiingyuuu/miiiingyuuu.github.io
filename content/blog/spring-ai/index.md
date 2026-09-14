@@ -1,8 +1,8 @@
 ---
-title: "Spring AI 실습 총정리"
+title: "Spring AI"
 date: "2026-09-10"
 category: ["Java", "Spring", "AI", "RAG", "MCP"]
-description: "Spring AI의 ChatClient와 Structured Output부터 Embedding, PgVector, RAG, Chat Memory, Tool Calling, MCP, Simple Agent와 Multi-Agent까지 13개 실습의 핵심 구조와 실행 흐름을 정리한다."
+description: "Spring AI의 ChatClient와 Structured Output부터 Embedding, PgVector, RAG, Chat Memory, Tool Calling, MCP, Simple Agent와 Multi-Agent까지 13개 실습의 핵심 구조와 실행 흐름을 정리"
 ---
 
 

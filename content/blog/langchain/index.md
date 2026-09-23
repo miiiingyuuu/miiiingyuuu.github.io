@@ -2,7 +2,7 @@
 title: "LangChain 이해"
 date: "2026-09-23"
 category: ["LangChain", "LLM", "RAG"]
-description: "Prompt·Model·Parser의 연결에서 시작해 구조화 출력, 대화 메모리, Tool, 재시도, 병렬 처리, RAG, Agent와 LangGraph가 AI 애플리케이션의 어떤 문제를 해결하는지 정리한다."
+description: "Prompt·Model·Parser의 연결에서 시작해 구조화 출력, 대화 메모리, Tool, 재시도, 병렬 처리, RAG, Agent와 LangGraph가 AI 애플리케이션의 어떤 문제를 해결하는지 정리"
 ---
 
 # LangChain 이해 — 기본 Chain에서 RAG, Agent와 관찰성까지

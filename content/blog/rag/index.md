@@ -1,7 +1,7 @@
 ---
 title: "[스터디] 코드가 최신 스펙이다 — 포스타입의 사내 RAG 챗봇 구축기 읽기"
 date: "2026-03-15"
-category: ["Backend", "AI", "Architecture"]
+category: ["Backend", "AI", "Architecture", "RAG"]
 description: "포스타입 테크블로그의 '사내 AI 챗봇 도입기 1부'를 읽고 RAG 시스템의 개념, Chunking 전략, Metadata Filtering, Hybrid 검색, 자동 동기화 파이프라인까지 정리"
 ---
 

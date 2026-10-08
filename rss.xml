@@ -1,4 +1,839 @@
-<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 03 Oct 2026 11:32:33 GMT</lastBuildDate><item><title><![CDATA[RAG 이해]]></title><description><![CDATA[RAG와 배터리 수명 예측 이해 — 검색·근거·피처·일반화로 보는 데이터 파이프라인 문서를 읽고 질문에 답하는 RAG…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/rag-pipeline/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/rag-pipeline/</guid><pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RAG와 배터리 수명 예측 이해 — 검색·근거·피처·일반화로 보는 데이터 파이프라인&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Gatsby Starter Blog RSS Feed]]></title><description><![CDATA[A starter blog demonstrating what Gatsby can do.]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io</link><generator>GatsbyJS</generator><lastBuildDate>Thu, 08 Oct 2026 10:40:12 GMT</lastBuildDate><item><title><![CDATA[Kubernetes 심화 정리]]></title><description><![CDATA[Kubernetes…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/k8s-advanced/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/k8s-advanced/</guid><pubDate>Thu, 08 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Kubernetes는 컨테이너를 실행하는 도구를 넘어, 선언한 상태를 지속적으로 유지하는 시스템이다. 애플리케이션을 운영하려면 컨테이너 실행뿐 아니라 인증, 권한, 네트워크, 데이터 저장, 배포 전략, 상태 검사와 자원 관리가 함께 구성되어야 한다.&lt;/p&gt;
+&lt;p&gt;API와 인증·권한부터 컨테이너 실행, 배포, 네트워크, 설정, 저장소, 상태 검사와 자원 관리까지 주요 기술을 예제와 함께 정리합니다. 예제의 이미지 주소, Namespace, 도메인과 저장소 설정은 실행 환경에 맞게 변경해야 합니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;왜 Kubernetes를 사용하는가?&lt;/h2&gt;
+&lt;p&gt;컨테이너를 실행하는 것만으로 애플리케이션 운영이 끝나지는 않습니다. 장애 시 복구, 트래픽 연결, 버전 교체와 데이터 보관을 함께 관리해야 합니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;복제본 관리&lt;/strong&gt;: 앱을 여러 Pod로 실행하고 원하는 수를 유지합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;선언적 배포&lt;/strong&gt;: YAML로 원하는 상태를 정의하고 Controller가 현재 상태를 조정합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;네트워크 연결&lt;/strong&gt;: Service와 Ingress로 안정적인 내부·외부 접속점을 제공합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;설정과 데이터 분리&lt;/strong&gt;: ConfigMap, Secret, Volume으로 이미지와 운영 정보를 분리합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;운영 자동화&lt;/strong&gt;: Probe, Job, CronJob과 자원 설정으로 상태 검사와 작업 실행을 관리합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;초기 세팅&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;kubectl&lt;/code&gt;과 접근 가능한 Kubernetes 클러스터, 올바른 kubeconfig가 필요합니다. 이미지 빌드에는 Docker를 사용하며, 실습 템플릿과 kubeconfig 처리에는 &lt;code class=&quot;language-text&quot;&gt;yq&lt;/code&gt;를 사용합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 현재 접속 대상과 접근 가능한 노드 확인&lt;/span&gt;
+kubectl config current-context
+kubectl cluster-info
+kubectl get nodes
+
+&lt;span class=&quot;token comment&quot;&gt;# 예제용 Namespace 생성&lt;/span&gt;
+kubectl create namespace demo --dry-run&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;client &lt;span class=&quot;token parameter variable&quot;&gt;-o&lt;/span&gt; yaml &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; kubectl apply &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; -&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;노드 조회는 클러스터 범위 권한이 필요합니다. 교육용 계정에서 &lt;code class=&quot;language-text&quot;&gt;Forbidden&lt;/code&gt;이 발생하면 허용된 Namespace의 리소스로 접근 상태를 확인합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;기본 YAML 구조&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; apps/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Deployment
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+  &lt;span class=&quot;token key atrule&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; demo
+&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;matchLabels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+  &lt;span class=&quot;token key atrule&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+    &lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;token key atrule&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+          &lt;span class=&quot;token key atrule&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; nginx&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;1.27&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;alpine
+          &lt;span class=&quot;token key atrule&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;80&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;apiVersion&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;사용할 API 그룹과 버전&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;kind&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;리소스 종류&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;metadata&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;이름, Namespace, Label 등 식별 정보&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;spec&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;원하는 상태&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;status&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Kubernetes가 관찰한 현재 상태. 보통 직접 작성하지 않음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;Kubernetes 구성 요소와 선언적 운영&lt;/h2&gt;
+&lt;p&gt;Kubernetes의 기본 실행 단위는 &lt;strong&gt;Pod&lt;/strong&gt;다. Pod에는 하나 이상의 컨테이너가 포함되며, 스케줄러는 Pod를 단위로 노드를 선택한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;구성 요소&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;kube-apiserver&lt;/td&gt;
+&lt;td&gt;API 요청의 진입점. 인증·인가와 요청 처리를 수행한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;etcd&lt;/td&gt;
+&lt;td&gt;클러스터 상태와 리소스 정보를 저장한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;kube-scheduler&lt;/td&gt;
+&lt;td&gt;배치되지 않은 Pod가 실행될 Node를 선택한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;kube-controller-manager&lt;/td&gt;
+&lt;td&gt;리소스의 현재 상태와 원하는 상태를 비교해 조정한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;kubelet&lt;/td&gt;
+&lt;td&gt;각 Node에서 Pod의 컨테이너 실행과 상태 관리를 수행한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;컨테이너 런타임&lt;/td&gt;
+&lt;td&gt;containerd 등 실제 컨테이너 실행을 담당한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CoreDNS&lt;/td&gt;
+&lt;td&gt;클러스터 내부의 이름 해석을 제공한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;kube-proxy 또는 대체 구현&lt;/td&gt;
+&lt;td&gt;Service 트래픽 전달을 구현한다.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;확장 인터페이스도 역할별로 구분한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;인터페이스&lt;/th&gt;
+&lt;th&gt;대상&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;CRI&lt;/td&gt;
+&lt;td&gt;컨테이너 런타임&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CNI&lt;/td&gt;
+&lt;td&gt;컨테이너 네트워크&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CSI&lt;/td&gt;
+&lt;td&gt;스토리지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;원하는 상태와 조정 루프&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;YAML로 원하는 상태 선언
+        ↓
+API Server에 요청
+        ↓
+리소스 정보 저장
+        ↓
+Controller가 현재 상태를 관찰하고 조정&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;예를 들어 Deployment의 &lt;code class=&quot;language-text&quot;&gt;replicas: 3&lt;/code&gt;은 “Pod를 한 번 세 개 생성하라”가 아니라 “관리 대상 Pod가 세 개 유지되도록 하라”는 선언이다. Pod가 삭제되면 Controller가 부족한 수를 다시 생성한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl apply &lt;span class=&quot;token parameter variable&quot;&gt;-f&lt;/span&gt; deployment.yaml
+kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl describe pod &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pod-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Namespace, Label, Selector&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Namespace&lt;/strong&gt;는 팀이나 환경별로 리소스를 논리적으로 분리한다. Namespace 자체만으로 네트워크 격리가 완성되는 것은 아니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Label&lt;/strong&gt;은 리소스에 붙이는 식별·분류용 메타데이터다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Selector&lt;/strong&gt;는 Label을 조건으로 리소스 집합을 선택한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+    &lt;span class=&quot;token key atrule&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;1.0&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Service의 &lt;code class=&quot;language-text&quot;&gt;selector: {app: web}&lt;/code&gt;은 같은 Namespace에서 해당 Label을 가진 Pod를 연결 대상으로 선택한다. Pod 이름에 &lt;code class=&quot;language-text&quot;&gt;web&lt;/code&gt;이 포함되는지는 관계없다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Kubernetes API와 직접 호출&lt;/h2&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;kubectl&lt;/code&gt;은 Kubernetes API를 편리하게 호출하는 클라이언트다. 서버 주소, 인증과 요청 형식을 직접 구성하면 &lt;code class=&quot;language-text&quot;&gt;curl&lt;/code&gt;로도 리소스를 조회·생성·삭제할 수 있다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;작업&lt;/th&gt;
+&lt;th&gt;HTTP 메서드&lt;/th&gt;
+&lt;th&gt;경로 예시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod 목록 조회&lt;/td&gt;
+&lt;td&gt;GET&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;/api/v1/namespaces/demo/pods&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod 생성&lt;/td&gt;
+&lt;td&gt;POST&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;/api/v1/namespaces/demo/pods&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;특정 Pod 삭제&lt;/td&gt;
+&lt;td&gt;DELETE&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;/api/v1/namespaces/demo/pods/web&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Deployment 목록 조회&lt;/td&gt;
+&lt;td&gt;GET&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;/apis/apps/v1/namespaces/demo/deployments&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Core API는 &lt;code class=&quot;language-text&quot;&gt;/api/v1&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;apps&lt;/code&gt;처럼 이름이 있는 API 그룹은 &lt;code class=&quot;language-text&quot;&gt;/apis/&amp;lt;그룹&gt;/&amp;lt;버전&gt;&lt;/code&gt;을 사용한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;&lt;span class=&quot;token function&quot;&gt;curl&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--cacert&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;$CA_FILE&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token parameter variable&quot;&gt;-H&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;Authorization: Bearer &lt;span class=&quot;token variable&quot;&gt;$TOKEN&lt;/span&gt;&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;token string&quot;&gt;&quot;&lt;span class=&quot;token variable&quot;&gt;$API_SERVER&lt;/span&gt;/api/v1/namespaces/demo/pods&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;실습의 API 스크립트는 &lt;code class=&quot;language-text&quot;&gt;yq&lt;/code&gt;로 kubeconfig의 Context, 클러스터 주소와 사용자 토큰을 읽는다. 이러한 구현은 kubeconfig에 정적 &lt;code class=&quot;language-text&quot;&gt;token&lt;/code&gt;이 있는 인증 방식을 전제로 한다. 인증서나 &lt;code class=&quot;language-text&quot;&gt;exec&lt;/code&gt; 플러그인 기반 인증에는 추가 처리가 필요하다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;yq&lt;/code&gt; 같은 의존 도구가 없으면 주소와 토큰을 읽지 못해 이후 요청까지 실패한다. 요청 전에 의존성과 필수 값이 준비되어 있는지 확인해야 한다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;ServiceAccount와 RBAC&lt;/h2&gt;
+&lt;p&gt;API 접근에서는 &lt;strong&gt;인증&lt;/strong&gt;과 &lt;strong&gt;인가&lt;/strong&gt;를 구분한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;구분&lt;/th&gt;
+&lt;th&gt;질문&lt;/th&gt;
+&lt;th&gt;관련 기술&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;인증&lt;/td&gt;
+&lt;td&gt;요청한 주체는 누구인가?&lt;/td&gt;
+&lt;td&gt;ServiceAccount, 토큰, 인증서&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;인가&lt;/td&gt;
+&lt;td&gt;그 주체가 어떤 작업을 할 수 있는가?&lt;/td&gt;
+&lt;td&gt;RBAC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;ServiceAccount&lt;/h3&gt;
+&lt;p&gt;ServiceAccount는 Pod 안의 애플리케이션이 API에 접근할 때 사용할 수 있는 신원이다. &lt;code class=&quot;language-text&quot;&gt;serviceAccountName&lt;/code&gt;을 지정하지 않은 Pod는 해당 Namespace의 &lt;code class=&quot;language-text&quot;&gt;default&lt;/code&gt; ServiceAccount를 사용한다.&lt;/p&gt;
+&lt;p&gt;기본적인 자동 마운트 설정에서는 다음 파일을 확인할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;/var/run/secrets/kubernetes.io/serviceaccount/
+├── token
+├── ca.crt
+└── namespace&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl &lt;span class=&quot;token builtin class-name&quot;&gt;exec&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pod-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo -- /bin/sh
+&lt;span class=&quot;token function&quot;&gt;ls&lt;/span&gt; /var/run/secrets/kubernetes.io/serviceaccount&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;현대 Kubernetes에서는 일반적으로 만료 시간이 있는 projected ServiceAccount 토큰을 사용한다. 실습의 &lt;code class=&quot;language-text&quot;&gt;kubernetes.io/service-account-token&lt;/code&gt; Secret은 장기 토큰을 별도로 생성하는 방식이다. 자동 마운트 여부는 &lt;code class=&quot;language-text&quot;&gt;automountServiceAccountToken&lt;/code&gt;으로 제어할 수 있다.&lt;/p&gt;
+&lt;h3&gt;Role과 Binding&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;ServiceAccount ── RoleBinding ── Role
+     신원             연결        허용 작업&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;리소스&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Role&lt;/td&gt;
+&lt;td&gt;Namespace 범위의 권한 정의&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ClusterRole&lt;/td&gt;
+&lt;td&gt;클러스터 범위 권한 또는 재사용할 Namespace 리소스 권한 정의&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;RoleBinding&lt;/td&gt;
+&lt;td&gt;해당 Namespace에서 Role 또는 ClusterRole을 주체에 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ClusterRoleBinding&lt;/td&gt;
+&lt;td&gt;클러스터 전체 범위에서 ClusterRole을 주체에 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; rbac.authorization.k8s.io/v1
+&lt;span class=&quot;token key atrule&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; Role
+&lt;span class=&quot;token key atrule&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; pod&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;reader
+  &lt;span class=&quot;token key atrule&quot;&gt;namespace&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; demo
+&lt;span class=&quot;token key atrule&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;apiGroups&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;pods&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;verbs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;get&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;list&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;watch&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl auth can-i list pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl auth can-i list secrets &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pod 조회 권한이 있다고 ServiceAccount나 Secret 조회 권한까지 있는 것은 아니다. 권한은 API 그룹·리소스·동작 조합으로 결정된다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;컨테이너 실행: command, args, Init Container, Sidecar&lt;/h2&gt;
+&lt;h3&gt;command와 args&lt;/h3&gt;
+&lt;p&gt;Kubernetes의 &lt;code class=&quot;language-text&quot;&gt;command&lt;/code&gt;는 이미지의 ENTRYPOINT, &lt;code class=&quot;language-text&quot;&gt;args&lt;/code&gt;는 CMD에 대응한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;-c&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;token key atrule&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; exec python3 &quot;$EXEC_PYTHON_CODE&quot; &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt;port &quot;$SERVER_PORT&quot;
+&lt;span class=&quot;token key atrule&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; EXEC_PYTHON_CODE
+    &lt;span class=&quot;token key atrule&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; fastserver.py
+  &lt;span class=&quot;token punctuation&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token key atrule&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; SERVER_PORT
+    &lt;span class=&quot;token key atrule&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;8080&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;이 예제에서는 셸이 환경변수를 확장하고 &lt;code class=&quot;language-text&quot;&gt;python3 fastserver.py --port 8080&lt;/code&gt;을 실행한다. &lt;code class=&quot;language-text&quot;&gt;exec&lt;/code&gt;는 셸을 앱 프로세스로 교체하므로 앱이 종료 신호를 직접 받는 데 도움이 된다.&lt;/p&gt;
+&lt;h3&gt;Init Container와 Sidecar&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;구분&lt;/th&gt;
+&lt;th&gt;일반 Init Container&lt;/th&gt;
+&lt;th&gt;Sidecar 패턴&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;목적&lt;/td&gt;
+&lt;td&gt;앱 시작 전 준비&lt;/td&gt;
+&lt;td&gt;앱 실행 중 보조&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;실행 방식&lt;/td&gt;
+&lt;td&gt;순서대로 실행하고 성공 종료&lt;/td&gt;
+&lt;td&gt;메인 앱과 함께 실행&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;예시&lt;/td&gt;
+&lt;td&gt;초기 데이터 준비, 파일·의존 서비스 대기&lt;/td&gt;
+&lt;td&gt;프록시, 로그 수집&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;실습에서는 Init 컨테이너가 공유 볼륨의 &lt;code class=&quot;language-text&quot;&gt;active.enabled&lt;/code&gt; 파일을 기다린다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;파일 대기 → 파일 확인 → Init 성공 종료 → 메인 시작 → readiness 검사&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;완료된 Init 컨테이너에는 &lt;code class=&quot;language-text&quot;&gt;kubectl exec&lt;/code&gt;로 접속할 수 없다. 메인 컨테이너 시작 전, Init 컨테이너가 실행 중인 동안 접속해야 한다.&lt;/p&gt;
+&lt;p&gt;Sidecar 실습에서는 같은 Pod의 Nginx가 &lt;code class=&quot;language-text&quot;&gt;127.0.0.1:8080&lt;/code&gt;으로 앱에 요청을 전달한다. 같은 Pod의 컨테이너는 네트워크를 공유하지만, 파일을 공유하려면 공통 볼륨을 별도로 구성해야 한다.&lt;/p&gt;
+&lt;p&gt;실습은 일반 &lt;code class=&quot;language-text&quot;&gt;containers&lt;/code&gt;에 보조 컨테이너를 배치한 방식이다. Kubernetes에는 &lt;code class=&quot;language-text&quot;&gt;initContainers&lt;/code&gt;와 &lt;code class=&quot;language-text&quot;&gt;restartPolicy: Always&lt;/code&gt;를 사용하는 네이티브 Sidecar 구성도 있다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Deployment, ReplicaSet, StatefulSet&lt;/h2&gt;
+&lt;h3&gt;Deployment와 ReplicaSet&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Deployment → ReplicaSet → Pod
+배포·업데이트   복제 수 유지   실제 실행&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;ReplicaSet은 원하는 Pod 수를 유지한다.&lt;/li&gt;
+&lt;li&gt;Deployment는 ReplicaSet을 관리하며 배포·업데이트·롤백을 지원한다.&lt;/li&gt;
+&lt;li&gt;이미지 등 Pod 템플릿이 변경되면 새 ReplicaSet이 생성된다.&lt;/li&gt;
+&lt;li&gt;복제 수만 변경하면 기존 ReplicaSet의 원하는 수가 조정된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get deployment,replicaset,pod &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl scale deployment/web &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo &lt;span class=&quot;token parameter variable&quot;&gt;--replicas&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;
+kubectl rollout status deployment/web &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl rollout &lt;span class=&quot;token function&quot;&gt;history&lt;/span&gt; deployment/web &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl rollout undo deployment/web &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;기본 업데이트 전략인 RollingUpdate는 기존 Pod를 점진적으로 교체한다. &lt;code class=&quot;language-text&quot;&gt;maxSurge&lt;/code&gt;는 업데이트 중 추가 허용 Pod 수, &lt;code class=&quot;language-text&quot;&gt;maxUnavailable&lt;/code&gt;은 사용할 수 없어도 되는 Pod 수를 제어한다.&lt;/p&gt;
+&lt;h3&gt;StatefulSet과 Headless Service&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;Deployment&lt;/th&gt;
+&lt;th&gt;StatefulSet&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Pod 정체성&lt;/td&gt;
+&lt;td&gt;대체 가능한 복제본 중심&lt;/td&gt;
+&lt;td&gt;Pod별 안정적인 정체성&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;이름&lt;/td&gt;
+&lt;td&gt;임의 접미사&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;web-0&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;web-1&lt;/code&gt; 등 순번&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;저장소&lt;/td&gt;
+&lt;td&gt;별도 구성&lt;/td&gt;
+&lt;td&gt;&lt;code class=&quot;language-text&quot;&gt;volumeClaimTemplates&lt;/code&gt;로 Pod별 PVC 구성 가능&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;StatefulSet은 안정적인 이름과 연결된 저장소가 필요한 워크로드에 적합하다. 데이터 복제나 데이터베이스의 일관성을 자동으로 구현하는 것은 아니다.&lt;/p&gt;
+&lt;p&gt;Headless Service는 &lt;code class=&quot;language-text&quot;&gt;clusterIP: None&lt;/code&gt;으로 설정하며, 하나의 가상 IP 대신 개별 Pod 주소를 DNS로 발견하도록 돕는다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;clusterIP&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; None
+  &lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;Service와 Ingress&lt;/h2&gt;
+&lt;h3&gt;Service: 안정적인 접속점&lt;/h3&gt;
+&lt;p&gt;Pod IP는 교체 과정에서 바뀔 수 있다. Service는 Pod 집합에 안정적인 이름과 접속점을 제공한다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;유형·구성&lt;/th&gt;
+&lt;th&gt;특징&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ClusterIP&lt;/td&gt;
+&lt;td&gt;기본 유형. 클러스터 내부 가상 IP 제공&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NodePort&lt;/td&gt;
+&lt;td&gt;노드 포트로 Service 노출&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;LoadBalancer&lt;/td&gt;
+&lt;td&gt;외부 로드밸런서와 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ExternalName&lt;/td&gt;
+&lt;td&gt;외부 도메인으로 DNS 별칭 제공&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Headless&lt;/td&gt;
+&lt;td&gt;가상 IP 없이 개별 주소 발견&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;selector 없음&lt;/td&gt;
+&lt;td&gt;EndpointSlice 등으로 연결 대상을 별도 관리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;실습에는 selector 없는 Service와 수동 Endpoints 예제가 포함되어 있다. 새로운 구성에서는 EndpointSlice를 중심으로 이해하는 것이 좋다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Service port → targetPort → 앱이 실제로 듣는 포트&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;containerPort&lt;/code&gt;는 선언 정보이며, 앱의 수신 포트를 직접 열거나 변경하지 않는다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl port-forward &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo deployment/web &lt;span class=&quot;token number&quot;&gt;9090&lt;/span&gt;:8080&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;위 명령은 로컬 9090을 대상의 8080으로 전달한다. NodePort Service 생성과는 별개다.&lt;/p&gt;
+&lt;h3&gt;Ingress: HTTP/HTTPS 라우팅&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;외부 사용자 → Ingress Controller → Service → Pod
+                    ↑
+              Ingress 규칙&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ingress는 Host와 Path에 따른 연결 규칙이다. 실제 요청을 처리할 Ingress Controller가 필요하며 &lt;code class=&quot;language-text&quot;&gt;ingressClassName&lt;/code&gt;으로 처리할 클래스를 지정한다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;pathType: Prefix&lt;/code&gt;의 &lt;code class=&quot;language-text&quot;&gt;/api&lt;/code&gt;는 &lt;code class=&quot;language-text&quot;&gt;/api/users&lt;/code&gt;와 일치하지만 &lt;code class=&quot;language-text&quot;&gt;/apix&lt;/code&gt;와는 일치하지 않는다. 경로를 바꾸는 rewrite 설정이 없다면 원래 경로가 백엔드로 전달된다.&lt;/p&gt;
+&lt;h3&gt;TLS와 cert-manager&lt;/h3&gt;
+&lt;p&gt;TLS Secret은 &lt;code class=&quot;language-text&quot;&gt;kubernetes.io/tls&lt;/code&gt; 타입이며 &lt;code class=&quot;language-text&quot;&gt;tls.crt&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;tls.key&lt;/code&gt;를 포함한다. Ingress는 같은 Namespace의 Secret을 &lt;code class=&quot;language-text&quot;&gt;tls.secretName&lt;/code&gt;으로 참조한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;인증서의 SAN은 실제 접속 도메인과 일치해야 한다.&lt;/li&gt;
+&lt;li&gt;자체 서명 인증서는 클라이언트의 기본 신뢰 목록에 없으므로 경고가 발생할 수 있다.&lt;/li&gt;
+&lt;li&gt;cert-manager는 인증서 발급과 갱신을 자동화한다.&lt;/li&gt;
+&lt;li&gt;Issuer는 Namespace 범위, ClusterIssuer는 클러스터 범위에서 참조한다.&lt;/li&gt;
+&lt;li&gt;Let&apos;s Encrypt 와일드카드 발급에는 DNS-01 검증이 필요하다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Controller에서 TLS를 종료하고 백엔드에는 HTTP로 전달하는 구성도 가능하다. 외부 HTTPS가 내부 통신까지 자동으로 HTTPS로 바꾸지는 않는다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;ConfigMap과 Secret&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;ConfigMap&lt;/th&gt;
+&lt;th&gt;Secret&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;대상&lt;/td&gt;
+&lt;td&gt;일반 설정&lt;/td&gt;
+&lt;td&gt;비밀번호·토큰 등 민감한 설정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;환경변수 참조&lt;/td&gt;
+&lt;td&gt;configMapKeyRef&lt;/td&gt;
+&lt;td&gt;secretKeyRef&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;파일 전달&lt;/td&gt;
+&lt;td&gt;ConfigMap 볼륨&lt;/td&gt;
+&lt;td&gt;Secret 볼륨&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Secret의 &lt;code class=&quot;language-text&quot;&gt;stringData&lt;/code&gt;는 평문 작성용 필드이고, API로 조회하는 &lt;code class=&quot;language-text&quot;&gt;data&lt;/code&gt;는 Base64 표현이다. Base64는 암호화가 아니며 접근 제어와 저장 시 암호화는 별도로 고려해야 한다.&lt;/p&gt;
+&lt;p&gt;설정 변경 후 동작도 전달 방식에 따라 다르다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;환경변수는 실행 중인 컨테이너에 자동 반영되지 않아 재생성이 필요하다.&lt;/li&gt;
+&lt;li&gt;일반적인 볼륨 마운트 파일은 나중에 갱신되지만 앱이 다시 읽어야 실제 설정에 반영된다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;subPath&lt;/code&gt; 마운트는 자동 갱신되지 않는다.&lt;/li&gt;
+&lt;li&gt;ConfigMap이나 Secret 변경만으로 Deployment가 자동 재배포되지는 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;Volume, PV, PVC, StorageClass&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;기술&lt;/th&gt;
+&lt;th&gt;데이터 수명과 특징&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;emptyDir&lt;/td&gt;
+&lt;td&gt;Pod 수명에 연결. 컨테이너 재시작에는 유지, Pod 삭제 시 소멸&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;hostPath&lt;/td&gt;
+&lt;td&gt;노드의 디렉터리 연결. 특정 노드에 종속&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PV&lt;/td&gt;
+&lt;td&gt;클러스터 범위의 저장소 자원 표현&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PVC&lt;/td&gt;
+&lt;td&gt;Namespace에서 필요한 저장소를 요청&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;StorageClass&lt;/td&gt;
+&lt;td&gt;동적 공급 방식과 파라미터 정의&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;정적 공급에서는 PV를 직접 정의하고 PVC와 연결한다. 동적 공급에서는 PVC가 StorageClass를 참조해 저장소 공급을 요청한다. 연결 완료 상태는 &lt;code class=&quot;language-text&quot;&gt;Bound&lt;/code&gt;다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;접근 모드&lt;/th&gt;
+&lt;th&gt;의미&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ReadWriteOnce&lt;/td&gt;
+&lt;td&gt;한 노드에서 읽기·쓰기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReadOnlyMany&lt;/td&gt;
+&lt;td&gt;여러 노드에서 읽기 전용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReadWriteMany&lt;/td&gt;
+&lt;td&gt;여러 노드에서 읽기·쓰기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReadWriteOncePod&lt;/td&gt;
+&lt;td&gt;하나의 Pod로 읽기·쓰기 제한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;ReadWriteOnce는 Pod 하나만 사용한다는 의미가 아니다.&lt;/strong&gt; 같은 노드의 여러 Pod가 사용할 수 있다.&lt;/p&gt;
+&lt;p&gt;실습의 EFS는 여러 노드의 공유 파일 저장소, EBS는 노드 연결 제약이 있는 블록 저장소를 비교하는 예제다. 접근 모드만으로 모든 저장소가 해당 기능을 제공하는 것은 아니며 드라이버와 저장소가 지원해야 한다.&lt;/p&gt;
+&lt;p&gt;PV의 회수 정책도 구분한다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Retain&lt;/code&gt;: PVC 삭제 이후 저장소를 보존하고 별도 정리한다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;Delete&lt;/code&gt;: 지원하는 공급자에서 연결된 저장소도 삭제한다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get pvc &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl describe pvc &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pvc-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl get storageclass&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;Blue-Green과 Canary 배포&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방식&lt;/th&gt;
+&lt;th&gt;동작&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;RollingUpdate&lt;/td&gt;
+&lt;td&gt;Pod를 점진적으로 교체&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Blue-Green&lt;/td&gt;
+&lt;td&gt;신·구 환경을 준비한 후 연결 대상 전환&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Canary&lt;/td&gt;
+&lt;td&gt;일부 요청에 새 버전을 먼저 적용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Blue-Green 실습은 Service selector의 &lt;code class=&quot;language-text&quot;&gt;version&lt;/code&gt;을 변경한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; web
+  &lt;span class=&quot;token key atrule&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;2.0&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Canary 실습은 Nginx Ingress의 annotation으로 헤더, 쿠키, 가중치에 따른 트래픽 분기를 구성한다. 이러한 annotation은 Controller 구현에 종속되며 Kubernetes 공통 기능은 아니다.&lt;/p&gt;
+&lt;p&gt;새 버전 Pod를 실행하는 단계와 사용자 트래픽을 연결하는 단계를 구분하면 배포 전략을 이해하기 쉽다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;정상 종료와 Probe&lt;/h2&gt;
+&lt;h3&gt;Graceful shutdown&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;설정&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;postStart&lt;/td&gt;
+&lt;td&gt;컨테이너 생성 이후 실행하는 훅&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;preStop&lt;/td&gt;
+&lt;td&gt;종료 전에 실행하는 훅&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;terminationGracePeriodSeconds&lt;/td&gt;
+&lt;td&gt;정상 종료 유예 시간&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;postStart&lt;/code&gt;가 앱의 ENTRYPOINT보다 먼저 완료된다는 보장은 없다. 일반적인 정상 종료에서는 &lt;code class=&quot;language-text&quot;&gt;preStop&lt;/code&gt;, 종료 신호 전달, 앱 종료 대기가 이루어지며 유예 시간 이후 강제 종료될 수 있다.&lt;/p&gt;
+&lt;p&gt;유예 시간에는 &lt;code class=&quot;language-text&quot;&gt;preStop&lt;/code&gt; 실행 시간도 포함된다. 실습처럼 유예 시간을 0으로 설정하면 &lt;code class=&quot;language-text&quot;&gt;preStop&lt;/code&gt;의 대기 작업을 완료할 시간을 보장하지 않는다. 앱 자체의 종료 신호 처리도 함께 구현해야 한다.&lt;/p&gt;
+&lt;h3&gt;Probe&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;검사&lt;/th&gt;
+&lt;th&gt;질문&lt;/th&gt;
+&lt;th&gt;실패 기준 도달 시&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;startupProbe&lt;/td&gt;
+&lt;td&gt;앱 시작이 끝났는가?&lt;/td&gt;
+&lt;td&gt;컨테이너 재시작 처리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;livenessProbe&lt;/td&gt;
+&lt;td&gt;앱에 재시작이 필요한가?&lt;/td&gt;
+&lt;td&gt;컨테이너 재시작 처리&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;readinessProbe&lt;/td&gt;
+&lt;td&gt;요청을 받아도 되는가?&lt;/td&gt;
+&lt;td&gt;일반적인 Service 트래픽 대상에서 제외&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;startupProbe 성공 전에는 liveness와 readiness 검사가 시작되지 않는다. 실습 파일은 liveness와 readiness를 중심으로 구성되어 있다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;initialDelaySeconds&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;periodSeconds&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;timeoutSeconds&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;failureThreshold&lt;/code&gt;로 검사 시점과 실패 판단을 조절한다. HTTP Probe의 성공 범위는 200 이상 400 미만이다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Running은 실행 상태, Ready는 요청을 받을 준비 상태다.&lt;/strong&gt; readiness 실패만으로 컨테이너가 재시작되지는 않는다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;Job과 CronJob&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;CronJob → Job → Pod
+실행 일정   완료 관리   실제 작업&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;필드&lt;/th&gt;
+&lt;th&gt;의미&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;completions&lt;/td&gt;
+&lt;td&gt;필요한 성공 완료 수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;parallelism&lt;/td&gt;
+&lt;td&gt;동시에 실행할 수 있는 Pod 수&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;backoffLimit&lt;/td&gt;
+&lt;td&gt;실패 재시도 제한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;schedule&lt;/td&gt;
+&lt;td&gt;Cron 표현식&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;concurrencyPolicy&lt;/td&gt;
+&lt;td&gt;해당 CronJob의 작업 중복 실행 정책&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;completions: 3&lt;/code&gt;, &lt;code class=&quot;language-text&quot;&gt;parallelism: 2&lt;/code&gt;는 총 세 번 성공해야 하며 최대 두 개를 동시에 실행한다는 의미다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;*/3 * * * *&lt;/code&gt;는 매 3분이다. &lt;code class=&quot;language-text&quot;&gt;concurrencyPolicy: Forbid&lt;/code&gt;는 이전 Job이 실행 중이면 다음 실행을 건너뛴다. 완료 시점을 관리하는 Job은 계속 실행되는 서버를 관리하는 Deployment와 목적이 다르다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;SecurityContext와 스케줄링&lt;/h2&gt;
+&lt;h3&gt;프로세스 실행 권한&lt;/h3&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;설정&lt;/th&gt;
+&lt;th&gt;의미&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;runAsUser / runAsGroup&lt;/td&gt;
+&lt;td&gt;실행 UID / GID&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;runAsNonRoot&lt;/td&gt;
+&lt;td&gt;root 실행 방지&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;privileged&lt;/td&gt;
+&lt;td&gt;광범위한 시스템 권한 허용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;capabilities&lt;/td&gt;
+&lt;td&gt;Linux 권한을 선택적으로 추가·제거&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;securityContext&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;runAsNonRoot&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token boolean important&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;runAsUser&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1000&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;allowPrivilegeEscalation&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token boolean important&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;capabilities&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;drop&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;ALL&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;위 구성은 이미지가 해당 사용자로 실행될 수 있다는 전제가 필요하다. 파일 접근 권한이나 시작 명령이 root를 요구하면 실행에 실패할 수 있다.&lt;/p&gt;
+&lt;p&gt;ServiceAccount와 RBAC는 API 요청 권한을, SecurityContext는 컨테이너 프로세스의 실행 권한을 제어한다.&lt;/p&gt;
+&lt;h3&gt;배치 조건&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Taint는 특정 Pod의 노드 배치를 막거나 제한한다.&lt;/li&gt;
+&lt;li&gt;Toleration은 해당 Taint를 허용하지만 그 노드에 배치됨을 보장하지 않는다.&lt;/li&gt;
+&lt;li&gt;Node Affinity는 노드 조건을 지정한다.&lt;/li&gt;
+&lt;li&gt;Pod Affinity는 다른 Pod와 가까이, Anti-Affinity는 떨어져 배치한다.&lt;/li&gt;
+&lt;li&gt;&lt;code class=&quot;language-text&quot;&gt;requiredDuringSchedulingIgnoredDuringExecution&lt;/code&gt;은 스케줄링 시 필수 조건이다. 실행 이후 조건 변경만으로 Pod를 자동 이동시키지는 않는다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;requests, limits, QoS, PriorityClass&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;개념&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;requests&lt;/td&gt;
+&lt;td&gt;스케줄링 시 필요한 자원량 판단 기준&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;limits&lt;/td&gt;
+&lt;td&gt;실행 중 자원 사용 상한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;QoS&lt;/td&gt;
+&lt;td&gt;자원 설정에 따른 Pod 분류&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;PriorityClass&lt;/td&gt;
+&lt;td&gt;Pod의 스케줄링 우선순위 지정&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;yaml&quot;&gt;&lt;pre class=&quot;language-yaml&quot;&gt;&lt;code class=&quot;language-yaml&quot;&gt;&lt;span class=&quot;token key atrule&quot;&gt;resources&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;100m&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;memory&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;128Mi&quot;&lt;/span&gt;
+  &lt;span class=&quot;token key atrule&quot;&gt;limits&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;cpu&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;200m&quot;&lt;/span&gt;
+    &lt;span class=&quot;token key atrule&quot;&gt;memory&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;256Mi&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;100m&lt;/code&gt;은 CPU 0.1개에 해당한다. requests는 자원을 미리 사용하는 값이 아니라 스케줄링과 자원 관리의 기준이다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;QoS&lt;/th&gt;
+&lt;th&gt;일반적인 CPU·메모리 설정 조건&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;BestEffort&lt;/td&gt;
+&lt;td&gt;모든 컨테이너에 requests와 limits가 없음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Guaranteed&lt;/td&gt;
+&lt;td&gt;모든 컨테이너에 CPU·메모리 requests와 limits가 있으며 각각 동일&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Burstable&lt;/td&gt;
+&lt;td&gt;위 두 조건에 해당하지 않는 경우&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;CPU limit 초과는 주로 throttling으로 실행이 제한된다. 메모리 limit 초과는 OOM 종료로 이어질 수 있다.&lt;/p&gt;
+&lt;p&gt;PriorityClass는 자원이 부족할 때 중요한 Pod의 스케줄링 우선순위를 높이며 조건에 따라 낮은 우선순위 Pod의 선점을 유발할 수 있다. QoS와 별개이고, 높은 우선순위가 자원 무제한이나 무중단을 보장하지 않는다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;문제 확인 순서&lt;/h2&gt;
+&lt;p&gt;문제 발생 시 설정을 무작정 바꾸기보다 상태와 이벤트를 먼저 확인한다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;bash&quot;&gt;&lt;pre class=&quot;language-bash&quot;&gt;&lt;code class=&quot;language-bash&quot;&gt;kubectl get pods &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo &lt;span class=&quot;token parameter variable&quot;&gt;-o&lt;/span&gt; wide
+kubectl describe pod &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pod-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo
+kubectl logs &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pod-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo &lt;span class=&quot;token parameter variable&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;container-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt;
+kubectl logs &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;pod-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;-n&lt;/span&gt; demo &lt;span class=&quot;token parameter variable&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt;container-name&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token parameter variable&quot;&gt;--previous&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;상태·증상&lt;/th&gt;
+&lt;th&gt;우선 확인할 것&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Pending&lt;/td&gt;
+&lt;td&gt;requests, 배치 조건, Taint, PVC, 노드 자원&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ErrImagePull / ImagePullBackOff&lt;/td&gt;
+&lt;td&gt;이미지 경로·태그·인증·레지스트리 접근&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Init 대기&lt;/td&gt;
+&lt;td&gt;Init 로그와 완료 조건&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CrashLoopBackOff&lt;/td&gt;
+&lt;td&gt;종료 원인, 앱 로그, 실행 명령, Probe&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Running이지만 Ready 아님&lt;/td&gt;
+&lt;td&gt;readiness 설정과 앱 준비 상태&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Service 접속 실패&lt;/td&gt;
+&lt;td&gt;Namespace, selector, 대상 Pod 준비 상태, 포트&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ingress 접속 실패&lt;/td&gt;
+&lt;td&gt;DNS, Controller, IngressClass, Host·Path, Service&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTPS 검증 실패&lt;/td&gt;
+&lt;td&gt;인증서 신뢰, SAN, 유효기간, TLS Secret&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Forbidden&lt;/td&gt;
+&lt;td&gt;요청 신원과 RBAC 권한&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Events에는 해결 이전의 오류도 남는다. 과거 경고만으로 현재 실패 상태라고 판단하지 않고, 현재 컨테이너 상태·Ready 조건·최신 이벤트를 함께 확인한다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;기술별 역할 요약&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;API Server               API 요청 진입점
+ServiceAccount / RBAC     요청 신원과 허용 작업
+Init / Sidecar           시작 전 준비와 실행 중 보조
+Deployment / StatefulSet 복제본과 상태형 워크로드 관리
+Service / Ingress        내부 접속점과 외부 HTTP 라우팅
+ConfigMap / Secret       일반 설정과 민감한 설정 전달
+PV / PVC / StorageClass  데이터 저장과 저장소 공급
+Probe / 종료 훅           준비 상태·재시작·정상 종료
+Job / CronJob            완료 작업과 예약 실행
+SecurityContext          프로세스 실행 권한
+requests / limits / QoS  자원 요구량·상한·분류
+PriorityClass            스케줄링 우선순위&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[RAG 이해]]></title><description><![CDATA[RAG와 배터리 수명 예측 이해 — 검색·근거·피처·일반화로 보는 데이터 파이프라인 문서를 읽고 질문에 답하는 RAG…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/rag-pipeline/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/rag-pipeline/</guid><pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;RAG와 배터리 수명 예측 이해 — 검색·근거·피처·일반화로 보는 데이터 파이프라인&lt;/h1&gt;
 &lt;p&gt;문서를 읽고 질문에 답하는 RAG와 초기 배터리 신호로 수명을 예측하는 회귀 모델은 결과의 형태가 다르다. 하나는 자연어 답변을 만들고, 다른 하나는 숫자를 예측한다. 그러나 둘 다 원본 데이터를 모델이 사용할 수 있는 정보로 바꾸고, 그 결과가 새로운 상황에서도 유효한지 확인해야 한다.&lt;/p&gt;
 &lt;p&gt;문서 검색 결과가 질문과 비슷하다는 이유만으로 답변의 근거가 되는 것은 아니다. 배터리 피처가 수명과 강하게 상관된다는 이유만으로 다른 배치에서도 잘 예측하는 것도 아니다. &lt;strong&gt;데이터 표현, 정보의 사용 범위, 평가 기준을 함께 설계해야 모델의 결과를 해석할 수 있다.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;이 글은 RAG Pipeline과 배터리 수명 예측에 필요한 기술을 두 축으로 정리한다. 첫 번째 축은 문서에서 근거를 찾아 답변하는 방법이고, 두 번째 축은 관측 데이터에서 피처를 만들어 일반화 성능을 평가하는 방법이다.&lt;/p&gt;
@@ -22106,6 +22941,353 @@ right &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; arr&lt;span cl
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://killerwhale0917.tistory.com/5&quot;&gt;killerwhale0917 블로그 — Meet in the middle&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://blog.naver.com/kks227/221382873753&quot;&gt;kks227 블로그 — 밋 인 더 미들&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[외판원 순회 (TSP, Traveling Salesman Problem)]]></title><description><![CDATA[외판원 순회 문제(Traveling Salesman Problem, TSP…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/tsp/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/tsp/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;외판원 순회 문제(Traveling Salesman Problem, TSP)&lt;/strong&gt; 는 조합 최적화 분야에서 가장 유명한 문제 중 하나입니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;여러 도시를 방문하며 물건을 팔아야 하는 외판원이, 모든 도시를 정확히 한 번씩 방문하고 출발점으로 돌아올 때 &lt;strong&gt;이동 거리의 합이 최소인 경로&lt;/strong&gt; 를 구하라.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;단순해 보이지만 도시 수가 늘어날수록 경우의 수가 폭발적으로 증가하는 NP-Hard 문제입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;1. 브루트포스의 한계&lt;/h2&gt;
+&lt;p&gt;가장 직관적인 방법은 모든 방문 순서(순열)를 시도해보는 것입니다. 하지만 n개 도시의 순열 개수는 n!이므로, n이 조금만 커져도 현실적으로 계산이 불가능합니다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 44.30379746835443%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAABAP/aAAwDAQACEAMQAAABySqWYQT/xAAXEAEAAwAAAAAAAAAAAAAAAAARACAh/9oACAEBAAEFAmONP//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAABBECD/2gAIAQEABj8CIY//xAAdEAABBAIDAAAAAAAAAAAAAAABABARITGRQVFh/9oACAEBAAE/IaRA0QOVDPSPjRuG/9oADAMBAAIAAwAAABAgD//EABcRAQEBAQAAAAAAAAAAAAAAAAEAESH/2gAIAQMBAT8QSnbL/8QAGBEAAgMAAAAAAAAAAAAAAAAAAAERITH/2gAIAQIBAT8QVYSz/8QAGhAAAwADAQAAAAAAAAAAAAAAAAERMUFxUf/aAAgBAQABPxC10fmlpWtarHN4uKh64LLoz//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Brute Force vs DP&quot;
+        title=&quot;&quot;
+        src=&quot;/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg&quot;
+        srcset=&quot;/static/be2377feb207e326959433562cd6c12f/ff44c/complexity_compare.jpg 158w,
+/static/be2377feb207e326959433562cd6c12f/a6688/complexity_compare.jpg 315w,
+/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg 630w,
+/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg 900w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;n&lt;/th&gt;
+&lt;th&gt;브루트포스 (n!)&lt;/th&gt;
+&lt;th&gt;DP + 비트마스킹 (n²·2ⁿ)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;120&lt;/td&gt;
+&lt;td&gt;800&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;3,628,800&lt;/td&gt;
+&lt;td&gt;102,400&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;td&gt;1조 3천억&lt;/td&gt;
+&lt;td&gt;7,372,800&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;20&lt;/td&gt;
+&lt;td&gt;243경&lt;/td&gt;
+&lt;td&gt;20,971,520&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;브루트포스는 n ≤ 11 수준에서만 현실적입니다. 반면 비트마스킹 DP는 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 정도까지 충분히 풀 수 있습니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;2. 핵심 아이디어 — 비트마스킹 DP&lt;/h2&gt;
+&lt;h3&gt;상태 정의&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited]&lt;/code&gt;를 다음과 같이 정의합니다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;현재 위치가 도시 &lt;code class=&quot;language-text&quot;&gt;i&lt;/code&gt;이고, 지금까지 방문한 도시 집합이 &lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;일 때,
+&lt;strong&gt;남은 도시를 모두 방문하고 출발점으로 돌아오는 최소 거리&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;visited를 비트마스크로 표현&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;는 정수(integer)로 표현하며, 각 비트가 해당 도시의 방문 여부를 나타냅니다.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 45.56962025316456%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/9oADAMBAAIQAxAAAAHJQc0hP//EABYQAQEBAAAAAAAAAAAAAAAAAAEQIP/aAAgBAQABBQIjj//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABYQAQEBAAAAAAAAAAAAAAAAAEEAIP/aAAgBAQAGPwIjP//EABsQAAEFAQEAAAAAAAAAAAAAAAEAEBEhgTHB/9oACAEBAAE/IR4Z0hc3pDfBjD1v/9oADAMBAAIAAwAAABAUP//EABURAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDAQE/EEf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAcEAACAgIDAAAAAAAAAAAAAAABEQAxIWFBUXH/2gAIAQEAAT8QGkJdNmtQWI4zRFcaqBVUiuJ14JcQbn//2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;Bitmask State&quot;
+        title=&quot;&quot;
+        src=&quot;/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg&quot;
+        srcset=&quot;/static/8f042906b25036f594777656230ff735/ff44c/bitmask_state.jpg 158w,
+/static/8f042906b25036f594777656230ff735/a6688/bitmask_state.jpg 315w,
+/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg 630w,
+/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg 920w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;도시 4개: A(0번), B(1번), C(2번), D(3번)
+
+visited = 0001 (2진수) = 1  → A만 방문
+visited = 0011 (2진수) = 3  → A, B 방문
+visited = 0111 (2진수) = 7  → A, B, C 방문
+visited = 1111 (2진수) = 15 → 모두 방문 = (1&amp;lt;&amp;lt;n) - 1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;특정 도시 j를 방문했다고 표시하려면 &lt;code class=&quot;language-text&quot;&gt;visited | (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 해당 비트를 1로 설정합니다. 도시 j를 이미 방문했는지 확인하려면 &lt;code class=&quot;language-text&quot;&gt;visited &amp;amp; (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 확인합니다.&lt;/p&gt;
+&lt;h3&gt;점화식&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited] = min(
+    dp[j][visited | (1 &amp;lt;&amp;lt; j)] + dist(i, j)
+)
+단, j는 아직 방문하지 않은 도시&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&quot;현재 i에서 미방문 도시 j로 이동한다고 가정했을 때, j에서 나머지를 최적으로 돌아오는 거리 + i~j 사이의 거리&quot; 중 최솟값을 선택합니다.&lt;/p&gt;
+&lt;h3&gt;종료 조건&lt;/h3&gt;
+&lt;p&gt;모든 도시를 방문한 상태(&lt;code class=&quot;language-text&quot;&gt;visited == (1 &amp;lt;&amp;lt; n) - 1&lt;/code&gt;)에서는 출발점(0번)으로 돌아가는 거리를 반환합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dist&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 복귀&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;3. 단계별 동작 시각화 (4도시 예제)&lt;/h2&gt;
+&lt;p&gt;4개 도시 A, B, C, D가 있고 거리가 다음과 같을 때 A를 출발점으로 TSP를 풉니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;A ↔ B : 10    A ↔ C : 15    A ↔ D : 20
+B ↔ C : 35    B ↔ D : 25    C ↔ D : 30&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 42.405063291139236%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAIABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAccJIr//xAAWEAADAAAAAAAAAAAAAAAAAAAAEBH/2gAIAQEAAQUCVP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABgQAAIDAAAAAAAAAAAAAAAAAABRARFB/9oACAEBAAE/IUZJRH//2gAMAwEAAgADAAAAEHvf/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8QZ//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/EFn/xAAZEAEAAgMAAAAAAAAAAAAAAAABABEhUfH/2gAIAQEAAT8QDSVkS49M/9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;DP Steps&quot;
+        title=&quot;&quot;
+        src=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg&quot;
+        srcset=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/ff44c/dp_steps.jpg 158w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/a6688/dp_steps.jpg 315w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg 630w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/0ede0/dp_steps.jpg 945w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/3ac88/dp_steps.jpg 1260w,
+/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg 2070w&quot;
+        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
+        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+        loading=&quot;lazy&quot;
+        decoding=&quot;async&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;각 단계를 재귀 트리로 정리하면 다음과 같습니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dfs(A, 0001)
+├── A→B : dfs(B, 0011)
+│   ├── B→C : dfs(C, 0111) → C→D→A = 30+20 = 50 → 35+50 = 85
+│   └── B→D : dfs(D, 1011) → D→C→A = 30+15 = 45 → 25+45 = 70  ← 최솟값
+├── A→C : dfs(C, 0101)
+│   ├── C→B : dfs(B, 0111) → B→D→A = 25+20 = 45 → 35+45 = 80
+│   └── C→D : dfs(D, 1101) → D→B→A = 25+10 = 35 → 30+35 = 65  ← 최솟값
+└── A→D : dfs(D, 1001)
+    ├── D→B : dfs(B, 1011) → B→C→A = 35+15 = 50 → 25+50 = 75
+    └── D→C : dfs(C, 1101) → C→B→A = 35+10 = 45 → 30+45 = 75
+
+최적: A→B→D→C→A = 10+25+30+15 = 80&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;4. Python 구현&lt;/h2&gt;
+&lt;h3&gt;전체 코드 (최솟값)&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; math
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; functools &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; lru_cache
+
+&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
+
+&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;solve&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    graph &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    INF &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    dp &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;INF&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token comment&quot;&gt;# 모든 도시 방문 완료 → 출발점(0)으로 귀환&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; INF
+
+        &lt;span class=&quot;token comment&quot;&gt;# 이미 계산된 상태면 재사용 (메모이제이션)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; INF&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; next_city &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token comment&quot;&gt;# 이미 방문했거나 경로가 없으면 skip&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+            cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+            dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; cost&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 0번 도시에서 출발 (visited = 0001)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+solve&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;핵심 로직 흐름&lt;/h3&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. dfs(현재 도시, 방문 상태) 호출
+2. 종료 조건: visited == (1&amp;lt;&amp;lt;n)-1 이면 출발점까지 거리 반환
+3. 이미 계산된 dp[현재][visited] 가 있으면 바로 반환
+4. 미방문 도시 j마다:
+   - dfs(j, visited | (1&amp;lt;&amp;lt;j)) 재귀 호출
+   - 반환값 + dist(현재→j) 를 dp에 업데이트
+5. dp[현재][visited] 반환&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;5. 경로 복원&lt;/h2&gt;
+&lt;p&gt;최솟값뿐 아니라 &lt;strong&gt;어떤 순서로 방문해야 하는지&lt;/strong&gt; 경로도 출력하려면 dp 테이블을 역추적합니다.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;print_path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token comment&quot;&gt;# 모두 방문했으면 종료&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 귀환&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+
+    next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
+    min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+        &lt;span class=&quot;token comment&quot;&gt;# dp[j][next_visited] + dist(current→j) 가 최소인 도시를 다음 목적지로 선택&lt;/span&gt;
+        next_visited &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; cost &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; min_cost&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cost
+            next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; j
+
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; next_city &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# 사용 예&lt;/span&gt;
+path &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot; → &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;join&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; p &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token comment&quot;&gt;# 출력 예: 0 → 1 → 3 → 2 → 0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;6. 시간 복잡도 분석&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;내용&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;부분 문제 수&lt;/td&gt;
+&lt;td&gt;현재 위치 n가지 × visited 상태 2ⁿ가지 = &lt;strong&gt;n·2ⁿ&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;각 부분 문제 해결 비용&lt;/td&gt;
+&lt;td&gt;미방문 도시 탐색 &lt;strong&gt;O(n)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;총 시간복잡도&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(n²·2ⁿ)&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;공간복잡도&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;O(n·2ⁿ)&lt;/strong&gt; — dp 테이블 크기&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;브루트포스 O(n!)에 비해 압도적으로 빠르지만, 여전히 지수 시간이므로 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 이 실용적인 한계입니다.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;7. 자주 하는 실수&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;1. 방문 체크 방향 혼동&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — 이미 방문한 도시를 skip하는 게 아니라 반대로 처리&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름 — 이미 방문한 도시면 skip&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;2. 점화식에서 인덱스 혼동&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — dp[i]에서 갱신해야 하는데 dp[j]로 작성&lt;/span&gt;
+dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름&lt;/span&gt;
+dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;3. 출발점 복귀 조건에서 0 거리 처리&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 도시 간 경로가 없을 때 0으로 표현하는 문제의 경우&lt;/span&gt;
+&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 돌아오는 길이 없으면&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; INF
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;8. 관련 백준 문제&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;문제&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;설명&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/2098&quot;&gt;2098 외판원 순회&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;TSP 기본 문제 — 비트마스킹 DP&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1102&quot;&gt;1102 발전소&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;비트마스킹 DP 응용&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1562&quot;&gt;1562 계단 수&lt;/a&gt;&lt;/td&gt;
+&lt;td&gt;Gold I&lt;/td&gt;
+&lt;td&gt;비트마스킹 + DP 조합 연습&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;참고 자료&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://velog.io/@dltmdrl1244/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%99%B8%ED%8C%90%EC%9B%90-%EC%88%9C%ED%9A%8CTSP-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98&quot;&gt;[알고리즘] 외판원 순회(TSP) 알고리즘&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[트라이 (Trie)]]></title><description><![CDATA[검색창에 'ap'를 입력하는 순간 'apple', 'application', 'apply' 같은 단어가 뜨는 자동완성 기능. 이 기능의 핵심에 트라이(Trie…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/trie/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/trie/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;검색창에 &apos;ap&apos;를 입력하는 순간 &apos;apple&apos;, &apos;application&apos;, &apos;apply&apos; 같은 단어가 뜨는 자동완성 기능. 이 기능의 핵심에 &lt;strong&gt;트라이(Trie)&lt;/strong&gt; 가 있습니다. 트라이는 문자열을 저장하고 빠르게 탐색하기 위해 설계된 트리 형태의 자료구조입니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;1. 트라이(Trie)란?&lt;/h2&gt;
@@ -22664,353 +23846,6 @@ sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;setrecursionlim
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://velog.io/@kimdukbae/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%8A%B8%EB%9D%BC%EC%9D%B4-Trie&quot;&gt;[자료구조] 트라이 (Trie)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Claude AI&lt;/li&gt;
-&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[외판원 순회 (TSP, Traveling Salesman Problem)]]></title><description><![CDATA[외판원 순회 문제(Traveling Salesman Problem, TSP…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/tsp/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/tsp/</guid><pubDate>Fri, 25 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;외판원 순회 문제(Traveling Salesman Problem, TSP)&lt;/strong&gt; 는 조합 최적화 분야에서 가장 유명한 문제 중 하나입니다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;여러 도시를 방문하며 물건을 팔아야 하는 외판원이, 모든 도시를 정확히 한 번씩 방문하고 출발점으로 돌아올 때 &lt;strong&gt;이동 거리의 합이 최소인 경로&lt;/strong&gt; 를 구하라.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;단순해 보이지만 도시 수가 늘어날수록 경우의 수가 폭발적으로 증가하는 NP-Hard 문제입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;1. 브루트포스의 한계&lt;/h2&gt;
-&lt;p&gt;가장 직관적인 방법은 모든 방문 순서(순열)를 시도해보는 것입니다. 하지만 n개 도시의 순열 개수는 n!이므로, n이 조금만 커져도 현실적으로 계산이 불가능합니다.&lt;/p&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 44.30379746835443%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAIBAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAABAP/aAAwDAQACEAMQAAABySqWYQT/xAAXEAEAAwAAAAAAAAAAAAAAAAARACAh/9oACAEBAAEFAmONP//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAEDAQE/AWf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAWEAEBAQAAAAAAAAAAAAAAAABBECD/2gAIAQEABj8CIY//xAAdEAABBAIDAAAAAAAAAAAAAAABABARITGRQVFh/9oACAEBAAE/IaRA0QOVDPSPjRuG/9oADAMBAAIAAwAAABAgD//EABcRAQEBAQAAAAAAAAAAAAAAAAEAESH/2gAIAQMBAT8QSnbL/8QAGBEAAgMAAAAAAAAAAAAAAAAAAAERITH/2gAIAQIBAT8QVYSz/8QAGhAAAwADAQAAAAAAAAAAAAAAAAERMUFxUf/aAAgBAQABPxC10fmlpWtarHN4uKh64LLoz//Z&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;Brute Force vs DP&quot;
-        title=&quot;&quot;
-        src=&quot;/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg&quot;
-        srcset=&quot;/static/be2377feb207e326959433562cd6c12f/ff44c/complexity_compare.jpg 158w,
-/static/be2377feb207e326959433562cd6c12f/a6688/complexity_compare.jpg 315w,
-/static/be2377feb207e326959433562cd6c12f/828fb/complexity_compare.jpg 630w,
-/static/be2377feb207e326959433562cd6c12f/8e1fc/complexity_compare.jpg 900w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;n&lt;/th&gt;
-&lt;th&gt;브루트포스 (n!)&lt;/th&gt;
-&lt;th&gt;DP + 비트마스킹 (n²·2ⁿ)&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;5&lt;/td&gt;
-&lt;td&gt;120&lt;/td&gt;
-&lt;td&gt;800&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;10&lt;/td&gt;
-&lt;td&gt;3,628,800&lt;/td&gt;
-&lt;td&gt;102,400&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;15&lt;/td&gt;
-&lt;td&gt;1조 3천억&lt;/td&gt;
-&lt;td&gt;7,372,800&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;20&lt;/td&gt;
-&lt;td&gt;243경&lt;/td&gt;
-&lt;td&gt;20,971,520&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;브루트포스는 n ≤ 11 수준에서만 현실적입니다. 반면 비트마스킹 DP는 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 정도까지 충분히 풀 수 있습니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;2. 핵심 아이디어 — 비트마스킹 DP&lt;/h2&gt;
-&lt;h3&gt;상태 정의&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited]&lt;/code&gt;를 다음과 같이 정의합니다.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;현재 위치가 도시 &lt;code class=&quot;language-text&quot;&gt;i&lt;/code&gt;이고, 지금까지 방문한 도시 집합이 &lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;일 때,
-&lt;strong&gt;남은 도시를 모두 방문하고 출발점으로 돌아오는 최소 거리&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3&gt;visited를 비트마스크로 표현&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;visited&lt;/code&gt;는 정수(integer)로 표현하며, 각 비트가 해당 도시의 방문 여부를 나타냅니다.&lt;/p&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 45.56962025316456%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAJABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/9oADAMBAAIQAxAAAAHJQc0hP//EABYQAQEBAAAAAAAAAAAAAAAAAAEQIP/aAAgBAQABBQIjj//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABYQAQEBAAAAAAAAAAAAAAAAAEEAIP/aAAgBAQAGPwIjP//EABsQAAEFAQEAAAAAAAAAAAAAAAEAEBEhgTHB/9oACAEBAAE/IR4Z0hc3pDfBjD1v/9oADAMBAAIAAwAAABAUP//EABURAQEAAAAAAAAAAAAAAAAAAAAB/9oACAEDAQE/EEf/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/ED//xAAcEAACAgIDAAAAAAAAAAAAAAABEQAxIWFBUXH/2gAIAQEAAT8QGkJdNmtQWI4zRFcaqBVUiuJ14JcQbn//2Q==&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;Bitmask State&quot;
-        title=&quot;&quot;
-        src=&quot;/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg&quot;
-        srcset=&quot;/static/8f042906b25036f594777656230ff735/ff44c/bitmask_state.jpg 158w,
-/static/8f042906b25036f594777656230ff735/a6688/bitmask_state.jpg 315w,
-/static/8f042906b25036f594777656230ff735/828fb/bitmask_state.jpg 630w,
-/static/8f042906b25036f594777656230ff735/4d836/bitmask_state.jpg 920w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;도시 4개: A(0번), B(1번), C(2번), D(3번)
-
-visited = 0001 (2진수) = 1  → A만 방문
-visited = 0011 (2진수) = 3  → A, B 방문
-visited = 0111 (2진수) = 7  → A, B, C 방문
-visited = 1111 (2진수) = 15 → 모두 방문 = (1&amp;lt;&amp;lt;n) - 1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;특정 도시 j를 방문했다고 표시하려면 &lt;code class=&quot;language-text&quot;&gt;visited | (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 해당 비트를 1로 설정합니다. 도시 j를 이미 방문했는지 확인하려면 &lt;code class=&quot;language-text&quot;&gt;visited &amp;amp; (1 &amp;lt;&amp;lt; j)&lt;/code&gt; 로 확인합니다.&lt;/p&gt;
-&lt;h3&gt;점화식&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dp[i][visited] = min(
-    dp[j][visited | (1 &amp;lt;&amp;lt; j)] + dist(i, j)
-)
-단, j는 아직 방문하지 않은 도시&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&quot;현재 i에서 미방문 도시 j로 이동한다고 가정했을 때, j에서 나머지를 최적으로 돌아오는 거리 + i~j 사이의 거리&quot; 중 최솟값을 선택합니다.&lt;/p&gt;
-&lt;h3&gt;종료 조건&lt;/h3&gt;
-&lt;p&gt;모든 도시를 방문한 상태(&lt;code class=&quot;language-text&quot;&gt;visited == (1 &amp;lt;&amp;lt; n) - 1&lt;/code&gt;)에서는 출발점(0번)으로 돌아가는 거리를 반환합니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dist&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 복귀&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;3. 단계별 동작 시각화 (4도시 예제)&lt;/h2&gt;
-&lt;p&gt;4개 도시 A, B, C, D가 있고 거리가 다음과 같을 때 A를 출발점으로 TSP를 풉니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;A ↔ B : 10    A ↔ C : 15    A ↔ D : 20
-B ↔ C : 35    B ↔ D : 25    C ↔ D : 30&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;span
-      class=&quot;gatsby-resp-image-wrapper&quot;
-      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 630px; &quot;
-    &gt;
-      &lt;a
-    class=&quot;gatsby-resp-image-link&quot;
-    href=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg&quot;
-    style=&quot;display: block&quot;
-    target=&quot;_blank&quot;
-    rel=&quot;noopener&quot;
-  &gt;
-    &lt;span
-    class=&quot;gatsby-resp-image-background-image&quot;
-    style=&quot;padding-bottom: 42.405063291139236%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAIABQDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAIF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/2gAMAwEAAhADEAAAAccJIr//xAAWEAADAAAAAAAAAAAAAAAAAAAAEBH/2gAIAQEAAQUCVP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABgQAAIDAAAAAAAAAAAAAAAAAABRARFB/9oACAEBAAE/IUZJRH//2gAMAwEAAgADAAAAEHvf/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8QZ//EABURAQEAAAAAAAAAAAAAAAAAAAEQ/9oACAECAQE/EFn/xAAZEAEAAgMAAAAAAAAAAAAAAAABABEhUfH/2gAIAQEAAT8QDSVkS49M/9k=&apos;); background-size: cover; display: block;&quot;
-  &gt;&lt;/span&gt;
-  &lt;img
-        class=&quot;gatsby-resp-image-image&quot;
-        alt=&quot;DP Steps&quot;
-        title=&quot;&quot;
-        src=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg&quot;
-        srcset=&quot;/static/b1d98df7f6b0f38d80ec22923bf3459c/ff44c/dp_steps.jpg 158w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/a6688/dp_steps.jpg 315w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/828fb/dp_steps.jpg 630w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/0ede0/dp_steps.jpg 945w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/3ac88/dp_steps.jpg 1260w,
-/static/b1d98df7f6b0f38d80ec22923bf3459c/33042/dp_steps.jpg 2070w&quot;
-        sizes=&quot;(max-width: 630px) 100vw, 630px&quot;
-        style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
-        loading=&quot;lazy&quot;
-        decoding=&quot;async&quot;
-      /&gt;
-  &lt;/a&gt;
-    &lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;각 단계를 재귀 트리로 정리하면 다음과 같습니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;dfs(A, 0001)
-├── A→B : dfs(B, 0011)
-│   ├── B→C : dfs(C, 0111) → C→D→A = 30+20 = 50 → 35+50 = 85
-│   └── B→D : dfs(D, 1011) → D→C→A = 30+15 = 45 → 25+45 = 70  ← 최솟값
-├── A→C : dfs(C, 0101)
-│   ├── C→B : dfs(B, 0111) → B→D→A = 25+20 = 45 → 35+45 = 80
-│   └── C→D : dfs(D, 1101) → D→B→A = 25+10 = 35 → 30+35 = 65  ← 최솟값
-└── A→D : dfs(D, 1001)
-    ├── D→B : dfs(B, 1011) → B→C→A = 35+15 = 50 → 25+50 = 75
-    └── D→C : dfs(C, 1101) → C→B→A = 35+10 = 45 → 30+45 = 75
-
-최적: A→B→D→C→A = 10+25+30+15 = 80&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;4. Python 구현&lt;/h2&gt;
-&lt;h3&gt;전체 코드 (최솟값)&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; sys
-&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; math
-&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; functools &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; lru_cache
-
-&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; sys&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;stdin&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;readline
-
-&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;solve&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    n &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-    graph &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;split&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    INF &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-    dp &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;INF&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;token comment&quot;&gt;# 모든 도시 방문 완료 → 출발점(0)으로 귀환&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;else&lt;/span&gt; INF
-
-        &lt;span class=&quot;token comment&quot;&gt;# 이미 계산된 상태면 재사용 (메모이제이션)&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; INF&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; next_city &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token comment&quot;&gt;# 이미 방문했거나 경로가 없으면 skip&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-            cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-            dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; cost&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;token comment&quot;&gt;# 0번 도시에서 출발 (visited = 0001)&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dfs&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-solve&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;핵심 로직 흐름&lt;/h3&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1. dfs(현재 도시, 방문 상태) 호출
-2. 종료 조건: visited == (1&amp;lt;&amp;lt;n)-1 이면 출발점까지 거리 반환
-3. 이미 계산된 dp[현재][visited] 가 있으면 바로 반환
-4. 미방문 도시 j마다:
-   - dfs(j, visited | (1&amp;lt;&amp;lt;j)) 재귀 호출
-   - 반환값 + dist(현재→j) 를 dp에 업데이트
-5. dp[현재][visited] 반환&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;5. 경로 복원&lt;/h2&gt;
-&lt;p&gt;최솟값뿐 아니라 &lt;strong&gt;어떤 순서로 방문해야 하는지&lt;/strong&gt; 경로도 출력하려면 dp 테이블을 역추적합니다.&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;print_path&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;token comment&quot;&gt;# 모두 방문했으면 종료&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        path&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;append&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 귀환&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
-
-    next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;
-    min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&apos;inf&apos;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; j &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-        &lt;span class=&quot;token comment&quot;&gt;# dp[j][next_visited] + dist(current→j) 가 최소인 도시를 다음 목적지로 선택&lt;/span&gt;
-        next_visited &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-        cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;next_visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; cost &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; min_cost&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-            min_cost &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cost
-            next_city &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; j
-
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; next_city &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-        print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;next_city&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; next_city&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# 사용 예&lt;/span&gt;
-path &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
-print_path&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot; → &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;join&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token builtin&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;p&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; p &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; path&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token comment&quot;&gt;# 출력 예: 0 → 1 → 3 → 2 → 0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;6. 시간 복잡도 분석&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;항목&lt;/th&gt;
-&lt;th&gt;내용&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;부분 문제 수&lt;/td&gt;
-&lt;td&gt;현재 위치 n가지 × visited 상태 2ⁿ가지 = &lt;strong&gt;n·2ⁿ&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;각 부분 문제 해결 비용&lt;/td&gt;
-&lt;td&gt;미방문 도시 탐색 &lt;strong&gt;O(n)&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;총 시간복잡도&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;O(n²·2ⁿ)&lt;/strong&gt;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;strong&gt;공간복잡도&lt;/strong&gt;&lt;/td&gt;
-&lt;td&gt;&lt;strong&gt;O(n·2ⁿ)&lt;/strong&gt; — dp 테이블 크기&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;브루트포스 O(n!)에 비해 압도적으로 빠르지만, 여전히 지수 시간이므로 &lt;strong&gt;n ≤ 20&lt;/strong&gt; 이 실용적인 한계입니다.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2&gt;7. 자주 하는 실수&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;1. 방문 체크 방향 혼동&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — 이미 방문한 도시를 skip하는 게 아니라 반대로 처리&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름 — 이미 방문한 도시면 skip&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;continue&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;2. 점화식에서 인덱스 혼동&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# ❌ 잘못됨 — dp[i]에서 갱신해야 하는데 dp[j]로 작성&lt;/span&gt;
-dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;# ✅ 올바름&lt;/span&gt;
-dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dp&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;visited&lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;i&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;j&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;3. 출발점 복귀 조건에서 0 거리 처리&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;# 도시 간 경로가 없을 때 0으로 표현하는 문제의 경우&lt;/span&gt;
-&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; visited &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; n&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;token comment&quot;&gt;# 출발점으로 돌아오는 길이 없으면&lt;/span&gt;
-        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; INF
-    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; graph&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;current&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;hr&gt;
-&lt;h2&gt;8. 관련 백준 문제&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;문제&lt;/th&gt;
-&lt;th&gt;난이도&lt;/th&gt;
-&lt;th&gt;설명&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/2098&quot;&gt;2098 외판원 순회&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;TSP 기본 문제 — 비트마스킹 DP&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1102&quot;&gt;1102 발전소&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;비트마스킹 DP 응용&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;&lt;a href=&quot;https://www.acmicpc.net/problem/1562&quot;&gt;1562 계단 수&lt;/a&gt;&lt;/td&gt;
-&lt;td&gt;Gold I&lt;/td&gt;
-&lt;td&gt;비트마스킹 + DP 조합 연습&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;hr&gt;
-&lt;h2&gt;참고 자료&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://velog.io/@dltmdrl1244/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%99%B8%ED%8C%90%EC%9B%90-%EC%88%9C%ED%9A%8CTSP-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98&quot;&gt;[알고리즘] 외판원 순회(TSP) 알고리즘&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content:encoded></item><item><title><![CDATA[프림 알고리즘 (Prim's Algorithm)]]></title><description><![CDATA[이전 포스트에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 프림 알고리즘(Prim's Algorithm) 을 정리합니다. 최소 신장 트리(MST…]]></description><link>https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</link><guid isPermaLink="false">https://gatsbystarterblogsource.gatsbyjs.io/mst-prim/</guid><pubDate>Thu, 10 Apr 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;/mst-kruskal&quot;&gt;이전 포스트&lt;/a&gt;에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 &lt;strong&gt;프림 알고리즘(Prim&apos;s Algorithm)&lt;/strong&gt; 을 정리합니다.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2&gt;최소 신장 트리(MST) 복습&lt;/h2&gt;

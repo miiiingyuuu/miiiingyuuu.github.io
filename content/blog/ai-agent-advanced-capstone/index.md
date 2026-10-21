@@ -1,5 +1,5 @@
 ---
-title: "AI Agent 설계와 서비스 구현 — LangGraph, MCP, Streaming, Evaluation"
+title: "AI Agent 설계와 서비스 구현"
 date: "2026-10-19"
 category: ["AI", "Architecture", "LangGraph", "MCP"]
 description: "AI Agent Advanced와 Capstone을 바탕으로 공통 State와 병렬 실행, 근거 기반 RAG, MCP, FastAPI 수명주기, SSE, Supervisor와 LangSmith 평가를 연결하는 기술 구조를 정리"

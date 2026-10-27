@@ -1,42 +1,32 @@
-import React from "react"
-import { Link, graphql } from "gatsby"
+import * as React from "react"
+import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
+import PostExplorer from "../components/post-explorer"
 
-const CategoryTemplate = ({ data, pageContext, location }) => {
-  const posts = data.allMarkdownRemark.nodes
-  const { category } = pageContext
+const CategoryTemplate = ({ data, pageContext, location }) => (
+  <Layout location={location} title={data.site.siteMetadata.title}>
+    <PostExplorer
+      posts={data.allMarkdownRemark.nodes}
+      location={location}
+      initialCategory={pageContext.category || ""}
+      initialTag={pageContext.tag || ""}
+    />
+  </Layout>
+)
 
-  return (
-    <Layout location={location} title="← All Posts">
-      <Seo title={`Category: ${category}`} />
-      <h1>{category}</h1>
-      <p>{posts.length}개의 글</p>
-      <ol style={{ listStyle: "none" }}>
-        {posts.map(post => (
-          <li key={post.fields.slug}>
-            <article>
-              <h2>
-                <Link to={post.fields.slug}>
-                  {post.frontmatter.title}
-                </Link>
-              </h2>
-              <small>{post.frontmatter.date}</small>
-              <p>{post.excerpt}</p>
-            </article>
-          </li>
-        ))}
-      </ol>
-    </Layout>
-  )
-}
+export const Head = ({ pageContext }) => (
+  <Seo title={pageContext.tag || pageContext.category || "All posts"} />
+)
 
 export const query = graphql`
-  query($category: String!) {
-    allMarkdownRemark(
-      filter: { frontmatter: { category: { in: [$category] } } }
-      sort: { frontmatter: { date: DESC } }
-    ) {
+  {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+    allMarkdownRemark(sort: { frontmatter: { date: DESC } }) {
       nodes {
         excerpt
         fields {
@@ -44,7 +34,10 @@ export const query = graphql`
         }
         frontmatter {
           title
+          description
           date(formatString: "MMMM DD, YYYY")
+          category
+          tags
         }
       }
     }

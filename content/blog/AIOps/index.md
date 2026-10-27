@@ -1,8 +1,9 @@
 ---
 title: "모델 서빙과 AIOps 이해"
 date: "2026-09-17"
-category: ["MLOps", "LLMOps", "AIOps", "Model Serving"]
 description: "학습된 모델을 재현 가능한 Artifact로 저장하고 FastAPI, Airflow, KServe, Ray Serve, vLLM, Kubeflow로 서비스한 뒤 MLflow, LGTM, LangSmith와 AIOps로 관찰·관리·자동화하는 전체 구조를 정리"
+category: ["DevOps"]
+tags: ["MLOps", "LLMOps", "Model Serving"]
 ---
 
 

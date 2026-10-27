@@ -1,8 +1,9 @@
 ---
 title: "Feature Engineering"
 date: "2026-08-01"
-category: ["Python", "DataAnalysis"]
 description: "Feature Engineering의 핵심 개념과 실전 접근법 정리. 통계 테크닉이 아닌 도메인 가설에서 출발해 변수를 설계하는 방법, 고장 유형(TWF·HDF·PWF·OSF)별 물리적 상황을 변수로 표현하는 과정, 파생변수 효과 검증, 변수 선별 기준까지 산업용 예측 정비(Predictive Maintenance) 사례를 중심으로 정리"
+category: ["Data"]
+tags: ["Python", "Feature Engineering"]
 ---
 
 # Feature Engineering — 도메인 가설 기반 변수 설계와 예측 정비 분석

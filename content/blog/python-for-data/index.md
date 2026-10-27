@@ -1,8 +1,9 @@
 ---
 title: "데이터 분석을 위한 Python"
 date: "2026-07-20"
-category: ["Python", "DataAnalysis"]
 description: "데이터 분석 실무에서 자주 쓰이는 Python 핵심 도구 정리. Pydantic 검증 파이프라인, asyncio + httpx 비동기 수집, pytest + ruff 품질 관리, pandas EDA, Polars Lazy · DuckDB SQL 고성능 처리, matplotlib 시각화, t-test · 카이제곱 가설 검정, sklearn Pipeline까지 코드 예시와 함께 정리"
+category: ["Data"]
+tags: ["Python"]
 ---
 
 # 데이터 분석을 위한 Python — Pydantic · asyncio · pandas · Polars · sklearn 핵심 정리

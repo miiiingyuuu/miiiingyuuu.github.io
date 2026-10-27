@@ -1,8 +1,9 @@
 ---
 title: "[스터디] SDD(Spec-kit)"
 date: "2026-05-27"
-category: ["AI", "Architecture"]
 description: "카카오페이 AI 플랫폼팀의 SDD(Spec-Driven Development) 도입 실전기를 정리. 무분별한 코드 생성과 환각 문제를 해결하기 위해 Spec-kit을 활용한 constitution → specify → plan → tasks → implement 파이프라인과 팀 단위 협업에서의 일관성 확보 전략을 분석"
+category: ["AI"]
+tags: ["SDD", "Agent"]
 ---
 
 # 카카오페이 SDD — Spec-kit으로 제어하는 에이전틱 코딩

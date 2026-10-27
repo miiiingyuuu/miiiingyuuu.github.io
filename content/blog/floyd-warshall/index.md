@@ -1,8 +1,9 @@
 ---
 title: "플로이드 워셜(Floyd-Warshall) 알고리즘"
 date: "2024-10-25"
-category: ["Algorithm", "Graph", "DP"]
 description: "모든 노드 쌍 간의 최단 경로를 구하는 플로이드 워셜 알고리즘의 개념, 점화식, 동작 원리, Python 구현을 정리"
+category: ["Algorithm"]
+tags: ["Graph", "Shortest Path", "DP"]
 ---
 
 플로이드 워셜(Floyd-Warshall) 알고리즘은 **모든 노드에서 다른 모든 노드까지의 최단 경로를 한 번에 구하는 알고리즘**입니다. 다익스트라가 단일 출발점의 최단 경로를 구하는 것과 달리, 플로이드 워셜은 모든 쌍(Pair)에 대한 최단 거리를 구할 수 있습니다.

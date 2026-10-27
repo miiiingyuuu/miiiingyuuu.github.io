@@ -1,8 +1,9 @@
 ---
 title: "Vue.js 핵심 문법 정리"
 date: "2026-08-14"
-category: ["Frontend", "JavaScript"]
 description: "Vue 3 Composition API 기반의 핵심 문법 정리. SFC 구조와 반응형 시스템(ref/computed/watch), 주요 디렉티브(v-bind·v-model·v-if·v-for), 컴포넌트 통신(Props·Emits·Slot), 생명주기 훅, Vue Router, Pinia 전역 상태 관리, Axios 비동기 통신, 환경변수와 GitHub Pages 배포까지 코드 예시와 함께 정리"
+category: ["Frontend"]
+tags: ["Vue", "JavaScript"]
 ---
 
 # Vue.js 핵심 문법 정리 — 디렉티브 · Composition API · Router · Pinia · Axios

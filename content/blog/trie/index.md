@@ -1,8 +1,9 @@
 ---
 title: "트라이 (Trie)"
 date: "2025-04-25"
-category: ["Algorithm", "DataStructure"]
 description: "트라이(Trie)의 개념, 삽입/탐색 동작 원리, Python 구현, 자동완성·접두사 탐색 활용법, 시간복잡도까지 단계별로 정리"
+category: ["Algorithm"]
+tags: ["Tree", "String", "Data Structure"]
 ---
 
 검색창에 'ap'를 입력하는 순간 'apple', 'application', 'apply' 같은 단어가 뜨는 자동완성 기능. 이 기능의 핵심에 **트라이(Trie)** 가 있습니다. 트라이는 문자열을 저장하고 빠르게 탐색하기 위해 설계된 트리 형태의 자료구조입니다.

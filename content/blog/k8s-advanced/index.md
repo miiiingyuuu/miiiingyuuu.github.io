@@ -1,8 +1,9 @@
 ---
 title: "Kubernetes 심화 정리"
 date: "2026-10-08"
-category: ["DevOps", "Kubernetes", "Infrastructure"]
 description: "Kubernetes API, ServiceAccount와 RBAC, 컨테이너 실행, 배포 전략, Service와 Ingress, 저장소, Probe, 보안과 QoS를 예제 코드와 함께 정리"
+category: ["DevOps"]
+tags: ["Kubernetes", "Infrastructure"]
 ---
 
 Kubernetes는 컨테이너를 실행하는 도구를 넘어, 선언한 상태를 지속적으로 유지하는 시스템이다. 애플리케이션을 운영하려면 컨테이너 실행뿐 아니라 인증, 권한, 네트워크, 데이터 저장, 배포 전략, 상태 검사와 자원 관리가 함께 구성되어야 한다.

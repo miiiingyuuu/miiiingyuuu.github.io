@@ -1,0 +1,214 @@
+{
+  "categories": [
+    {
+      "name": "Algorithm",
+      "description": "문제 해결 · 자료구조"
+    },
+    {
+      "name": "AI",
+      "description": "LLM · RAG · Agent"
+    },
+    {
+      "name": "Backend",
+      "description": "API · Spring · 인증"
+    },
+    {
+      "name": "Frontend",
+      "description": "React · 웹 인터페이스"
+    },
+    {
+      "name": "DevOps",
+      "description": "클라우드 · 컨테이너 · 운영"
+    },
+    {
+      "name": "Data",
+      "description": "분석 · 통계 · 피처"
+    },
+    {
+      "name": "Database",
+      "description": "SQL · 데이터 모델링"
+    },
+    {
+      "name": "Architecture",
+      "description": "설계 · 시스템 구조"
+    }
+  ],
+  "legacy": {
+    "Algorithm": {
+      "category": "Algorithm",
+      "tag": ""
+    },
+    "AI": {
+      "category": "AI",
+      "tag": ""
+    },
+    "Backend": {
+      "category": "Backend",
+      "tag": ""
+    },
+    "Frontend": {
+      "category": "Frontend",
+      "tag": ""
+    },
+    "DevOps": {
+      "category": "DevOps",
+      "tag": ""
+    },
+    "Data": {
+      "category": "Data",
+      "tag": ""
+    },
+    "Database": {
+      "category": "Database",
+      "tag": ""
+    },
+    "Architecture": {
+      "category": "Architecture",
+      "tag": ""
+    },
+    "Search": {
+      "category": "",
+      "tag": "Search"
+    },
+    "Spring": {
+      "category": "Backend",
+      "tag": "Spring"
+    },
+    "Network": {
+      "category": "",
+      "tag": "Network"
+    },
+    "MLOps": {
+      "category": "DevOps",
+      "tag": "MLOps"
+    },
+    "Python": {
+      "category": "Data",
+      "tag": "Python"
+    },
+    "Machine Learning": {
+      "category": "AI",
+      "tag": "Machine Learning"
+    },
+    "RAG": {
+      "category": "AI",
+      "tag": "RAG"
+    },
+    "LLMOps": {
+      "category": "DevOps",
+      "tag": "LLMOps"
+    },
+    "Graph": {
+      "category": "Algorithm",
+      "tag": "Graph"
+    },
+    "Cloud": {
+      "category": "DevOps",
+      "tag": "Cloud"
+    },
+    "Next.js": {
+      "category": "Frontend",
+      "tag": "Next.js"
+    },
+    "DataAnalysis": {
+      "category": "Data",
+      "tag": ""
+    },
+    "DataStructure": {
+      "category": "Algorithm",
+      "tag": "Data Structure"
+    },
+    "C": {
+      "category": "Algorithm",
+      "tag": "C"
+    },
+    "CI/CD": {
+      "category": "DevOps",
+      "tag": "CI/CD"
+    },
+    "MSA": {
+      "category": "Backend",
+      "tag": "MSA"
+    },
+    "LangGraph": {
+      "category": "AI",
+      "tag": "LangGraph"
+    },
+    "JavaScript": {
+      "category": "Frontend",
+      "tag": "JavaScript"
+    },
+    "Kubernetes": {
+      "category": "DevOps",
+      "tag": "Kubernetes"
+    },
+    "FinTech": {
+      "category": "",
+      "tag": "FinTech"
+    },
+    "AIOps": {
+      "category": "DevOps",
+      "tag": "MLOps"
+    },
+    "Transformer": {
+      "category": "AI",
+      "tag": "Transformer"
+    },
+    "Java": {
+      "category": "Backend",
+      "tag": "Java"
+    },
+    "DP": {
+      "category": "Algorithm",
+      "tag": "DP"
+    },
+    "Model Serving": {
+      "category": "DevOps",
+      "tag": "Model Serving"
+    },
+    "Model Optimization": {
+      "category": "AI",
+      "tag": "Model Optimization"
+    },
+    "LLM": {
+      "category": "AI",
+      "tag": "LLM"
+    },
+    "React": {
+      "category": "Frontend",
+      "tag": "React"
+    },
+    "Time Series": {
+      "category": "Data",
+      "tag": "Time Series"
+    },
+    "MCP": {
+      "category": "AI",
+      "tag": "MCP"
+    },
+    "Docker": {
+      "category": "DevOps",
+      "tag": "Docker"
+    },
+    "Security": {
+      "category": "",
+      "tag": "Security"
+    },
+    "Infrastructure": {
+      "category": "DevOps",
+      "tag": "Infrastructure"
+    },
+    "TypeScript": {
+      "category": "Frontend",
+      "tag": "TypeScript"
+    },
+    "LangChain": {
+      "category": "AI",
+      "tag": "LangChain"
+    },
+    "VectorDB": {
+      "category": "AI",
+      "tag": "VectorDB"
+    }
+  }
+}

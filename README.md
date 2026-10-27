@@ -97,3 +97,20 @@ Looking for more guidance? Full documentation for Gatsby lives [on the website](
 The fastest way to combine your favorite tools and APIs to build the fastest sites, stores, and apps for the web. And also the best place to build, deploy, and host your Gatsby sites.
 
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+
+## 블로그 분류와 로컬 미리보기
+
+- 글의 `category`는 Algorithm, AI, Backend, Frontend, DevOps, Data, Database, Architecture 중 하나를 사용합니다.
+- `tags`에는 글에서 다루는 세부 기술을 1~4개 지정합니다. 대분류를 펼치면 해당 분야의 태그가 글 개수와 함께 표시됩니다.
+- 태그를 누르면 글 목록이 필터링됩니다. 선택 상태는 URL에 남아 새로고침·뒤로 가기에도 유지됩니다.
+- 대분류의 순서·설명과 기존 분류 URL의 연결은 `src/data/taxonomy.json`에서 관리합니다.
+- 기존 Gatsby 의존성의 호환성을 위해 이번 로컬 미리보기는 `.nvmrc`에 지정한 Node 20에서 확인했습니다.
+
+```bash
+nvm use
+npm ci
+npm run develop -- --host 127.0.0.1 --port 8000
+```
+
+로컬 주소: http://127.0.0.1:8000

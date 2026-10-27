@@ -1,8 +1,9 @@
 ---
 title: "DevOps 이해 및 활용"
 date: "2026-10-21"
-category: ["DevOps", "CI/CD", "Kubernetes"]
 description: "컨테이너 이미지 빌드와 Harbor, Kustomize와 Helm, Jenkins Pipeline과 Credential, Argo CD의 선언적 동기화를 연결해 CI/CD와 GitOps 배포 구조를 정리"
+category: ["DevOps"]
+tags: ["CI/CD", "Kubernetes"]
 ---
 
 소스코드가 완성되는 시점과 사용자가 새 기능을 이용하는 시점 사이에는 여러 작업이 존재한다. 코드를 빌드하고 테스트해야 하며, 실행 환경을 이미지로 패키징하고, 배포 설정을 변경한 뒤 실제 서비스가 준비되었는지 확인해야 한다.

@@ -1,8 +1,9 @@
 ---
 title: "최소 스패닝 트리(MST)와 크루스칼 알고리즘"
 date: "2025-03-16"
-category: ["Algorithm", "Graph"]
 description: "스패닝 트리의 개념부터 최소 스패닝 트리(MST)를 구하는 크루스칼 알고리즘의 동작 원리, Union-Find를 이용한 사이클 감지, Python/C++ 구현까지 정리"
+category: ["Algorithm"]
+tags: ["Graph", "MST", "Greedy"]
 ---
 
 ## 스패닝 트리 (Spanning Tree)란?

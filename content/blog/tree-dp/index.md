@@ -1,8 +1,9 @@
 ---
 title: "트리에서의 동적 계획법 (Tree DP)"
 date: "2025-02-10"
-category: ["Algorithm", "DP", "Graph"]
 description: "트리 DP의 핵심 개념, 상태 설계 방법, 선택/미선택 DP, 트리의 지름·높이, 재루팅 DP(Re-rooting)까지 유형별로 정리"
+category: ["Algorithm"]
+tags: ["Tree", "Graph", "DP"]
 ---
 
 트리 DP는 일반 DP와 다르게 **계층 구조의 트리** 위에서 상태를 전이합니다. 핵심은 DFS로 트리를 탐색하면서 **자식 노드의 결과를 먼저 계산한 뒤 부모 노드로 전달**하는 것입니다. 처음에는 낯설지만 패턴을 익히면 비슷한 문제를 일관되게 풀 수 있습니다.

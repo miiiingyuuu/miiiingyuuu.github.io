@@ -1,8 +1,9 @@
 ---
 title: "Docker"
 date: "2026-01-11"
-category: ["Docker", "DevOps", "Backend"]
 description: "Docker의 개념, VM과의 차이, 이미지/컨테이너/볼륨 등 핵심 구성요소, Dockerfile 작성법, 주요 명령어, Docker Compose까지 실무 중심으로 정리"
+category: ["DevOps"]
+tags: ["Docker"]
 ---
 
 "내 컴퓨터에서는 잘 되는데요."

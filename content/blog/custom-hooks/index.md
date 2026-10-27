@@ -1,8 +1,9 @@
 ---
 title: "React Custom Hook — 로직을 분리하고 재사용하는 방법"
 date: "2024-06-25"
-category: ["Frontend", "React"]
 description: "React Custom Hook의 개념, 규칙, 실전 패턴(useFetch, useDebounce, useLocalStorage 등), 일반 함수/HOC와의 차이, 테스트 방법까지 정리"
+category: ["Frontend"]
+tags: ["React"]
 ---
 
 컴포넌트가 점점 커지면서 `useState`, `useEffect`가 뒤섞인 100줄짜리 컴포넌트를 마주친 적이 있을 겁니다. 같은 fetching 로직이 여러 컴포넌트에 복붙되어 있거나, 하나의 컴포넌트가 UI와 데이터 처리를 동시에 담당하고 있을 때 **Custom Hook**이 해답이 됩니다.

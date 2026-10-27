@@ -1,8 +1,9 @@
 ---
 title: "쿠버네티스(Kubernetes)"
 date: "2026-01-20"
-category: ["DevOps", "Cloud", "Backend"]
 description: "쿠버네티스의 개념, 핵심 오브젝트(Pod/Deployment/Service/Ingress), 스케줄링, ConfigMap/Secret, 헬스체크, HPA까지 실무 중심으로 정리"
+category: ["DevOps"]
+tags: ["Kubernetes"]
 ---
 
 Docker로 컨테이너를 만들 수 있게 됐다면, 그 다음 질문은 "수십~수백 개의 컨테이너를 어떻게 관리하는가?"입니다. 서버가 죽으면 자동으로 재시작하고, 트래픽이 몰리면 자동으로 컨테이너 수를 늘리고, 무중단으로 새 버전을 배포하는 것. 이 모든 것을 담당하는 것이 **쿠버네티스(Kubernetes, K8s)** 입니다.

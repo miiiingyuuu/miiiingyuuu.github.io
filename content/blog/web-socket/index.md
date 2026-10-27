@@ -1,8 +1,9 @@
 ---
 title: "WebSocket — 실시간 양방향 통신"
 date: "2024-07-23"
-category: ["Frontend", "Backend", "Network"]
 description: "WebSocket의 개념부터 순수 WebSocket 구현, Spring STOMP + JWT 인증, Redis 기반 확장 아키텍처 정리"
+category: ["Backend"]
+tags: ["WebSocket", "Network"]
 ---
 
 채팅, 실시간 알림, 주식 시세처럼 서버에서 클라이언트로 데이터를 즉시 밀어줘야 하는 기능을 구현할 때 가장 먼저 떠오르는 기술이 **WebSocket**입니다. 기존 HTTP 방식의 한계를 어떻게 해결하는지, 그리고 실무에서 어떻게 구성하는지를 순서대로 정리합니다.

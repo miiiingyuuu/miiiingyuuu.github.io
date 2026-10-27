@@ -1,8 +1,9 @@
 ---
 title: "Binary Lifting"
 date: "2026-07-10"
-category: ["Algorithm"]
 description: "트리에서 K번째 조상 탐색과 LCA(최소 공통 조상)를 O(log N)으로 해결하는 Binary Lifting 알고리즘 정리. 희소 테이블(Sparse Table) 사전 구축 원리, LCA 응용, 두 노드 간 거리 계산까지 JavaScript 구현 코드와 함께 정리"
+category: ["Algorithm"]
+tags: ["Tree", "Data Structure"]
 ---
 
 # Binary Lifting — 트리에서 O(log N)으로 조상 탐색하기

@@ -1,8 +1,9 @@
 ---
 title: "MSA와 분산 트랜잭션"
 date: "2026-05-04"
-category: ["Backend", "Architecture", "MSA"]
 description: "모놀리식 vs MSA 구조 차이, 분산 트랜잭션의 어려움, SAGA 패턴(Choreography/Orchestration), Outbox 패턴, 그리고 MSA 핵심 패턴들을 정리"
+category: ["Backend"]
+tags: ["MSA", "Distributed Systems"]
 ---
 
 하나의 큰 애플리케이션을 여러 작은 서비스로 나누는 MSA는 독립 배포와 장애 격리라는 명확한 장점이 있습니다. 하지만 서비스가 분리되는 순간 가장 크게 부딪히는 문제가 바로 **"여러 서비스에 걸친 데이터의 일관성"** 입니다. 이 글에서는 MSA의 개념과 분산 트랜잭션 문제를 해결하는 패턴들을 정리합니다.

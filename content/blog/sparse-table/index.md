@@ -1,8 +1,9 @@
 ---
 title: "희소 배열 (Sparse Table)"
 date: "2026-04-14"
-category: ["Algorithm", "DataStructure"]
 description: "희소 배열(Sparse Table)의 개념, 2의 거듭제곱 기반 전처리, O(1) 구간 최솟값 쿼리, LCA(최소 공통 조상) 적용까지 원리 중심으로 정리"
+category: ["Algorithm"]
+tags: ["Data Structure"]
 ---
 
 구간 최솟값을 Q번 물어보는 문제. 단순히 매번 구간을 스캔하면 O(Q×N)이라 Q=N=10^5이면 10^10번 연산이 필요합니다. 세그먼트 트리는 O(Q log N)으로 줄여주지만, 배열이 불변이고 연산이 멱등성을 만족한다면 **희소 배열(Sparse Table)** 로 쿼리를 **O(1)** 에 처리할 수 있습니다.

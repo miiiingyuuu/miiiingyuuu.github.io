@@ -1,8 +1,9 @@
 ---
 title: "AI Agent 설계와 서비스 구현"
 date: "2026-10-19"
-category: ["AI", "Architecture", "LangGraph", "MCP"]
 description: "AI Agent Advanced와 Capstone을 바탕으로 공통 State와 병렬 실행, 근거 기반 RAG, MCP, FastAPI 수명주기, SSE, Supervisor와 LangSmith 평가를 연결하는 기술 구조를 정리"
+category: ["AI"]
+tags: ["Agent", "LangGraph", "MCP"]
 ---
 
 LLM이 질문에 답하는 것과, 외부 도구를 사용해 여러 작업을 수행하는 애플리케이션은 설계해야 할 범위가 다릅니다. 도구를 선택하는 과정뿐 아니라 **어떤 상태를 공유하고, 언제 실행을 종료하며, 중간 결과를 어떻게 전달하고, 답변의 품질을 무엇으로 판단할지** 정해야 합니다.

@@ -1,8 +1,9 @@
 ---
 title: "외판원 순회 (TSP, Traveling Salesman Problem)"
 date: "2025-04-25"
-category: ["Algorithm", "DP"]
 description: "외판원 순회 문제(TSP)의 개념부터 브루트포스의 한계, 비트마스킹 DP를 활용한 O(n²·2ⁿ) 풀이, 경로 복원까지 단계별로 정리"
+category: ["Algorithm"]
+tags: ["DP", "Bitmask"]
 ---
 
 **외판원 순회 문제(Traveling Salesman Problem, TSP)** 는 조합 최적화 분야에서 가장 유명한 문제 중 하나입니다.

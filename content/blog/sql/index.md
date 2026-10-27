@@ -1,8 +1,9 @@
 ---
 title: "SQL 코딩테스트 대비"
 date: "2025-09-25"
-category: ["Database"]
 description: "CASE WHEN, LEAST/GREATEST, IFNULL/COALESCE, DATE 함수, 윈도우 함수, 서브쿼리, 정규표현식 등 SQL 코딩테스트에서 자주 등장하지만 헷갈리는 특수 문법을 예제 중심으로 정리"
+category: ["Database"]
+tags: ["SQL"]
 ---
 
 SELECT, WHERE, JOIN 같은 기본 문법은 알고 있는데, 막상 코딩테스트에서 `CASE WHEN`이나 `DATEDIFF`, `RANK()` 같은 문법을 마주치면 기억이 안 나서 막히는 경우가 많습니다. 이 글에서는 **기본 문법은 알지만 코딩테스트에서 자주 막히는 특수 문법**만 골라서 정리합니다.

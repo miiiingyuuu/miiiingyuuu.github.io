@@ -1,8 +1,9 @@
 ---
 title: "CCW(Counter Clock Wise)"
 date: "2025-07-26"
-category: ["Algorithm"]
 description: "세 점의 방향을 판별하는 CCW 기하 알고리즘의 개념과 외적을 이용한 구현 방법을 정리"
+category: ["Algorithm"]
+tags: ["Geometry"]
 ---
 
 CCW(Counter Clock Wise)는 2차원 평면 위의 세 점 A, B, C가 있을 때, 세 점을 이은 방향이 **시계 방향**인지 **반시계 방향**인지, 혹은 **일직선**인지를 판별하는 기하 알고리즘입니다.

@@ -1,8 +1,9 @@
 ---
 title: "전역 상태관리 — Redux와 Zustand"
 date: "2024-08-15"
-category: ["Frontend", "React"]
 description: "React 전역 상태관리의 필요성부터 Redux(Redux Toolkit)와 Zustand의 개념, 구현 방법, 차이점, 선택 기준까지 실무 예제 중심으로 정리"
+category: ["Frontend"]
+tags: ["React", "State Management"]
 ---
 
 React에서 상태(state)는 컴포넌트 단위로 관리됩니다. 하지만 컴포넌트 수가 많아지고 서로 다른 위치에 있는 컴포넌트가 같은 데이터를 필요로 할 때, 단순한 `useState`만으로는 한계가 생깁니다. 이 문제를 해결하기 위한 **전역 상태관리** 라이브러리인 Redux와 Zustand를 정리합니다.

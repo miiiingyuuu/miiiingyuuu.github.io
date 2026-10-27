@@ -1,8 +1,9 @@
 ---
 title: "다익스트라(Dijkstra) 알고리즘"
 date: "2024-05-05"
-category: ["Algorithm", "Graph"]
 description: "그래프에서 최단 경로를 구하는 다익스트라 알고리즘의 개념, 동작 원리, 순차 탐색과 우선순위 큐를 이용한 두 가지 구현 방법을 정리"
+category: ["Algorithm"]
+tags: ["Graph", "Shortest Path"]
 ---
 
 다익스트라(Dijkstra) 알고리즘은 그래프에서 **하나의 출발 노드로부터 다른 모든 노드까지의 최단 경로**를 구하는 알고리즘입니다. 매번 방문하지 않은 노드 중 최단 거리인 노드를 선택해 탐색을 반복하는 방식으로 동작합니다.

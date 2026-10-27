@@ -1,8 +1,9 @@
 ---
 title: "Next.js 정리"
 date: "2024-07-10"
-category: ["Frontend", "React", "Next.js"]
 description: "Next.js의 개념, 렌더링 방식(SSG/SSR/ISR/CSR), App Router, 라우팅, 데이터 패칭, 최적화까지 예제 코드와 함께 정리"
+category: ["Frontend"]
+tags: ["React", "Next.js"]
 ---
 
 Next.js는 React 기반의 풀스택 웹 프레임워크로, **SSR(서버사이드 렌더링), SSG(정적 사이트 생성), API Routes** 등을 기본적으로 지원합니다. Vercel이 개발하고 있으며, 현재 가장 많이 사용되는 React 프레임워크 중 하나입니다.

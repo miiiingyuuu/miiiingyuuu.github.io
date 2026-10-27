@@ -1,8 +1,9 @@
 ---
 title: "벨만-포드(Bellman-Ford) 알고리즘"
 date: "2024-07-06"
-category: ["Algorithm", "Graph"]
 description: "음수 가중치와 음수 순환까지 처리할 수 있는 벨만-포드 알고리즘의 개념, 동작 원리, 다익스트라와의 비교, Python 구현을 정리"
+category: ["Algorithm"]
+tags: ["Graph", "Shortest Path"]
 ---
 
 벨만-포드(Bellman-Ford) 알고리즘은 **한 노드에서 다른 모든 노드까지의 최단 거리를 구하는 알고리즘**입니다. 다익스트라와 달리 **간선의 가중치가 음수인 경우에도 최단 거리를 구할 수 있으며, 음수 순환(Negative Cycle)의 존재 여부도 감지**할 수 있습니다.

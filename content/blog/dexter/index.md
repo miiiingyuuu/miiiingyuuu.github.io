@@ -1,8 +1,9 @@
 ---
 title: "[스터디] Dexter"
 date: "2026-05-21"
-category: ["AI", "FinTech"]
 description: "GitHub Stars 17k+를 기록하며 주목받고 있는 오픈소스 금융 리서치 에이전트 Dexter를 분석. 멀티 에이전트 아키텍처, 자체 검증(Self-Validation) 메커니즘, 기존 범용 에이전트와의 차별점, 그리고 금융권 실무와의 연결고리를 정리"
+category: ["AI"]
+tags: ["FinTech", "Agent"]
 ---
 
 # Dexter: AI 기반 자율 금융 리서치 에이전트 분석

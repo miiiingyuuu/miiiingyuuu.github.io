@@ -5,6 +5,7 @@
  */
 
 const path = require(`path`)
+const taxonomy = require("./src/data/taxonomy.json")
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
 // Define the template for blog post
@@ -44,18 +45,14 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const posts = result.data.allMarkdownRemark.nodes
   const categories = result.data.allMarkdownRemark.group
 
-  // Create category pages
-  if (categories && categories.length > 0) {
-    categories.forEach(({ fieldValue }) => {
-      createPage({
-        path: `/category/${fieldValue.toLowerCase()}/`,
-        component: path.resolve("./src/templates/category.js"),
-        context: {
-          category: fieldValue,
-        },
-      })
+  // Preserve existing category URLs while using the simplified taxonomy.
+  Object.entries(taxonomy.legacy).forEach(([name, selection]) => {
+    createPage({
+      path: `/category/${name.toLowerCase()}/`,
+      component: path.resolve("./src/templates/category.js"),
+      context: selection,
     })
-  }
+  })
 
   // Create blog posts pages
   if (posts.length > 0) {
@@ -125,6 +122,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       description: String
       date: Date @dateformat
       category: [String]
+      tags: [String]
     }
 
     type Fields {

@@ -1,8 +1,9 @@
 ---
 title: "위상 정렬 (Topological Sort)"
 date: "2025-01-30"
-category: ["Algorithm", "Graph"]
 description: "위상 정렬의 개념, 진입차수 기반 Kahn's Algorithm(BFS), DFS 기반 구현, 사이클 감지까지 단계별 시각화와 함께 정리"
+category: ["Algorithm"]
+tags: ["Graph"]
 ---
 
 수강신청을 할 때 선수과목을 먼저 들어야 하는 것처럼, 작업들 사이에 **선후 관계**가 있을 때 올바른 실행 순서를 결정하는 알고리즘이 **위상 정렬(Topological Sort)** 입니다.

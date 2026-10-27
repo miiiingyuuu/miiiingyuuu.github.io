@@ -1,8 +1,9 @@
 ---
 title: "세그먼트 트리 (Segment Tree)"
 date: "2026-01-29"
-category: ["Algorithm", "DataStructure"]
 description: "구간 값을 효율적으로 저장하고 탐색하는 세그먼트 트리의 개념 정리"
+category: ["Algorithm"]
+tags: ["Tree", "Data Structure"]
 ---
 
 세그먼트 트리(Segment Tree)는 특정 구간(Segment)에 대한 구간 값을 트리 구조에 미리 저장해두는 자료구조입니다. 이진 트리를 기반으로 하며, 구간 합·구간 곱·구간 최솟값 등 다양한 구간 쿼리를 효율적으로 처리할 수 있습니다.

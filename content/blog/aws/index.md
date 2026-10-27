@@ -1,8 +1,9 @@
 ---
 title: "AWS 핵심 서비스 정리"
 date: "2026-06-16"
-category: ["Cloud", "DevOps"]
 description: "금융권 백엔드·인프라 이해를 위한 AWS 핵심 서비스 정리. EC2 인스턴스 구성, S3 스토리지 전략, RDS 관리형 DB, Lambda 서버리스 아키텍처, 그리고 Docker 컨테이너 배포(ECR + ECS/EC2) 흐름까지 개념과 실전 명령어를 함께 정리"
+category: ["DevOps"]
+tags: ["AWS", "Cloud"]
 ---
 
 # AWS 핵심 서비스 정리 — EC2 · S3 · RDS · Lambda · Docker 배포

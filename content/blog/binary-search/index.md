@@ -1,8 +1,9 @@
 ---
 title: "이진 탐색 (Binary Search)"
 date: "2024-03-17"
-category: ["Algorithm", "DataStructure"]
 description: "이진 탐색의 개념과 동작 원리, 반복문/재귀 구현, 경계값 탐색(Lower/Upper Bound), Python bisect 라이브러리 활용까지 정리"
+category: ["Algorithm"]
+tags: ["Search"]
 ---
 
 업다운 게임을 떠올려보면 이진 탐색의 원리가 바로 보입니다. 1~100 사이 숫자를 맞출 때 50부터 시작해서 "UP / DOWN"에 따라 절반씩 범위를 좁혀가는 방식이 바로 이진 탐색입니다. 이번 포스트에서는 이진 탐색의 개념부터 구현 방법, Python의 `bisect` 라이브러리 활용법까지 정리합니다.

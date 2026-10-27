@@ -1,8 +1,9 @@
 ---
 title: "DB 개요 & 데이터 모델링"
 date: "2026-07-24"
-category: ["Database", "Architecture"]
 description: "DB 개요와 데이터 모델링 3일 학습 내용 정리. 파서·옵티마이저 내부 동작, ERD 설계, 자기참조·배타적 관계, 정규화, JOIN·서브쿼리·CTE, 집계·윈도우 함수, 트랜잭션 격리 수준 4단계·MVCC·데드락, B+Tree 인덱스, EXPLAIN 실행계획 해석, SARGable·N+1·키셋 페이지네이션 쿼리 리라이팅까지 코드 예시와 함께 정리"
+category: ["Database"]
+tags: ["Data Modeling"]
 ---
 
 # DB 개요 & 데이터 모델링 — 파서·옵티마이저부터 쿼리 리라이팅까지

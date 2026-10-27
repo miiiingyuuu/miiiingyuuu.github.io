@@ -1,8 +1,9 @@
 ---
 title: "프림 알고리즘 (Prim's Algorithm)"
 date: "2025-04-10"
-category: ["Algorithm", "Graph"]
 description: "최소 신장 트리(MST)를 구하는 프림 알고리즘의 개념, 동작 원리, 우선순위 큐를 활용한 Python 구현까지 단계별로 정리"
+category: ["Algorithm"]
+tags: ["Graph", "MST", "Greedy"]
 ---
 
 [이전 포스트](/mst-kruskal)에서 크루스칼 알고리즘으로 최소 신장 트리(MST)를 구하는 방법을 정리했습니다. 이번에는 같은 MST 문제를 다른 방식으로 접근하는 **프림 알고리즘(Prim's Algorithm)** 을 정리합니다.

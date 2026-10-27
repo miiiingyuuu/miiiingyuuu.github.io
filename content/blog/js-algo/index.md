@@ -1,8 +1,9 @@
 ---
 title: "JavaScript 코딩테스트 대비"
 date: "2025-10-29"
-category: ["JavaScript", "Algorithm"]
 description: "C++, Python으로 코딩테스트를 준비하다 JavaScript로 전환할 때 반드시 알아야 할 핵심 문법 차이점과, 자료구조·알고리즘별 JS 구현 틀을 한 곳에 정리. 입출력 처리부터 정렬, BFS/DFS, DP, 그리디까지 바로 가져다 쓸 수 있는 템플릿 정리"
+category: ["Algorithm"]
+tags: ["JavaScript", "Coding Test"]
 ---
 
 # C++/Python 개발자를 위한 코딩테스트 JavaScript 전환 가이드

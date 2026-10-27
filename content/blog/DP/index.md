@@ -1,8 +1,9 @@
 ---
 title: "다이나믹 프로그래밍 (Dynamic Programming)"
 date: "2024-01-04"
-category: ["Algorithm", "DP"]
 description: "DP의 개념, 적용 조건, Bottom-Up과 Top-Down 방식 정리"
+category: ["Algorithm"]
+tags: ["DP"]
 ---
 
 다이나믹 프로그래밍(Dynamic Programming, DP)은 복잡한 문제를 더 작은 하위 문제로 나누어 해결하는 **알고리즘 설계 기법**입니다. 핵심은 한 번 계산한 결과를 저장해두고 재사용함으로써 중복 계산을 줄이는 것입니다.

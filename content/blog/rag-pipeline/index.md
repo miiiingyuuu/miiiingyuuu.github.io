@@ -2,7 +2,8 @@
 title: "RAG 이해"
 description: "RAG의 문서 처리, 임베딩, 하이브리드 검색, 재정렬과 근거 평가부터 배터리 수명 예측의 EDA, 피처 엔지니어링, 데이터 누수, 그룹 검증과 일반화까지 핵심 개념을 정리"
 date: "2026-10-03"
-category: ["Architecture", "RAG", "LangChain", "DataAnalysis"]
+category: ["AI"]
+tags: ["RAG", "LangChain", "Data Analysis"]
 ---
 
 # RAG와 배터리 수명 예측 이해 — 검색·근거·피처·일반화로 보는 데이터 파이프라인

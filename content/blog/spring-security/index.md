@@ -1,8 +1,9 @@
 ---
 title: "Spring Security + JWT 인증"
 date: "2025-03-05"
-category: ["Backend", "Java", "Spring", "Security"]
 description: "Spring Security의 동작 원리, JWT 구조, 로그인/인증 필터 구현, Access Token + Refresh Token 전략까지 입문자 눈높이에서 단계별로 정리"
+category: ["Backend"]
+tags: ["Java", "Spring", "Security"]
 ---
 
 API 서버를 만들다 보면 반드시 마주치는 것이 인증(Authentication)과 인가(Authorization)입니다. Spring Security와 JWT를 처음 접하면 설정해야 할 것이 많아 어렵게 느껴지지만, 흐름을 이해하면 패턴이 보입니다. 이 글에서는 왜 JWT를 사용하는지부터 실제 코드 구현까지 순서대로 정리합니다.

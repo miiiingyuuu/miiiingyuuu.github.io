@@ -1,8 +1,9 @@
 ---
 title: "Prompt 설계와 Context Engineering"
 date: "2026-08-25"
-category: ["AI", "LLM"]
 description: "LLM 응답 품질을 결정하는 Prompt 설계와 Context Engineering의 차이와 연결을 정리하고, Zero-shot·Few-shot·ROCCF·RAG·Memory·Context Window를 실무 관점에서 설명"
+category: ["AI"]
+tags: ["LLM", "Prompt Engineering"]
 ---
 
 # Prompt 설계와 Context Engineering — 잘 묻는 것에서 잘 알려주는 것으로

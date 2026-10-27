@@ -1,8 +1,9 @@
 ---
 title: "LLM 아키텍처"
 date: "2026-08-31"
-category: ["AI", "LLM", "Transformer"]
 description: "텍스트가 토큰과 벡터를 거쳐 문맥을 학습하고 다음 토큰으로 생성되는 과정을 Transformer의 핵심 개념을 중심으로 정리"
+category: ["AI"]
+tags: ["LLM", "Transformer"]
 ---
 
 # LLM 아키텍처 이해하기 — 텍스트가 답변이 되기까지

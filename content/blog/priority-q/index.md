@@ -1,8 +1,9 @@
 ---
 title: "우선순위 큐와 힙 (Priority Queue & heapq)"
 date: "2024-09-05"
-category: ["Algorithm", "DataStructure"]
 description: "우선순위 큐의 개념, 힙 자료구조의 동작 원리, Python heapq 모듈 사용법(최소 힙/최대 힙/커스텀 정렬)까지 정리"
+category: ["Algorithm"]
+tags: ["Heap", "Data Structure"]
 ---
 
 일반 큐(Queue)는 먼저 들어온 것이 먼저 나가는 FIFO 구조입니다. 하지만 응급실에서 환자를 접수 순서가 아닌 **증상의 심각도** 기준으로 처리하듯이, 현실에서는 우선순위가 높은 것을 먼저 처리해야 하는 상황이 많습니다. 이런 요구를 해결하는 자료구조가 **우선순위 큐**이고, 이를 효율적으로 구현하는 것이 **힙(Heap)** 입니다.

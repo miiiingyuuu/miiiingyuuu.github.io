@@ -1,8 +1,9 @@
 ---
 title: "유니온 파인드(Union-Find) 알고리즘"
 date: "2024-11-08"
-category: ["Algorithm", "Graph"]
 description: "두 노드가 같은 집합에 속하는지 판별하는 유니온 파인드 알고리즘의 개념, Union/Find 연산, 경로 압축 최적화, Python 구현을 정리"
+category: ["Algorithm"]
+tags: ["Graph", "Data Structure"]
 ---
 
 유니온 파인드(Union-Find)는 **두 노드가 같은 집합에 속하는지 판별하는 그래프 알고리즘**입니다. 합집합 찾기 알고리즘이라고도 부르며, 서로 연결되지 않은 노드들의 집합을 다루기 때문에 **서로소 집합(Disjoint Set)** 이라고도 합니다.

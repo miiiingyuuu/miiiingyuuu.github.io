@@ -403,3 +403,27 @@ a:focus {
     list-style-position: inside;
   }
 }
+
+
+/* Keep the original text navigation, revealing tags only on selection. */
+.category-navigation { margin: 10px; }
+.category-links { display: flex; flex-wrap: wrap; gap: 0 6px; }
+.category-link {
+  appearance: none;
+  padding: 0;
+  margin: 3px;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  font: inherit;
+  line-height: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.category-link:hover { text-decoration: none; }
+.category-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+.category-link[aria-expanded="true"], .category-link[aria-pressed="true"] { font-weight: 700; text-decoration: none; }
+.category-tags { margin: 8px 3px 0; padding-left: 10px; border-left: 2px solid var(--color-accent); font-size: .85rem; line-height: 1.9; }
+.category-tags[hidden], .category-filter-status[hidden] { display: none; }
+.category-tags-label { margin-right: 6px; color: var(--color-text-light); }
+.category-filter-status { margin: 6px 3px 0; font-size: .8rem; color: var(--color-text-light); }

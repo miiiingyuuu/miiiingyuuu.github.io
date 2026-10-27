@@ -1,8 +1,9 @@
 ---
 title: "TypeScript 실전 정리"
 date: "2024-07-01"
-category: ["Frontend", "TypeScript"]
 description: "TypeScript의 타입 시스템, 제네릭, 유틸리티 타입, 타입 가드, interface vs type, 조건부/맵드 타입까지 실무 예제 중심으로 정리"
+category: ["Frontend"]
+tags: ["TypeScript"]
 ---
 
 JavaScript에 타입을 추가한 TypeScript는 이제 프론트엔드 개발의 사실상 표준이 됐습니다. 단순히 타입 에러를 잡는 것 이상으로, 코드의 의도를 명확히 하고 리팩토링을 안전하게 해주는 도구입니다. 이 포스트에서는 기본 타입부터 제네릭, 유틸리티 타입, 고급 타입까지 실무에서 바로 써먹을 수 있는 내용을 정리합니다.

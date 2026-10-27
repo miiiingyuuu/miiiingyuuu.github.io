@@ -1,8 +1,9 @@
 ---
 title: "모델 개발 및 최적화"
 date: "2026-09-06"
-category: ["AI", "Machine Learning", "Model Optimization"]
 description: "모델 개발과 최적화가 담당하는 역할을 데이터 설계, Feature Engineering, 검증, Hyperparameter 탐색, 해석과 운영 관점에서 정리"
+category: ["AI"]
+tags: ["Machine Learning", "Model Optimization"]
 ---
 
 # 모델 개발 및 최적화 이해하기: 성능과 일반화, 운영을 연결하는 과정

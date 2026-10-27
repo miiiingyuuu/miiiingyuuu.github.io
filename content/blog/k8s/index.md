@@ -2,7 +2,8 @@
 title: "Kubernetes 이해"
 date: "2026-09-14"
 description: "Kubernetes의 선언적 제어 구조를 시작으로 Pod, Deployment, Service, EndpointSlice, CoreDNS, ConfigMap, Secret, PVC, Ingress, Probe와 배포 전략이 어떻게 하나의 애플리케이션 운영 구조를 만드는지 정리"
-tags: ["DevOps", "Cloud", "Backend"]
+category: ["DevOps"]
+tags: ["Kubernetes"]
 ---
 
 # Kubernetes 이해 — 선언적 배포에서 서비스, 설정, 스토리지, 무중단 운영까지

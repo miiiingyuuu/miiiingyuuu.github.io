@@ -1,8 +1,9 @@
 ---
 title: "분할정복(Divide and Conquer)"
 date: "2025-02-25"
-category: ["Algorithm"]
 description: "분할정복의 개념과 대표 알고리즘(병합 정렬, 퀵 정렬, 이진 검색 등)을 정리"
+category: ["Algorithm"]
+tags: ["Divide & Conquer"]
 ---
 
 분할정복(Divide and Conquer)은 복잡한 문제를 더 작은 하위 문제로 나눠 해결하는 알고리즘 설계 패러다임입니다.

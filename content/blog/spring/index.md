@@ -1,8 +1,9 @@
 ---
 title: "Spring 핵심 개념 정리 — IoC / DI / AOP / Bean"
 date: "2025-03-02"
-category: ["Backend", "Java", "Spring"]
 description: "Spring Framework의 핵심인 IoC 컨테이너, 의존성 주입(DI), AOP, Bean 생명주기, @Transactional 동작 원리까지 면접 대비 중심으로 정리"
+category: ["Backend"]
+tags: ["Java", "Spring"]
 ---
 
 Spring을 쓴다는 것은 단순히 어노테이션을 붙이는 것이 아닙니다. Spring이 어떻게 객체를 만들고 관리하는지, 왜 이런 구조를 택했는지를 이해해야 면접에서도 막히지 않고 실무에서도 올바르게 활용할 수 있습니다. 이 글에서는 Spring의 근본이 되는 IoC, DI, AOP, Bean 개념을 정리합니다.

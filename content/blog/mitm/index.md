@@ -1,8 +1,9 @@
 ---
 title: "Meet in the Middle (중간에서 만나기)"
 date: "2025-06-28"
-category: ["Algorithm"]
 description: "브루트포스의 2^N을 2^(N/2)로 줄이는 Meet in the Middle 알고리즘의 개념, 동작 원리, Python 구현, 핵심 패턴까지 정리"
+category: ["Algorithm"]
+tags: ["Search", "Divide & Conquer"]
 ---
 
 N=40인 부분 수열의 합을 완전 탐색으로 풀면 2^40 ≈ 1조 번의 연산이 필요합니다. 현실적으로 불가능한 수치입니다. **Meet in the Middle(MITM)** 은 이 문제를 배열을 절반으로 나눠 각각 2^20번씩만 탐색하고, 결과를 이진탐색으로 결합해 약 100만 번의 연산으로 해결하는 기법입니다.

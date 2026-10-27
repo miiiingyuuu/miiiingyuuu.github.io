@@ -1,8 +1,9 @@
 ---
 title: "[스터디] 시스템 디자인"
 date: "2026-06-24"
-category: ["Architecture", "Backend"]
 description: "커뮤니티 앱의 키워드 알림 기능을 대규모 트래픽에서도 안정적으로 동작하도록 설계하는 방법을 정리. 단순해 보이는 기능이 왜 어려운지, Transaction Outbox로 이벤트 유실을 방지하는 방법, Aho-Corasick 알고리즘으로 키워드 매칭을 최적화하는 방법, 중복 알림 방지를 위한 멱등성 키(Idempotency Key) 설계, DLQ 기반 장애 처리 흐름까지 상세하게 정리"
+category: ["Architecture"]
+tags: ["System Design"]
 ---
 
 # 시스템 디자인 — 커뮤니티 앱 키워드 알림 시스템 설계

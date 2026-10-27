@@ -1,8 +1,9 @@
 ---
 title: "트리 순회 — 전위, 중위, 후위, 레벨 순회"
 date: "2025-02-15"
-category: ["Algorithm", "DataStructure"]
 description: "이진 트리의 네 가지 순회 방법(전위, 중위, 후위, 레벨 순회)의 개념과 동작 원리, Python 구현까지 단계별로 정리"
+category: ["Algorithm"]
+tags: ["Tree", "Data Structure"]
 ---
 
 **순회(Traversal)** 란 트리의 모든 노드를 방문하면서 값을 확인하는 작업입니다. 어떤 노드를 먼저 방문하느냐에 따라 순회 방법이 달라지며, 이진 트리에서는 크게 네 가지로 나뉩니다. 전위, 중위, 후위 순회는 **재귀**로, 레벨 순회는 **큐(BFS)** 로 구현합니다.
